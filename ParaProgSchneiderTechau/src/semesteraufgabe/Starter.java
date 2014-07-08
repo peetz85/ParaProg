@@ -1,5 +1,7 @@
 package semesteraufgabe;
 
+import org.jcsp.lang.*;
+
 public class Starter {
 
 	/**
