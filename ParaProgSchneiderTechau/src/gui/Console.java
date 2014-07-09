@@ -1,5 +1,9 @@
 package gui;
 
+import client.ClientController;
+import com.sun.corba.se.spi.activation.Server;
+import server.ServerController;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -15,10 +19,16 @@ public class Console extends JFrame{
 	
 	public JLabel lblNewLabel;
 	public JTextArea textArea;
+
+    private ClientController clientCTR;
+    private ServerController serverCTR;
 	
 	
-	public Console() {
-		
+	public Console(ClientController cc, ServerController sc) {
+		clientCTR = cc;
+        serverCTR = sc;
+
+
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BorderLayout(0, 0));
@@ -30,7 +40,7 @@ public class Console extends JFrame{
 		JSeparator separator_1 = new JSeparator();
 		panel_1.add(separator_1, BorderLayout.NORTH);
 		
-		lblNewLabel = new JLabel("IP-Adresse:");
+		lblNewLabel = new JLabel("IP-Adresse: " + serverCTR.getIPAdress() + "     | Server Status: Online");
 		panel_1.add(lblNewLabel, BorderLayout.CENTER);
 		
 		textArea = new JTextArea();

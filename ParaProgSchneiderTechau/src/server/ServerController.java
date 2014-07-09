@@ -15,34 +15,13 @@ public class ServerController {
 
 
 
-    public void getIPAdress() throws SocketException{
+    public String getIPAdress(){
         InetAddress ip = null;
         try {
             ip = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        System.out.println ("InetAddress = " + ip);
-        System.out.println ("Hostname = " + ip.getHostName());
-        System.out.println ("IP-Adresse = " + ip.getHostAddress());
-
-        /*
-
-
-        Enumeration ifaces = NetworkInterface.getNetworkInterfaces();
-
-
-        while (ifaces.hasMoreElements()) {
-            NetworkInterface ni = (NetworkInterface)ifaces.nextElement();
-            System.out.println(ni.getName() + ":");
-
-            Enumeration addrs = ni.getInetAddresses();
-
-
-            while (addrs.hasMoreElements()) {
-                    InetAddress ia = (InetAddress) addrs.nextElement();
-                    System.out.println(" " + ia.getHostAddress());
-            }
-        }*/
+        return (String) ip.getHostAddress();
     }
 }
