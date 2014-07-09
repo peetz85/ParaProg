@@ -39,7 +39,9 @@ public class ServerChannel implements CSProcess {
 
     @Override
     public void run() {
-        Message iIn = (Message) input.read();
-        System.out.println(iIn.i*2);
+        while(true) {
+            Message iIn = (Message) input.read();
+            System.out.println(iIn.i * 2);
+        }
     }
 }
