@@ -14,14 +14,14 @@ import java.util.Vector;
 public class ServerController extends Thread{
 
     final public String serverName;
-    private HashMap<String, ServerChannel> connections;
+    public HashMap<ServerController, ServerChannel> connections;
     private Parallel channelListener;
 
 
     public ServerController(String name) {
         serverName = name + "." + this.toString();
 
-        connections = new HashMap<String, ServerChannel>();
+        connections = new HashMap<ServerController, ServerChannel>();
         channelListener = new Parallel();
     }
 
@@ -36,7 +36,7 @@ public class ServerController extends Thread{
         }
         return (String) ip.getHostAddress();
     }
-
+/*
     public void establishConnection(ServerChannel arg, String connection, boolean request){
 
         //request == True ... Neue Anfrage / Channel erstellen
@@ -62,10 +62,42 @@ public class ServerController extends Thread{
 
         channelListener.addProcess(tmp);
     }
-
+    */
     public void run(){
         channelListener.run();
     }
+
+
+    //LOCAL ServerControllerTest
+    public void establishConnection(ServerChannel arg, ServerController target, boolean request){
+
+        //request == True ... Neue Anfrage / Channel erstellen
+        if(request){
+            ServerChannel tmp = new ServerChannel();
+            tmp.setInputChannel(arg.o2oChannelOutPut);
+            connections.put(target, tmp);
+            channelListener.addProcess(tmp);
+            //TODO tmp an Connection senden für Verknüpfung (establishConnection(tmp, "eigene IP", false)
+            target.establishConnection(tmp, this, false);
+
+
+        } else {
+            ServerChannel tmp = connections.get(target);
+            tmp.setInputChannel(arg.o2oChannelOutPut);
+        }
+    }
+    public void startConnection(ServerController target){
+        ServerChannel tmp = new ServerChannel();
+        connections.put(target, tmp);
+        channelListener.addProcess(tmp);
+        //TODO Verbidnung mit anderen Node herstellen (establishConnection(tmp, "eigene IP", true)
+        target.establishConnection(tmp,this,true);
+
+
+    }
+
+
+
 
 
 

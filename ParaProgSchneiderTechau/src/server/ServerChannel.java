@@ -27,6 +27,7 @@ public class ServerChannel implements CSProcess {
     }
 
     public void send(Message arg){
+        System.out.println(arg.i);
         output.write(arg);
     }
 
