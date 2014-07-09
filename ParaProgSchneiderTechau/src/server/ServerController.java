@@ -2,10 +2,7 @@ package server;
 
 
 import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Enumeration;
 
 /**
  * Created by Pascal on 08.07.2014.
