@@ -11,15 +11,12 @@ public class ServerChannel implements CSProcess {
     private ChannelInput input;
     public One2OneChannel o2oChannelOutPut;
 
-    boolean tog;
 
 
-
-    public ServerChannel(boolean tog){
+    public ServerChannel(){
         //-- Ausgehender Daten; von uns gesendet
         o2oChannelOutPut = Channel.one2one();
         output = o2oChannelOutPut.out();
-        this.tog = tog;
     }
 
 

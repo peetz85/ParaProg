@@ -5,6 +5,7 @@ import org.jcsp.lang.Parallel;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -13,29 +14,15 @@ import java.util.Vector;
 public class ServerController extends Thread{
 
     final public String serverName;
-    public Vector<ServerChannel> connections;
+    private HashMap<String, ServerChannel> connections;
+    private Parallel channelListener;
 
-    // FUSCH UND So
-    public Parallel par = new Parallel();
-    public ServerChannel t1 = new ServerChannel(true);
 
     public ServerController(String name) {
-        serverName = name+"."+this.toString();
+        serverName = name + "." + this.toString();
 
-
-
-        // ---- TEST MÜLL
-
-        ServerChannel t2 = new ServerChannel(false);
-
-        t2.setInputChannel(t1.o2oChannelOutPut);
-        t1.setInputChannel(t2.o2oChannelOutPut);
-
-
-        par.addProcess(t1);
-        par.addProcess(t2);
-        // ___ TEST MÜLL
-
+        connections = new HashMap<String, ServerChannel>();
+        channelListener = new Parallel();
     }
 
 
@@ -50,8 +37,34 @@ public class ServerController extends Thread{
         return (String) ip.getHostAddress();
     }
 
+    public void establishConnection(ServerChannel arg, String connection, boolean request){
+
+        //request == True ... Neue Anfrage / Channel erstellen
+        if(request){
+            ServerChannel tmp = new ServerChannel();
+            tmp.setInputChannel(arg.o2oChannelOutPut);
+            connections.put(connection, tmp);
+
+            //TODO tmp an Connection senden für Verknüpfung (establishConnection(tmp, "eigene IP", false)
+
+            channelListener.addProcess(tmp);
+        } else {
+            ServerChannel tmp = connections.get(connection);
+            tmp.setInputChannel(arg.o2oChannelOutPut);
+        }
+    }
+
+    public void startConnection(String connection){
+        ServerChannel tmp = new ServerChannel();
+        connections.put(connection, tmp);
+
+        //TODO Verbidnung mit anderen Node herstellen (establishConnection(tmp, "eigene IP", true)
+
+        channelListener.addProcess(tmp);
+    }
+
     public void run(){
-        par.run();
+        channelListener.run();
     }
 
 
