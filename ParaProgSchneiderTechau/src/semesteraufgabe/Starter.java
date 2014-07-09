@@ -14,19 +14,16 @@ public class Starter {
 	 */
 	public static void main(String[] args) {
         ClientController clientCTR = new ClientController();
+
         ServerController serverCTR = new ServerController("Hans");
 
 
         ServerController serverCTR_1 = new ServerController("Otto");
 
-
-
         Console c = new Console(clientCTR, serverCTR);
         c.setLocation(50, 50);
         c.setSize(500,300);
         c.setVisible(true);
-
-
 
         serverCTR.startConnection(serverCTR_1);
 

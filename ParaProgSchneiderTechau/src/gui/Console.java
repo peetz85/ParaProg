@@ -6,7 +6,7 @@ import server.ServerController;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
+import java.awt.*;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -45,7 +45,7 @@ public class Console extends JFrame{
 		
 		textArea = new JTextArea();
 		panel.add(textArea, BorderLayout.CENTER);
-		
+
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		

@@ -11,14 +11,11 @@ public class ServerChannel implements CSProcess {
     private ChannelInput input;
     public One2OneChannel o2oChannelOutPut;
 
-
-
     public ServerChannel(){
         //-- Ausgehender Daten; von uns gesendet
         o2oChannelOutPut = Channel.one2one();
         output = o2oChannelOutPut.out();
     }
-
 
     public void setInputChannel(One2OneChannel arg){
         if(input == null & arg != null) {
@@ -36,7 +33,6 @@ public class ServerChannel implements CSProcess {
 
     public void wakeup(){
         System.out.println("Aufwachen du Lutscher!!!");
-
     }
 
     @Override
