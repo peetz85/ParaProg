@@ -39,15 +39,7 @@ public class ServerChannel implements CSProcess {
 
     @Override
     public void run() {
-
-        if(tog) {
-            send(new Message(5));
-        }
-        else {
-            Message iIn = (Message) input.read();
-            System.out.println(iIn.i*2);
-
-        }
-
+        Message iIn = (Message) input.read();
+        System.out.println(iIn.i*2);
     }
 }

@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 public class ServerController {
 
     final public String serverName;
+    public ServerChannel[] connections;
 
     public ServerController(String name) {
         serverName = name+"."+this.toString();
