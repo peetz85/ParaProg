@@ -6,17 +6,14 @@ import org.jcsp.lang.Parallel;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.Vector;
 
 /**
  * Created by Pascal on 08.07.2014.
  */
 public class ServerController extends Thread{
-
     final public String serverName;
     public HashMap<ServerController, ServerChannel> connections;
     private Parallel channelListener;
-
 
     public ServerController(String name) {
         serverName = name + "." + this.toString();
@@ -24,8 +21,6 @@ public class ServerController extends Thread{
         connections = new HashMap<ServerController, ServerChannel>();
         channelListener = new Parallel();
     }
-
-
 
     public String getIPAdress(){
         InetAddress ip = null;
@@ -62,15 +57,12 @@ public class ServerController extends Thread{
 
         channelListener.addProcess(tmp);
     }
-    */
+*/
     public void run(){
         channelListener.run();
     }
-
-
     //LOCAL ServerControllerTest
     public void establishConnection(ServerChannel arg, ServerController target, boolean request){
-
         //request == True ... Neue Anfrage / Channel erstellen
         if(request){
             ServerChannel tmp = new ServerChannel();
@@ -79,8 +71,6 @@ public class ServerController extends Thread{
             channelListener.addProcess(tmp);
             //TODO tmp an Connection senden für Verknüpfung (establishConnection(tmp, "eigene IP", false)
             target.establishConnection(tmp, this, false);
-
-
         } else {
             ServerChannel tmp = connections.get(target);
             tmp.setInputChannel(arg.o2oChannelOutPut);
@@ -92,13 +82,5 @@ public class ServerController extends Thread{
         channelListener.addProcess(tmp);
         //TODO Verbidnung mit anderen Node herstellen (establishConnection(tmp, "eigene IP", true)
         target.establishConnection(tmp,this,true);
-
-
     }
-
-
-
-
-
-
 }

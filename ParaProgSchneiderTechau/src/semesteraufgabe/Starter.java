@@ -33,7 +33,7 @@ public class Starter {
         serverCTR.start();
         serverCTR_1.start();
 
-        serverCTR.connections.get(serverCTR_1).send(new Message(5));
+        serverCTR.connections.get(serverCTR_1).send(new Message(true));
 
 
 

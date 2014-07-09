@@ -27,7 +27,6 @@ public class ServerChannel implements CSProcess {
     }
 
     public void send(Message arg){
-        System.out.println(arg.i);
         output.write(arg);
     }
 
@@ -35,11 +34,21 @@ public class ServerChannel implements CSProcess {
         return (Message) input.read();
     }
 
+    public void wakeup(){
+        System.out.println("Aufwachen du Lutscher!!!");
+
+    }
+
     @Override
     public void run() {
         while(true) {
-            Message iIn = (Message) input.read();
-            System.out.println(iIn.i * 2);
+            Message incoming = (Message) input.read();
+            if(incoming.WAKEUP){
+                wakeup();
+            }
+            else if(incoming.i != null) {
+                System.out.println(incoming.i * 2);
+            }
         }
     }
 }

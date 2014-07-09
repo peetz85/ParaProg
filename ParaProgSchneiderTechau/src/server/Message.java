@@ -6,12 +6,12 @@ package server;
 public class Message {
 
     public String test;
-    public int i;
+    public Integer i;
+    public final boolean WAKEUP;
 
 
-
-    public Message(int i){
-        this.i = i;
+    public Message(boolean b){
+        WAKEUP = b;
     }
 
     public String toString(){
