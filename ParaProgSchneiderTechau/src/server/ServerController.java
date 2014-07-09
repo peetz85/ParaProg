@@ -12,7 +12,11 @@ import java.util.Enumeration;
  */
 public class ServerController {
 
+    final public String serverName;
 
+    public ServerController(String name) {
+        serverName = name+"."+this.toString();
+    }
 
 
     public String getIPAdress(){

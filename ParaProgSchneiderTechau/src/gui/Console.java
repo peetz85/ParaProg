@@ -40,7 +40,7 @@ public class Console extends JFrame{
 		JSeparator separator_1 = new JSeparator();
 		panel_1.add(separator_1, BorderLayout.NORTH);
 		
-		lblNewLabel = new JLabel("IP-Adresse: " + serverCTR.getIPAdress() + "     | Server Status: Online");
+		lblNewLabel = new JLabel("IP-Adresse: " + serverCTR.getIPAdress() + " | Server-Name: " +serverCTR.serverName);
 		panel_1.add(lblNewLabel, BorderLayout.CENTER);
 		
 		textArea = new JTextArea();
