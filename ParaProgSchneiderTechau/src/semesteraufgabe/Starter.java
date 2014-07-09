@@ -33,8 +33,5 @@ public class Starter {
         serverCTR.connections.get(serverCTR_1).send(new Message(true));
 
 
-
-
-
     }
 }

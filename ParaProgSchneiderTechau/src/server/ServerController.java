@@ -69,7 +69,6 @@ public class ServerController extends Thread{
             tmp.setInputChannel(arg.o2oChannelOutPut);
             connections.put(target, tmp);
             channelListener.addProcess(tmp);
-            //TODO tmp an Connection senden für Verknüpfung (establishConnection(tmp, "eigene IP", false)
             target.establishConnection(tmp, this, false);
         } else {
             ServerChannel tmp = connections.get(target);
@@ -80,7 +79,6 @@ public class ServerController extends Thread{
         ServerChannel tmp = new ServerChannel();
         connections.put(target, tmp);
         channelListener.addProcess(tmp);
-        //TODO Verbidnung mit anderen Node herstellen (establishConnection(tmp, "eigene IP", true)
         target.establishConnection(tmp,this,true);
     }
 }
