@@ -36,14 +36,9 @@ public class Starter {
         c.setVisible(true);
 
 
-        CNSServer.startCNS();
-
-        try {
-            Thread.sleep(500);
-        } catch (Exception e){}
-
-        serverCTR.startConnection("1");
-        //serverCTR_1.startConnection("2");
+        //CNSServer.startCNS();
+        //serverCTR.startConnection("1");
+        serverCTR_1.startConnection("2");
 
     }
 

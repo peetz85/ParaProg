@@ -20,7 +20,7 @@ public class ServerChannel implements CSProcess {
 
 
         try {
-            System.setProperty("org.jcsp.tcpip.DefaultCNSServer", "127.0.0.1");
+            System.setProperty("org.jcsp.tcpip.DefaultCNSServer", "localhost:51526");
             Node.getInstance().init();
         } catch (NodeInitFailedException e) {
             e.printStackTrace();

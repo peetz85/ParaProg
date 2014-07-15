@@ -4,7 +4,7 @@
         </PROTOCOL>
     </PROTOCOLS>
     <ADDRESSES>
-        <ADDRESS protocolid="TCPIP" value="127.0.0.1:7896" unique="FALSE">
+        <ADDRESS protocolid="TCPIP" value="127.0.0.1:51526" unique="FALSE">
         </ADDRESS>
     </ADDRESSES>
 </JCSP-CONFIG>
