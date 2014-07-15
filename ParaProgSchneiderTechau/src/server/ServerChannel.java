@@ -30,8 +30,8 @@ public class ServerChannel implements CSProcess {
             output = CNS.createOne2Net("Server_RAUS");
             input = CNS.createNet2One("Server_REIN");
         } else {
-            output = CNS.createOne2Net("Server_REIN");
             input = CNS.createNet2One("Server_RAUS");
+            output = CNS.createOne2Net("Server_REIN");
         }
     }
 

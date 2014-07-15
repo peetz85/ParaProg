@@ -36,6 +36,7 @@ public class Starter {
         c.setVisible(true);
 
 
+
         //CNSServer.startCNS();
         //serverCTR.startConnection("1");
         serverCTR_1.startConnection("2");
