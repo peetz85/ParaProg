@@ -29,7 +29,7 @@ public class Console extends JFrame{
 	public Console(ClientController cc, ServerController sc) {
 		clientCTR = cc;
         serverCTR = sc;
-
+        setTitle("Client");
 
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);
@@ -66,6 +66,7 @@ public class Console extends JFrame{
 		mntmCnsServerStarten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
                 CNSServer.startCNS();
+                setTitle("Client | CNS Server running!");
 			}
 		});
 		mnMenu.add(mntmCnsServerStarten);

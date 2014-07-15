@@ -17,7 +17,7 @@ import java.util.HashMap;
  */
 public class ServerController extends Thread implements CSProcess{
     final public String serverName;
-    public HashMap<ServerController, ServerChannel> connections;
+    public HashMap<String, ServerChannel> connections;
     private Parallel channelListener;
 
     public ServerController(String name) {
@@ -40,11 +40,18 @@ public class ServerController extends Thread implements CSProcess{
     public void run(){
         channelListener.run();
     }
+
+    public void startConnection(String target){
+        ServerChannel tmp = new ServerChannel(target);
+        connections.put(target, tmp);
+        channelListener.addProcess(tmp);
+    }
+    /*
     //LOCAL ServerControllerTest
     public void establishConnection(ServerChannel arg, ServerController target, boolean request){
         //request == True ... Neue Anfrage / Channel erstellen
 
-        /*
+
         if(request){
             ServerChannel tmp = new ServerChannel();
             tmp.setInput(arg.getOutput());
@@ -54,7 +61,7 @@ public class ServerController extends Thread implements CSProcess{
         } else {
             ServerChannel tmp = connections.get(target);
             tmp.setInput(arg.o2oChannelOutPut);
-        }*/
+        }
     }
     public void startConnection(ServerController target){
         ServerChannel tmp = new ServerChannel();
@@ -62,5 +69,6 @@ public class ServerController extends Thread implements CSProcess{
         channelListener.addProcess(tmp);
         target.establishConnection(tmp,this,true);
     }
+    */
 }
 

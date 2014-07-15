@@ -4,6 +4,7 @@ import client.ClientController;
 import gui.Console;
 
 
+import server.CNSServer;
 import server.Message;
 import server.ServerController;
 
@@ -26,13 +27,23 @@ public class Starter {
 
         ServerController serverCTR = new ServerController("Hans");
 
-        //ServerController serverCTR_1 = new ServerController("Otto");
+        ServerController serverCTR_1 = new ServerController("Otto");
 
 
         Console c = new Console(clientCTR, serverCTR);
         c.setLocation(50, 50);
         c.setSize(500,300);
         c.setVisible(true);
+
+
+        CNSServer.startCNS();
+
+        try {
+            Thread.sleep(500);
+        } catch (Exception e){}
+
+        serverCTR.startConnection("1");
+        //serverCTR_1.startConnection("2");
 
     }
 

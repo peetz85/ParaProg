@@ -1,37 +1,38 @@
 package server;
 
 import org.jcsp.lang.*;
-import org.jcsp.net.NetChannelInput;
-import org.jcsp.net.NetChannelOutput;
+import org.jcsp.net.*;
 import org.jcsp.net.cns.CNS;
+import org.jcsp.net.cns.CNSService;
 
 /**
  * Created by Pascal on 09.07.2014.
  */
 public class ServerChannel implements CSProcess {
 
-/*
-    NetChannelInput in = CNS.createNet2One("in");
-    //resolve the channel
-    NetChannelOutput out = CNS.createOne2Net("in");
-  */
 
-    private NetChannelOutput output;
-    private NetChannelInput input;
+    public NetChannelOutput output;
+    public NetChannelInput input;
 
 
-    public ServerChannel(){
-        output = CNS.createOne2Net("output");
-        input = CNS.createNet2One("input");
-    }
+    public ServerChannel(String target){
 
-    public void setInput(NetChannelInput arg){
-        if(input == null & arg != null) {
-            input = arg;
+
+
+        try {
+            System.setProperty("org.jcsp.tcpip.DefaultCNSServer", "127.0.0.1");
+            Node.getInstance().init();
+        } catch (NodeInitFailedException e) {
+            e.printStackTrace();
         }
-    }
-    public NetChannelOutput getOutput(){
-        return output;
+
+        if(target == "1") {
+            output = CNS.createOne2Net("Server_RAUS");
+            input = CNS.createNet2One("Server_REIN");
+        } else {
+            output = CNS.createOne2Net("Server_REIN");
+            input = CNS.createNet2One("Server_RAUS");
+        }
     }
 
     public void send(Message arg){
@@ -48,6 +49,9 @@ public class ServerChannel implements CSProcess {
 
     @Override
     public void run() {
+        Message tmp = new Message(false);
+        tmp.i = 5;
+        send(tmp);
         while(true) {
             Message incoming = (Message) input.read();
             if(incoming.WAKEUP){
@@ -55,6 +59,8 @@ public class ServerChannel implements CSProcess {
             }
             else if(incoming.i != null) {
                 System.out.println(incoming.i * 2);
+                incoming.i = incoming.i*2;
+                send(incoming);
             }
         }
     }
