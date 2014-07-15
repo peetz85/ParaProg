@@ -11,7 +11,7 @@ import java.io.IOException;
 public class CNSServer {
 
 
-    public static boolean startCNS() {
+    public static void startCNS() {
         NodeKey key = null;
         NodeID localNodeID = null;
 
@@ -30,7 +30,5 @@ public class CNSServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return true;
     }
 }

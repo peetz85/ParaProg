@@ -1,6 +1,7 @@
 package gui;
 
 import client.ClientController;
+import server.CNSServer;
 import server.ServerController;
 
 import javax.swing.JFrame;
@@ -64,7 +65,7 @@ public class Console extends JFrame{
 		JMenuItem mntmCnsServerStarten = new JMenuItem("CNS Server starten");
 		mntmCnsServerStarten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+                CNSServer.startCNS();
 			}
 		});
 		mnMenu.add(mntmCnsServerStarten);

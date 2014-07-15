@@ -28,22 +28,11 @@ public class Starter {
 
         //ServerController serverCTR_1 = new ServerController("Otto");
 
-        /*
+
         Console c = new Console(clientCTR, serverCTR);
         c.setLocation(50, 50);
         c.setSize(500,300);
         c.setVisible(true);
-
-        serverCTR.startConnection(serverCTR_1);
-
-        serverCTR.start();
-        serverCTR_1.start();
-
-        serverCTR.connections.get(serverCTR_1).send(new Message(true))
-        */
-
-
-
 
     }
 
