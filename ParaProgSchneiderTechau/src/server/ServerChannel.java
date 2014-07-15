@@ -15,8 +15,7 @@ public class ServerChannel implements CSProcess {
     public NetChannelInput input;
 
 
-    public ServerChannel(String target){
-
+    public ServerChannel(String target) {
 
 
         try {
@@ -26,41 +25,39 @@ public class ServerChannel implements CSProcess {
             e.printStackTrace();
         }
 
-        if(target == "1") {
-            output = CNS.createOne2Net("Server_RAUS");
-            input = CNS.createNet2One("Server_REIN");
+        if (target == "1") {
+            output = CNS.createOne2Net("Server_RAUS1");
+            input = CNS.createNet2One("Server_REIN1");
         } else {
-            input = CNS.createNet2One("Server_RAUS");
-            output = CNS.createOne2Net("Server_REIN");
+            input = CNS.createNet2One("Server_RAUS1");
+            output = CNS.createOne2Net("Server_REIN1");
         }
     }
 
-    public void send(Message arg){
+    public void send(Message arg) {
         output.write(arg);
     }
 
-    public Message recive(){
+    public Message recive() {
         return (Message) input.read();
     }
 
-    public void wakeup(){
+    public void wakeup() {
         System.out.println("Aufwachen du Lutscher!!!");
     }
 
     @Override
     public void run() {
-        Message tmp = new Message(false);
-        tmp.i = 5;
-        send(tmp);
-        while(true) {
-            Message incoming = (Message) input.read();
-            if(incoming.WAKEUP){
-                wakeup();
-            }
-            else if(incoming.i != null) {
-                System.out.println(incoming.i * 2);
-                incoming.i = incoming.i*2;
-                send(incoming);
+        while (true) {
+            if (input != null) {
+                Message incoming = (Message) input.read();
+                if (incoming.WAKEUP) {
+                    wakeup();
+                } else if (incoming.i != null) {
+                    System.out.println(incoming.i * 2);
+                    incoming.i = incoming.i * 2;
+                    send(incoming);
+                }
             }
         }
     }

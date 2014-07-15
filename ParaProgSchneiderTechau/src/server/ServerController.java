@@ -43,7 +43,8 @@ public class ServerController extends Thread implements CSProcess{
 
     public void startConnection(String target){
         ServerChannel tmp = new ServerChannel(target);
-        //connections.put(target, tmp);
+        connections.put(target, tmp);
+        System.out.println(tmp);
         channelListener.addProcess(tmp);
     }
     /*
