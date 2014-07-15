@@ -11,35 +11,38 @@ import org.jcsp.net.cns.CNSService;
 public class ServerChannel implements CSProcess {
 
 
-    public NetChannelOutput output;
-    public NetChannelInput input;
+    private NetChannelOutput output;
+    private NetChannelInput input;
+
+    private ServerController parent;
 
 
-    public ServerChannel(String target) {
-
-
+    public ServerChannel(String target, ServerController parent) {
+        this.parent = parent;
         try {
             System.setProperty("org.jcsp.tcpip.DefaultCNSServer", "localhost:51526");
             Node.getInstance().init();
         } catch (NodeInitFailedException e) {
             e.printStackTrace();
         }
-
-        if (target == "1") {
-            output = CNS.createOne2Net("Server_RAUS1");
-            input = CNS.createNet2One("Server_REIN1");
-        } else {
-            input = CNS.createNet2One("Server_RAUS1");
-            output = CNS.createOne2Net("Server_REIN1");
-        }
     }
 
-    public void send(Message arg) {
+    public void init() {
+        output = CNS.createOne2Net(parent.serverName + "_Output");
+        input = CNS.createNet2One(parent.serverName + "_Input");
+    }
+
+    public void connect(String arg) {
+        input = CNS.createNet2One(arg + "_Output");
+        output = CNS.createOne2Net(arg + "_Input");
+    }
+
+    public void send(int arg) {
         output.write(arg);
     }
 
-    public Message recive() {
-        return (Message) input.read();
+    public int recive() {
+        return (Integer) input.read();
     }
 
     public void wakeup() {
@@ -50,15 +53,15 @@ public class ServerChannel implements CSProcess {
     public void run() {
         while (true) {
             if (input != null) {
-                Message incoming = (Message) input.read();
-                if (incoming.WAKEUP) {
-                    wakeup();
-                } else if (incoming.i != null) {
-                    System.out.println(incoming.i * 2);
-                    incoming.i = incoming.i * 2;
+                int incoming = (Integer) input.read();
+
+                if (incoming != 0) {
+                    System.out.println(incoming * 2);
+                    incoming = incoming * 2;
                     send(incoming);
                 }
             }
         }
     }
 }
+

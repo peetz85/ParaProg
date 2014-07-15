@@ -39,13 +39,13 @@ public class Starter {
 
         //CNSServer.startCNS();
 
-        serverCTR_1.startConnection("2");
-/*
+        //serverCTR_1.startConnection("1");
+        //serverCTR_1.start();
 
-        serverCTR.startConnection("1");
-        Message tmp = new Message(false);
-        tmp.i = 5;
-        serverCTR.connections.get("1").send(tmp);
+
+        serverCTR.connectConnection(serverCTR_1.serverName);
+        serverCTR.start();
+        serverCTR.connections.get(serverCTR_1.serverName).send(5);
 //*/
     }
 

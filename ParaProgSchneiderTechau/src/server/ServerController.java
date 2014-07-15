@@ -23,6 +23,8 @@ public class ServerController extends Thread implements CSProcess{
     public ServerController(String name) {
         System.out.println("Server Test");
         serverName = name + "." + this.toString();
+        connections = new HashMap<String, ServerChannel>();
+        channelListener = new Parallel();
 
 
     }
@@ -42,10 +44,20 @@ public class ServerController extends Thread implements CSProcess{
     }
 
     public void startConnection(String target){
-        ServerChannel tmp = new ServerChannel(target);
+        ServerChannel tmp = new ServerChannel(target,this);
+
         connections.put(target, tmp);
+        channelListener.addProcess(tmp);
+        tmp.init();
+    }
+    public void connectConnection(String target){
+        ServerChannel tmp = new ServerChannel(target,this);
+
+        connections.put(target, tmp);
+
         System.out.println(tmp);
         channelListener.addProcess(tmp);
+        tmp.connect(target);
     }
     /*
     //LOCAL ServerControllerTest
