@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.*;
 
 class Client {
+    /*
     public static void main(String args[]) {
         try {
             Socket skt = new Socket("127.0.0.1", 1234);
@@ -25,5 +26,5 @@ class Client {
         catch(Exception e) {
             System.out.print("Whoops! It didn't work!\n");
         }
-    }
+    }*/
 }

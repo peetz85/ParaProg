@@ -1,26 +1,37 @@
 package server;
 
 import org.jcsp.lang.*;
+import org.jcsp.net.NetChannelInput;
+import org.jcsp.net.NetChannelOutput;
+import org.jcsp.net.cns.CNS;
 
 /**
  * Created by Pascal on 09.07.2014.
  */
 public class ServerChannel implements CSProcess {
 
-    private ChannelOutput output;
-    private ChannelInput input;
-    public One2OneChannel o2oChannelOutPut;
+/*
+    NetChannelInput in = CNS.createNet2One("in");
+    //resolve the channel
+    NetChannelOutput out = CNS.createOne2Net("in");
+  */
+
+    private NetChannelOutput output;
+    private NetChannelInput input;
+
 
     public ServerChannel(){
-        //-- Ausgehender Daten; von uns gesendet
-        o2oChannelOutPut = Channel.one2one();
-        output = o2oChannelOutPut.out();
+        output = CNS.createOne2Net("output");
+        input = CNS.createNet2One("input");
     }
 
-    public void setInputChannel(One2OneChannel arg){
+    public void setInput(NetChannelInput arg){
         if(input == null & arg != null) {
-            input = arg.in();
+            input = arg;
         }
+    }
+    public NetChannelOutput getOutput(){
+        return output;
     }
 
     public void send(Message arg){

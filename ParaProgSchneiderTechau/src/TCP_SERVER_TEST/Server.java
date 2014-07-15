@@ -5,6 +5,7 @@ import java.io.*;
 import java.net.*;
 
 class Server{
+    /*
     public static void main(String args[]) {
         String data = "Toobie ornaught toobie";
         try {
@@ -20,5 +21,5 @@ class Server{
         catch(Exception e) {
             System.out.print("Whoops! It didn't work!\n");
         }
-    }
+    }*/
 }

@@ -1,0 +1,10 @@
+<JCSP-CONFIG>
+    <PROTOCOLS>
+        <PROTOCOL id="TCPIP" name="TCP/IP" idclass="org.jcsp.net.tcpip.TCPIPProtocolID">
+        </PROTOCOL>
+    </PROTOCOLS>
+    <ADDRESSES>
+        <ADDRESS protocolid="TCPIP" value="127.0.0.1:7896" unique="FALSE">
+        </ADDRESS>
+    </ADDRESSES>
+</JCSP-CONFIG>
