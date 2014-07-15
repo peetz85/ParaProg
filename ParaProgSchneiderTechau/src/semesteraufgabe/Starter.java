@@ -4,6 +4,7 @@ import client.ClientController;
 import gui.Console;
 
 
+import server.ConnectionTest;
 import server.Message;
 import server.ServerController;
 
@@ -15,6 +16,7 @@ import org.jcsp.net.tcpip.*;
 
 import java.io.IOException;
 
+import server.ConnectionTest;
 
 public class Starter {
 
@@ -29,11 +31,12 @@ public class Starter {
 
         //ServerController serverCTR_1 = new ServerController("Otto");
 
+        /*
         Console c = new Console(clientCTR, serverCTR);
         c.setLocation(50, 50);
         c.setSize(500,300);
         c.setVisible(true);
-        /*
+
         serverCTR.startConnection(serverCTR_1);
 
         serverCTR.start();

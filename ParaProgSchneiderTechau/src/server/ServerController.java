@@ -20,31 +20,11 @@ public class ServerController extends Thread implements CSProcess{
     public HashMap<ServerController, ServerChannel> connections;
     private Parallel channelListener;
 
-    private NodeKey key = null;
-    private NodeID localNodeID = null;
-
     public ServerController(String name) {
         System.out.println("Server Test");
         serverName = name + "." + this.toString();
 
-        connections = new HashMap<ServerController, ServerChannel>();
-        channelListener = new Parallel();
 
-        // NetChannelServer initializierung
-        try {
-            //Initialize a Node that does not have a CNS client
-//            key = Node.getInstance().init(new XMLNodeFactory("ParaProgSchneiderTechau/src/server/nocns.xml"));
-            key = Node.getInstance().init(new XMLNodeFactory("src/server/nocns.xml"));
-            localNodeID = Node.getInstance().getNodeID();
-            //Initialize the CNS Server Process
-            CNS.install(key);
-            NodeAddressID cnsAddress = localNodeID.getAddresses()[0];
-
-        } catch (NodeInitFailedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public String getIPAdress(){
