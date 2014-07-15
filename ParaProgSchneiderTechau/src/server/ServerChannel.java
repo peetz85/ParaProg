@@ -54,12 +54,16 @@ public class ServerChannel implements CSProcess {
         while (true) {
             if (input != null) {
                 int incoming = (Integer) input.read();
+                   try {
+                       Thread.sleep(150);
+                   } catch (Exception e){}
 
                 if (incoming != 0) {
                     System.out.println(incoming * 2);
-                    incoming = incoming * 2;
+                    incoming = (incoming * 2);
                     send(incoming);
-                }
+                } else
+                    send(1);
             }
         }
     }
