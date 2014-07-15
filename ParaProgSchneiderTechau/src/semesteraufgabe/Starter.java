@@ -4,7 +4,6 @@ import client.ClientController;
 import gui.Console;
 
 
-import server.ConnectionTest;
 import server.Message;
 import server.ServerController;
 
@@ -15,8 +14,6 @@ import org.jcsp.net.cns.*;
 import org.jcsp.net.tcpip.*;
 
 import java.io.IOException;
-
-import server.ConnectionTest;
 
 public class Starter {
 
@@ -49,4 +46,5 @@ public class Starter {
 
 
     }
+
 }

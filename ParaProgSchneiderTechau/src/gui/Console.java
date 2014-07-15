@@ -12,6 +12,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 public class Console extends JFrame{
@@ -57,10 +59,25 @@ public class Console extends JFrame{
 		JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
 		mnMenu.add(mntmGeneriereGraph);
 		
+		JSeparator separator_2 = new JSeparator();
+		mnMenu.add(separator_2);
+		JMenuItem mntmCnsServerStarten = new JMenuItem("CNS Server starten");
+		mntmCnsServerStarten.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		mnMenu.add(mntmCnsServerStarten);
+		
 		JSeparator separator = new JSeparator();
 		mnMenu.add(separator);
 		
 		JMenuItem mntmBeenden = new JMenuItem("Beenden");
+		mntmBeenden.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 		mnMenu.add(mntmBeenden);
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
