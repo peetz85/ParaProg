@@ -1,7 +1,6 @@
 package gui;
 
 import client.ClientController;
-import com.sun.corba.se.spi.activation.Server;
 import server.ServerController;
 
 import javax.swing.JFrame;
