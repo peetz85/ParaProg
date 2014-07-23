@@ -36,16 +36,18 @@ public class Starter {
         c.setVisible(true);
 
 
+        //CNSServer.startCNS();
+/*
+        serverCTR_1.init();
+        serverCTR_1.startConnection("1");
+        serverCTR_1.start();
+//*/
 
-        CNSServer.startCNS();
-
-//        serverCTR_1.startConnection("1");
-//        serverCTR_1.start();
-
-
-//        serverCTR.connectConnection(serverCTR_1.serverName);
-//        serverCTR.start();
-//        serverCTR.connections.get(serverCTR_1.serverName).send(5);
+/*
+        serverCTR.init();
+        serverCTR.connectConnection(serverCTR_1.serverName);
+        serverCTR.start();
+        serverCTR.connections.get(serverCTR_1.serverName).send(5);
 //*/
     }
 

@@ -19,12 +19,6 @@ public class ServerChannel implements CSProcess {
 
     public ServerChannel(String target, ServerController parent) {
         this.parent = parent;
-        try {
-            System.setProperty("org.jcsp.tcpip.DefaultCNSServer", "localhost:51526");
-            Node.getInstance().init();
-        } catch (NodeInitFailedException e) {
-            e.printStackTrace();
-        }
     }
 
     public void init() {

@@ -27,6 +27,16 @@ public class ServerController extends Thread implements CSProcess{
         channelListener = new Parallel();
 
 
+
+    }
+
+    public void init(){
+        try {
+            System.setProperty("org.jcsp.tcpip.DefaultCNSServer", "localhost:51526");
+            Node.getInstance().init();
+        } catch (NodeInitFailedException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getIPAdress(){
