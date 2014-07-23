@@ -74,29 +74,6 @@ public class Console extends JFrame{
 		});
 		mnMenu.add(mntmGeneriereGraph);
 		
-		JSeparator separator_2 = new JSeparator();
-		mnMenu.add(separator_2);
-		final JMenuItem mntmCnsServerStarten = new JMenuItem("CNS Server starten");
-		mntmCnsServerStarten.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-                CNSServer.startCNS();
-                setTitle("Client | CNS Server running!");
-                mntmCnsServerStarten.setEnabled(false);
-			}
-		});
-		mnMenu.add(mntmCnsServerStarten);
-
-        final JMenuItem mntmCNSServer = new JMenuItem("Standard CNS Server eintragen");
-        mntmCNSServer.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                new StandardCNSServer(serverCTR).setVisible(true);
-
-                //TODO mntmCNSServer.setEnabled(false); //Prüfen ob richtige IP Eingegeben wurde UND die Verbindung aufgebaut wurde DANN Ausblenden
-            }
-        });
-
-        mnMenu.add(mntmCNSServer);
-		
 		JSeparator separator = new JSeparator();
 		mnMenu.add(separator);
 		

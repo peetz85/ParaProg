@@ -17,20 +17,18 @@ public class ServerChannel implements CSProcess {
     private ServerController parent;
 
 
-    public ServerChannel(String target, ServerController parent) {
+    public ServerChannel(ServerController parent) {
         this.parent = parent;
     }
 
     public void connect(String arg, boolean localhost) {
-
         if(localhost){
-            output = CNS.createOne2Net(parent.serverIP + "_Output");
-            input = CNS.createNet2One(parent.serverIP + "_Input");
+            output = CNS.createOne2Net(arg + "_Output");
+            input = CNS.createNet2One(arg + "_Input");
         } else {
             input = CNS.createNet2One(arg + "_Output");
             output = CNS.createOne2Net(arg + "_Input");
         }
-
     }
 
     public void send(int arg) {
