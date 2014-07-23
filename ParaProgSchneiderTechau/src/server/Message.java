@@ -1,20 +1,21 @@
 package server;
 
+import java.io.Serializable;
+
 /**
  * Created by Pascal on 09.07.2014.
  */
-public class Message {
-
-    public String test;
-    public Integer i;
-    public final boolean WAKEUP;
+public class Message implements Serializable {
+    public boolean WAKEUP;
 
 
-    public Message(boolean b){
-        WAKEUP = b;
+
+    private int i;
+    public int getI() {
+        return i;
     }
 
-    public String toString(){
-        return test;
+    public void setI(int i) {
+        this.i = i;
     }
 }

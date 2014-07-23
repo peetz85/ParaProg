@@ -3,6 +3,7 @@ package gui;
 import client.ClientController;
 import server.CNSServer;
 import server.ServerController;
+import server.Message;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -75,7 +76,11 @@ public class Console extends JFrame{
 		JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
 		mntmGeneriereGraph.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
+                Message tmp = new Message();
+                tmp.setI(16);
+
+				serverCTR.connections.get("localhost").send(tmp);
 				
 			}
 		});

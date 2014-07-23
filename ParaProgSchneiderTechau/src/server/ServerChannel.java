@@ -21,7 +21,7 @@ public class ServerChannel implements CSProcess {
     }
 
     public void connect(String arg, boolean localhost) {
-        if(localhost){
+        if (localhost) {
             output = CNS.createOne2Net(arg + "_Output");
             input = CNS.createNet2One(arg + "_Input");
         } else {
@@ -30,12 +30,14 @@ public class ServerChannel implements CSProcess {
         }
     }
 
-    public void send(int arg) {
+    public void send(Message arg) {
+
         output.write(arg);
     }
 
-    public int recive() {
-        return (Integer) input.read();
+    public Message recive() {
+
+        return (Message) input.read();
     }
 
     public void wakeup() {
@@ -46,37 +48,14 @@ public class ServerChannel implements CSProcess {
     public void run() {
         while (true) {
             if (input != null) {
-                int incoming = (Integer) input.read();
-                
+                Message arg = (Message) input.read();
 
-                if(incoming == 50){
-                    try {
-                        Thread.sleep(250);
-                    } catch (Exception e){};
-                    System.out.println(incoming);
-                    output.write(50);
-                }
-
-
-                /*
-                int incoming = (Integer) input.read();
-                   try {
-                       Thread.sleep(150);
-                   } catch (Exception e){}
-
-                if (incoming != 0) {
-                    System.out.println(incoming * 2);
-                    incoming = (incoming * 2);
-                    send(incoming);
-                } else
-                    send(1);
-                 */
+                System.out.println(arg.getI());
+                arg.setI(arg.getI() + 5);
+                send(arg);
             }
-            try {
-                Thread.sleep(500);
-            } catch (Exception e){}
-            System.out.println("nix zu tun!");
         }
     }
 }
+
 

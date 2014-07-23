@@ -55,8 +55,7 @@ public class ServerController extends Thread implements CSProcess {
     public void run() {
         while (true) {
             channelListener.run();
-            }
-
+        }
     }
 
     public void connectToNode(String target, boolean arg) {
@@ -64,8 +63,7 @@ public class ServerController extends Thread implements CSProcess {
         connections.put(target, tmp);
         channelListener.addProcess(tmp);
         tmp.connect(target, arg);
-        if(!arg)
-            tmp.send(50);
     }
 }
+
 
