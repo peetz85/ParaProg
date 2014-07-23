@@ -81,11 +81,14 @@ public class ServerController extends Thread implements CSProcess{
 
     public void incomingConnectionFromNode(String target){
         System.out.println("INCOMING!!!!");
-        ServerChannel tmp = connections.get("nextFreeChannel");
 
+        ServerChannel tmp = connections.get("nextFreeChannel");
+/*
             connections.remove("nextFreeChannel");
             connections.put(target,tmp);
-
+            channelListener.removeProcess(tmp);
+            channelListener.addProcess(tmp);
+*/
         tmp.send(50);
         System.out.println("Nachricht gesendet");
         //initNewNode();

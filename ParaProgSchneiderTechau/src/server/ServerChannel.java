@@ -76,6 +76,10 @@ public class ServerChannel implements CSProcess {
                     send(1);
                  */
             }
+            try {
+                Thread.sleep(500);
+            } catch (Exception e){}
+            System.out.println("nix zu tun!");
         }
     }
 }
