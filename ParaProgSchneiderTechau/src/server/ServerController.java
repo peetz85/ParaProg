@@ -3,6 +3,7 @@ package server;
 
 import org.jcsp.lang.CSProcess;
 import org.jcsp.lang.Parallel;
+import org.jcsp.lang.ProcessManager;
 import org.jcsp.net.*;
 import org.jcsp.net.cns.CNS;
 import org.jcsp.net.cns.CNSService;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 /**
  * Created by Pascal on 08.07.2014.
  */
-public class ServerController extends Thread implements CSProcess{
+public class ServerController extends Thread implements CSProcess {
     final public String serverName;
     final public String serverIP;
     public HashMap<String, ServerChannel> connections;
@@ -28,7 +29,7 @@ public class ServerController extends Thread implements CSProcess{
         channelListener = new Parallel();
     }
 
-    public void setCNSServer(String arg){
+    public void setCNSServer(String arg) {
 
         arg += ":51526";
 
@@ -41,7 +42,7 @@ public class ServerController extends Thread implements CSProcess{
         //initNewNode();
     }
 
-    public String getIPAdress(){
+    public String getIPAdress() {
         InetAddress ip = null;
         try {
             ip = InetAddress.getLocalHost();
@@ -51,8 +52,8 @@ public class ServerController extends Thread implements CSProcess{
         return (String) ip.getHostAddress();
     }
 
-    public void run(){
-        while(true) {
+    public void run() {
+        while (true) {
             channelListener.run();
             try {
                 Thread.sleep(250);
@@ -62,33 +63,28 @@ public class ServerController extends Thread implements CSProcess{
         }
     }
 
-    public void connectToNode(String target){
+    public void connectToNode(String target) {
         ServerChannel tmp = new ServerChannel(this);
         connections.put(target, tmp);
         channelListener.addProcess(tmp);
         tmp.connect(target, false);
-        tmp.send(100);
+        tmp.send(50);
     }
 
-    public void initNewNode(){
+    public void initNewNode() {
 
-            ServerChannel arg = new ServerChannel(this);
-            connections.put("nextFreeChannel",arg);
-            channelListener.addProcess(arg);
-            arg.connect("localhost",true);
-
+        ServerChannel arg = new ServerChannel(this);
+        connections.put("nextFreeChannel", arg);
+        channelListener.addProcess(arg);
+        arg.connect("localhost", true);
     }
 
-    public void incomingConnectionFromNode(String target){
+    public void incomingConnectionFromNode(String target) {
         System.out.println("INCOMING!!!!");
 
         ServerChannel tmp = connections.get("nextFreeChannel");
-/*
-            connections.remove("nextFreeChannel");
-            connections.put(target,tmp);
-            channelListener.removeProcess(tmp);
-            channelListener.addProcess(tmp);
-*/
+        connections.remove("nextFreeChannel");
+        connections.put(target, tmp);
         tmp.send(50);
         System.out.println("Nachricht gesendet");
         //initNewNode();
