@@ -11,6 +11,6 @@ public class NewConnection extends IPConnector{
     }
 
     public void connect(){
-    	
+    	server.connectToNode(textField.getText());
     }
 }

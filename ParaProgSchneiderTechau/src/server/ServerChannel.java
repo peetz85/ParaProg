@@ -48,6 +48,19 @@ public class ServerChannel implements CSProcess {
         while (true) {
             if (input != null) {
                 int incoming = (Integer) input.read();
+                if(incoming == 100){
+                    parent.incomingConnectionFromNode("localhost");
+                    send(50);
+                }
+
+                if(incoming == 50){
+                    System.out.println(incoming);
+                    send(50);
+                }
+
+
+                /*
+                int incoming = (Integer) input.read();
                    try {
                        Thread.sleep(150);
                    } catch (Exception e){}
@@ -58,6 +71,7 @@ public class ServerChannel implements CSProcess {
                     send(incoming);
                 } else
                     send(1);
+                 */
             }
         }
     }
