@@ -57,44 +57,18 @@ public class ServerController extends Thread implements CSProcess{
     }
 
     public void startConnection(String target){
-        ServerChannel tmp = new ServerChannel(target,this);
 
+        ServerChannel tmp = new ServerChannel(target,this);
         connections.put(target, tmp);
         channelListener.addProcess(tmp);
-        tmp.init();
+        tmp.connect(target, true);
     }
     public void connectConnection(String target){
+
         ServerChannel tmp = new ServerChannel(target,this);
-
-        connections.put(target, tmp);
-
-        System.out.println(tmp);
-        channelListener.addProcess(tmp);
-        tmp.connect(target);
-    }
-    /*
-    //LOCAL ServerControllerTest
-    public void establishConnection(ServerChannel arg, ServerController target, boolean request){
-        //request == True ... Neue Anfrage / Channel erstellen
-
-
-        if(request){
-            ServerChannel tmp = new ServerChannel();
-            tmp.setInput(arg.getOutput());
-            connections.put(target, tmp);
-            channelListener.addProcess(tmp);
-            target.establishConnection(tmp, this, false);
-        } else {
-            ServerChannel tmp = connections.get(target);
-            tmp.setInput(arg.o2oChannelOutPut);
-        }
-    }
-    public void startConnection(ServerController target){
-        ServerChannel tmp = new ServerChannel();
         connections.put(target, tmp);
         channelListener.addProcess(tmp);
-        target.establishConnection(tmp,this,true);
+        tmp.connect(target, false);
     }
-    */
 }
 

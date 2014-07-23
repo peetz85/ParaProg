@@ -21,14 +21,16 @@ public class ServerChannel implements CSProcess {
         this.parent = parent;
     }
 
-    public void init() {
-        output = CNS.createOne2Net(parent.serverName + "_Output");
-        input = CNS.createNet2One(parent.serverName + "_Input");
-    }
+    public void connect(String arg, boolean localhost) {
 
-    public void connect(String arg) {
-        input = CNS.createNet2One(arg + "_Output");
-        output = CNS.createOne2Net(arg + "_Input");
+        if(localhost){
+            output = CNS.createOne2Net(parent.serverName + "_Output");
+            input = CNS.createNet2One(parent.serverName + "_Input");
+        } else {
+            input = CNS.createNet2One(arg + "_Output");
+            output = CNS.createOne2Net(arg + "_Input");
+        }
+
     }
 
     public void send(int arg) {
