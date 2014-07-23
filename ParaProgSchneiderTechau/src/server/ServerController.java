@@ -31,7 +31,7 @@ public class ServerController extends Thread implements CSProcess{
 
     public void setCNSServer(String arg){
 
-        arg += ":51526";
+        //arg += ":51526";
 
         try {
             System.setProperty("org.jcsp.tcpip.DefaultCNSServer", arg);

@@ -68,7 +68,7 @@ public class NewConnection extends JDialog {
     }
 
     public void connect() {
-        server.setCNSServer(textField.getText());
+
     }
 }
 

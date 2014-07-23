@@ -56,7 +56,8 @@ public class Console extends JFrame{
 		
 		JMenu mnMenu = new JMenu("Menu");
 		menuBar.add(mnMenu);
-		
+
+
 		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
@@ -85,6 +86,16 @@ public class Console extends JFrame{
 			}
 		});
 		mnMenu.add(mntmCnsServerStarten);
+
+        JMenuItem mntmCNSServer = new JMenuItem("Standard CNS Server eintragen");
+        mntmCNSServer.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                new NewConnection(serverCTR).setVisible(true);
+                ;
+            }
+        });
+
+        mnMenu.add(mntmCNSServer);
 		
 		JSeparator separator = new JSeparator();
 		mnMenu.add(separator);
