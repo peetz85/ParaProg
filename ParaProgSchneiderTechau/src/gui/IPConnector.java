@@ -52,7 +52,7 @@ public abstract class IPConnector extends JDialog{
 			}
 		});
 
-		JButton btnNewButton = new JButton("OK");
+		JButton btnNewButton = new JButton("True");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -62,7 +62,7 @@ public abstract class IPConnector extends JDialog{
 		});
 		panel.add(btnNewButton);
 
-		JButton btnNewButton_1 = new JButton("Abbrechen");
+		JButton btnNewButton_1 = new JButton("False");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();

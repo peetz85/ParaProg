@@ -1,6 +1,8 @@
 package gui;
 
 import server.ServerController;
+import javax.swing.JButton;
+import java.awt.BorderLayout;
 
 /**
  * Created by Pascal on 23.07.2014.

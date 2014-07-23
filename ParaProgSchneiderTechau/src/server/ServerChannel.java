@@ -3,7 +3,6 @@ package server;
 import org.jcsp.lang.*;
 import org.jcsp.net.*;
 import org.jcsp.net.cns.CNS;
-import org.jcsp.net.cns.CNSService;
 
 /**
  * Created by Pascal on 09.07.2014.
@@ -48,10 +47,7 @@ public class ServerChannel implements CSProcess {
         while (true) {
             if (input != null) {
                 int incoming = (Integer) input.read();
-                if(incoming == 100){
-                    parent.incomingConnectionFromNode("localhost");
-                    send(50);
-                }
+                
 
                 if(incoming == 50){
                     try {
