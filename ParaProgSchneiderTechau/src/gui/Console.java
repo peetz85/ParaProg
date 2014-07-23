@@ -27,10 +27,15 @@ public class Console extends JFrame{
 	
 	
 	public Console(ClientController cc, ServerController sc) {
+		
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		clientCTR = cc;
         serverCTR = sc;
         setTitle("Client");
-
+        
+        new StartServerOrConnectServer(serverCTR).setVisible(true);
+//        setVisible(false);
+        
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BorderLayout(0, 0));
@@ -85,6 +90,5 @@ public class Console extends JFrame{
 		});
 		mnMenu.add(mntmBeenden);
 		
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 }
