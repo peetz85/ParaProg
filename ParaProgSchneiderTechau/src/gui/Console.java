@@ -99,10 +99,4 @@ public class Console extends JFrame{
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
-
-
-    public ServerController getServerCTR() {
-        return serverCTR;
-    }
-
 }

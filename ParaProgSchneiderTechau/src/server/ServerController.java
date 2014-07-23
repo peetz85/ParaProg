@@ -21,7 +21,6 @@ public class ServerController extends Thread implements CSProcess{
     private Parallel channelListener;
 
     public ServerController(String name) {
-        System.out.println("Server Test");
         serverName = name + "." + this.toString();
         connections = new HashMap<String, ServerChannel>();
         channelListener = new Parallel();

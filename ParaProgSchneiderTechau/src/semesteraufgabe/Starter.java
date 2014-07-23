@@ -22,6 +22,8 @@ public class Starter {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+        //CNSServer.startCNS();
+
 
         ClientController clientCTR = new ClientController();
 
@@ -30,14 +32,13 @@ public class Starter {
         ServerController serverCTR_1 = new ServerController("Otto");
 
 
-        Console c = new Console(clientCTR, serverCTR);
-
+        Console c = new Console(clientCTR, serverCTR_1);
         c.setLocation(50, 50);
         c.setSize(500,300);
         c.setVisible(true);
 
 
-        CNSServer.startCNS();
+
 
 /*
         serverCTR_1.setCNSServer("127.0.0.1");
