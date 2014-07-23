@@ -55,9 +55,20 @@ public class Console extends JFrame{
 		menuBar.add(mnMenu);
 		
 		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
+		mntmNeueVerbindung.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new NewConnection().setVisible(true);;
+			}
+		});
 		mnMenu.add(mntmNeueVerbindung);
 		
 		JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
+		mntmGeneriereGraph.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+		});
 		mnMenu.add(mntmGeneriereGraph);
 		
 		JSeparator separator_2 = new JSeparator();

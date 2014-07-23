@@ -37,15 +37,15 @@ public class Starter {
 
 
 
-        //CNSServer.startCNS();
+        CNSServer.startCNS();
 
-        //serverCTR_1.startConnection("1");
-        //serverCTR_1.start();
+//        serverCTR_1.startConnection("1");
+//        serverCTR_1.start();
 
 
-        serverCTR.connectConnection(serverCTR_1.serverName);
-        serverCTR.start();
-        serverCTR.connections.get(serverCTR_1.serverName).send(5);
+//        serverCTR.connectConnection(serverCTR_1.serverName);
+//        serverCTR.start();
+//        serverCTR.connections.get(serverCTR_1.serverName).send(5);
 //*/
     }
 
