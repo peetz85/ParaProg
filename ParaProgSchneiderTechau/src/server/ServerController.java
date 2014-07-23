@@ -70,24 +70,5 @@ public class ServerController extends Thread implements CSProcess {
         tmp.connect(target, false);
         tmp.send(50);
     }
-
-    public void initNewNode() {
-
-        ServerChannel arg = new ServerChannel(this);
-        connections.put("nextFreeChannel", arg);
-        channelListener.addProcess(arg);
-        arg.connect("localhost", true);
-    }
-
-    public void incomingConnectionFromNode(String target) {
-        System.out.println("INCOMING!!!!");
-
-        ServerChannel tmp = connections.get("nextFreeChannel");
-        connections.remove("nextFreeChannel");
-        connections.put(target, tmp);
-        tmp.send(50);
-        System.out.println("Nachricht gesendet");
-        //initNewNode();
-    }
 }
 
