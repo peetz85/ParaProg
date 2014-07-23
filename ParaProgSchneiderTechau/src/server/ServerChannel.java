@@ -54,8 +54,11 @@ public class ServerChannel implements CSProcess {
                 }
 
                 if(incoming == 50){
+                    try {
+                        Thread.sleep(250);
+                    } catch (Exception e){};
                     System.out.println(incoming);
-                    send(50);
+                    output.write(50);
                 }
 
 

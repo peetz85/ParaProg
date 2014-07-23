@@ -36,8 +36,10 @@ public class StartServerOrConnectServer extends JDialog{
 		JButton btnStandardCnsServer = new JButton("Standard CNS Server eintragen");
 		btnStandardCnsServer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new StandardCNSServer(arg).setVisible(true);
-				dispose();
+
+                new StandardCNSServer(arg).setVisible(true);
+                dispose();
+
 			}
 		});
 		getContentPane().add(btnStandardCnsServer);

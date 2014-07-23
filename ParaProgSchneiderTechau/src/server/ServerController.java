@@ -19,7 +19,7 @@ public class ServerController extends Thread implements CSProcess{
     final public String serverName;
     final public String serverIP;
     public HashMap<String, ServerChannel> connections;
-    private Parallel channelListener;
+    public Parallel channelListener;
 
     public ServerController(String name) {
         serverName = name + "." + this.toString();
@@ -52,7 +52,14 @@ public class ServerController extends Thread implements CSProcess{
     }
 
     public void run(){
-        channelListener.run();
+        while(true) {
+            channelListener.run();
+            try {
+                Thread.sleep(250);
+                System.out.println("Runing!");
+            } catch (Exception e) {
+            }
+        }
     }
 
     public void connectToNode(String target){
@@ -60,6 +67,7 @@ public class ServerController extends Thread implements CSProcess{
         connections.put(target, tmp);
         channelListener.addProcess(tmp);
         tmp.connect(target, false);
+        tmp.send(100);
     }
 
     public void initNewNode(){
@@ -75,10 +83,11 @@ public class ServerController extends Thread implements CSProcess{
         System.out.println("INCOMING!!!!");
         ServerChannel tmp = connections.get("nextFreeChannel");
 
-        if(tmp != null){
             connections.remove("nextFreeChannel");
             connections.put(target,tmp);
-        }
+
+        tmp.send(50);
+        System.out.println("Nachricht gesendet");
         //initNewNode();
     }
 }
