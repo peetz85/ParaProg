@@ -24,6 +24,7 @@ public class Console extends JFrame{
 
     public ClientController clientCTR;
     public ServerController serverCTR;
+    //bla
 	
 	
 	public Console(ClientController cc, ServerController sc) {

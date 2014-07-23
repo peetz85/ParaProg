@@ -20,14 +20,12 @@ public class ServerController extends Thread implements CSProcess{
     final public String serverIP;
     public HashMap<String, ServerChannel> connections;
     private Parallel channelListener;
-    private ServerChannel nextFreeChannel;
 
     public ServerController(String name) {
         serverName = name + "." + this.toString();
         serverIP = getIPAdress();
         connections = new HashMap<String, ServerChannel>();
         channelListener = new Parallel();
-        //initNewNode();
         //setCNSServer("localhost");
 
     }
@@ -42,6 +40,7 @@ public class ServerController extends Thread implements CSProcess{
         } catch (NodeInitFailedException e) {
             e.printStackTrace();
         }
+        initNewNode();
     }
 
     public String getIPAdress(){
@@ -66,13 +65,15 @@ public class ServerController extends Thread implements CSProcess{
     }
 
     public void initNewNode(){
-        if (nextFreeChannel != null)
-            nextFreeChannel = new ServerChannel(this);
-        nextFreeChannel.connect(getIPAdress(),true);
-
+        if (connections.get("nextFreeChannel") == null) {
+            ServerChannel arg = new ServerChannel(this);
+            connections.put("nextFreeChannel",arg);
+            channelListener.addProcess(arg);
+        }
     }
 
     public void incomingConnectionFromNode(String target){
+
 
         ServerChannel tmp = new ServerChannel(this);
         connections.put(target, tmp);
