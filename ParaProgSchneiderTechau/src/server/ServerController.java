@@ -30,7 +30,7 @@ public class ServerController extends Thread implements CSProcess {
     }
 
     public void setCNSServer(String arg) {
-
+        System.out.println("Setting CNS Server!");
         arg += ":51526";
 
         try {
@@ -55,20 +55,17 @@ public class ServerController extends Thread implements CSProcess {
     public void run() {
         while (true) {
             channelListener.run();
-            try {
-                Thread.sleep(250);
-                System.out.println("Runing!");
-            } catch (Exception e) {
             }
-        }
+
     }
 
-    public void connectToNode(String target) {
+    public void connectToNode(String target, boolean arg) {
         ServerChannel tmp = new ServerChannel(this);
         connections.put(target, tmp);
         channelListener.addProcess(tmp);
-        tmp.connect(target, false);
-        tmp.send(50);
+        tmp.connect(target, arg);
+        if(!arg)
+            tmp.send(50);
     }
 }
 

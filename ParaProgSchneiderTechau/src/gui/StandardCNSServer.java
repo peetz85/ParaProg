@@ -8,7 +8,7 @@ public class StandardCNSServer extends IPConnector{
 		super(server);
 	}
 
-	public void connect(){
+	public void connect_TRUE(){
 		server.setCNSServer(textField.getText());
 	}
 	

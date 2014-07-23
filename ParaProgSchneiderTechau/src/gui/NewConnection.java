@@ -10,9 +10,16 @@ import java.awt.BorderLayout;
 public class NewConnection extends IPConnector{
     public NewConnection(ServerController server) {
         super(server);
+
     }
 
-    public void connect(){
-    	server.connectToNode(textField.getText());
+    public void connect_TRUE(){
+
+        server.connectToNode(textField.getText(),true);
+    }
+
+    public void connect_FALSE(){
+
+        server.connectToNode(textField.getText(),false);
     }
 }

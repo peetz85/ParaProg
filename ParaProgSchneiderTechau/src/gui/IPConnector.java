@@ -39,6 +39,7 @@ public abstract class IPConnector extends JDialog{
 		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 		textField = new JTextField();
+        textField.setText("localhost");
 
 		textField.setColumns(15);
 		panel_1.add(textField);
@@ -46,7 +47,7 @@ public abstract class IPConnector extends JDialog{
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					connect();
+					connect_TRUE();
 					dispose();
 				}
 			}
@@ -56,7 +57,7 @@ public abstract class IPConnector extends JDialog{
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				connect();
+				connect_TRUE();
 				dispose();
 			}
 		});
@@ -65,13 +66,16 @@ public abstract class IPConnector extends JDialog{
 		JButton btnNewButton_1 = new JButton("False");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				connect_FALSE();
+                dispose();
 			}
 		});
 		panel.add(btnNewButton_1);
 
 	}
 
-	public void connect() {	}
+	public void connect_TRUE() {	}
+
+    public void connect_FALSE(){}
 	
 }
