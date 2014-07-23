@@ -10,8 +10,6 @@ public class Starter {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-//        CNSServer.startCNS();
-
 
         ClientController clientCTR = new ClientController();
 

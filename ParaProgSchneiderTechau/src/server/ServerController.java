@@ -17,11 +17,13 @@ import java.util.HashMap;
  */
 public class ServerController extends Thread implements CSProcess{
     final public String serverName;
+    final public String serverIP;
     public HashMap<String, ServerChannel> connections;
     private Parallel channelListener;
 
     public ServerController(String name) {
         serverName = name + "." + this.toString();
+        serverIP = getIPAdress();
         connections = new HashMap<String, ServerChannel>();
         channelListener = new Parallel();
 
@@ -31,7 +33,7 @@ public class ServerController extends Thread implements CSProcess{
 
     public void setCNSServer(String arg){
 
-        //arg += ":51526";
+        arg += ":51526";
 
         try {
             System.setProperty("org.jcsp.tcpip.DefaultCNSServer", arg);

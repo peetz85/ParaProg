@@ -24,8 +24,8 @@ public class ServerChannel implements CSProcess {
     public void connect(String arg, boolean localhost) {
 
         if(localhost){
-            output = CNS.createOne2Net(parent.serverName + "_Output");
-            input = CNS.createNet2One(parent.serverName + "_Input");
+            output = CNS.createOne2Net(parent.serverIP + "_Output");
+            input = CNS.createNet2One(parent.serverIP + "_Input");
         } else {
             input = CNS.createNet2One(arg + "_Output");
             output = CNS.createOne2Net(arg + "_Input");

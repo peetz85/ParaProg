@@ -22,11 +22,8 @@ public class Console extends JFrame{
 	public JLabel lblNewLabel;
 	public JTextArea textArea;
 
-    private ClientController clientCTR;
-
-
-
-    private ServerController serverCTR;
+    public ClientController clientCTR;
+    public ServerController serverCTR;
 	
 	
 	public Console(ClientController cc, ServerController sc) {
@@ -62,7 +59,8 @@ public class Console extends JFrame{
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 new NewConnection(serverCTR).setVisible(true);
-                ;
+
+
             }
         });
 		mnMenu.add(mntmNeueVerbindung);
@@ -78,20 +76,22 @@ public class Console extends JFrame{
 		
 		JSeparator separator_2 = new JSeparator();
 		mnMenu.add(separator_2);
-		JMenuItem mntmCnsServerStarten = new JMenuItem("CNS Server starten");
+		final JMenuItem mntmCnsServerStarten = new JMenuItem("CNS Server starten");
 		mntmCnsServerStarten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
                 CNSServer.startCNS();
                 setTitle("Client | CNS Server running!");
+                mntmCnsServerStarten.setEnabled(false);
 			}
 		});
 		mnMenu.add(mntmCnsServerStarten);
 
-        JMenuItem mntmCNSServer = new JMenuItem("Standard CNS Server eintragen");
+        final JMenuItem mntmCNSServer = new JMenuItem("Standard CNS Server eintragen");
         mntmCNSServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                new NewConnection(serverCTR).setVisible(true);
-                ;
+                new StandardCNSServer(serverCTR).setVisible(true);
+
+                //TODO mntmCNSServer.setEnabled(false); //Prüfen ob richtige IP Eingegeben wurde UND die Verbindung aufgebaut wurde DANN Ausblenden
             }
         });
 

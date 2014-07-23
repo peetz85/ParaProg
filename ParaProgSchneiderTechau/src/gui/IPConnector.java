@@ -16,8 +16,9 @@ import server.ServerController;
 
 public abstract class IPConnector extends JDialog{
 
-	private JTextField textField;
-	private ServerController server;
+	public JTextField textField;
+	public ServerController server;
+
 
 	public IPConnector(ServerController server) {
 		this.server = server;
@@ -69,8 +70,6 @@ public abstract class IPConnector extends JDialog{
 
 	}
 
-	public void connect() {
-		
-	}
+	public void connect() {	}
 	
 }

@@ -9,7 +9,7 @@ public class StandardCNSServer extends IPConnector{
 	}
 
 	public void connect() {
-		
+        server.setCNSServer(textField.getText());
     }
 
 }
