@@ -26,13 +26,16 @@ public class ServerController extends Thread implements CSProcess{
         connections = new HashMap<String, ServerChannel>();
         channelListener = new Parallel();
 
-
+        //setCNSServer("localhost");
 
     }
 
-    public void init(){
+    public void setCNSServer(String arg){
+
+        arg += ":51526";
+
         try {
-            System.setProperty("org.jcsp.tcpip.DefaultCNSServer", "localhost:51526");
+            System.setProperty("org.jcsp.tcpip.DefaultCNSServer", arg);
             Node.getInstance().init();
         } catch (NodeInitFailedException e) {
             e.printStackTrace();
