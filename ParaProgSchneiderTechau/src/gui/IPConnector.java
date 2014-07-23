@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -24,8 +25,9 @@ public abstract class IPConnector extends JDialog{
 		this.server = server;
 		setTitle("IP Eingeben");
 		setSize(200, 100);
+		setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-100,Toolkit.getDefaultToolkit().getScreenSize().height/2-50);
+		setModal(true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setLocation(super.getLocation().x + 200, super.getLocation().y + 165);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 
 		JPanel panel = new JPanel();

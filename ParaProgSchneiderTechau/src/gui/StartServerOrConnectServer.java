@@ -3,6 +3,7 @@ package gui;
 import javax.swing.JDialog;
 
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 
@@ -16,9 +17,9 @@ import java.awt.event.ActionEvent;
 public class StartServerOrConnectServer extends JDialog{
 	public StartServerOrConnectServer(final ServerController arg) {
 		setTitle("CNS Server");
-		setSize(200, 100);
+		setSize(250, 100);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setLocation(super.getLocation().x + 200, super.getLocation().y + 165);
+		setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-125,Toolkit.getDefaultToolkit().getScreenSize().height/2-50);
 		setModal(true);
 		
 		getContentPane().setLayout(new GridLayout(0, 1, 0, 0));

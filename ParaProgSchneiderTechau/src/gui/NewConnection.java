@@ -11,8 +11,6 @@ public class NewConnection extends IPConnector{
     }
 
     public void connect(){
-
-
-
+    	
     }
 }

@@ -32,9 +32,10 @@ public class Console extends JFrame{
 		clientCTR = cc;
         serverCTR = sc;
         setTitle("Client");
-        
+        setSize(500,300);
+        setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-250,Toolkit.getDefaultToolkit().getScreenSize().height/2-150);
         new StartServerOrConnectServer(serverCTR).setVisible(true);
-//        setVisible(false);
+        
         
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);

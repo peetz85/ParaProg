@@ -19,8 +19,6 @@ public class Starter {
 
 
         Console c = new Console(clientCTR, serverCTR_1);
-        c.setLocation(50, 50);
-        c.setSize(500,300);
         c.setVisible(true);
 
 
