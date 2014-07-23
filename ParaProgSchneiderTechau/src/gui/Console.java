@@ -23,6 +23,9 @@ public class Console extends JFrame{
 	public JTextArea textArea;
 
     private ClientController clientCTR;
+
+
+
     private ServerController serverCTR;
 	
 	
@@ -56,10 +59,11 @@ public class Console extends JFrame{
 		
 		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				new NewConnection().setVisible(true);;
-			}
-		});
+            public void actionPerformed(ActionEvent arg0) {
+                new NewConnection(serverCTR).setVisible(true);
+                ;
+            }
+        });
 		mnMenu.add(mntmNeueVerbindung);
 		
 		JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
@@ -95,5 +99,10 @@ public class Console extends JFrame{
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
+
+
+    public ServerController getServerCTR() {
+        return serverCTR;
+    }
 
 }

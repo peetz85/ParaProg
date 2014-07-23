@@ -1,5 +1,7 @@
 package gui;
 
+import server.ServerController;
+
 import javax.swing.JDialog;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
@@ -11,7 +13,10 @@ import java.awt.event.ActionEvent;
 
 public class NewConnection extends JDialog{
 	private JTextField textField;
-	public NewConnection() {
+	private ServerController server;
+
+    public NewConnection(final ServerController server) {
+        this.server = server;
 		setTitle("IP Eingeben");
 		setSize(200,100);
 		
@@ -26,7 +31,12 @@ public class NewConnection extends JDialog{
 		JButton btnNewButton = new JButton("OK");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
+                //Verbindung mit anderen CNS Server aufnehmen
+                server.setCNSServer(textField.getText());
+
+                dispose();
+
 			}
 		});
 		panel.add(btnNewButton);
