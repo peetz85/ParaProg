@@ -16,7 +16,6 @@ public class Starter {
         ClientController clientCTR = new ClientController();
         ServerController serverCTR = new ServerController("Hans");
 
-
         new StartServerOrConnectServer(serverCTR).setVisible(true);
 
 

@@ -61,7 +61,6 @@ public class Console extends JFrame{
 		JMenu mnMenu = new JMenu("Menu");
 		menuBar.add(mnMenu);
 
-
 		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
