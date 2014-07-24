@@ -1,7 +1,7 @@
-package gui;
+package gui.maingui;
 
 import client.ClientController;
-import server.CNSServer;
+import gui.startup.StartServerOrConnectServer;
 import server.ServerController;
 import server.Message;
 
@@ -23,20 +23,19 @@ public class Console extends JFrame{
 	public JLabel lblNewLabel;
 	public JTextArea textArea;
 
-    public ClientController clientCTR;
+    //public ClientController clientCTR;
     public ServerController serverCTR;
     //bla
 	
 	
-	public Console(ClientController cc, ServerController sc) {
+	public Console(ServerController sc) {
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		clientCTR = cc;
+		//clientCTR = cc;
         serverCTR = sc;
         setTitle("Client");
         setSize(500,300);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-250,Toolkit.getDefaultToolkit().getScreenSize().height/2-150);
-        new StartServerOrConnectServer(serverCTR).setVisible(true);
         
         
 		JPanel panel = new JPanel();

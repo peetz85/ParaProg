@@ -1,7 +1,7 @@
 package semesteraufgabe;
 
 import client.ClientController;
-import gui.Console;
+import gui.startup.StartServerOrConnectServer;
 import server.ServerController;
 
 public class Starter {
@@ -12,12 +12,20 @@ public class Starter {
 	 */
 	public static void main(String[] args) {
 
-        ClientController clientCTR = new ClientController();
 
+        ClientController clientCTR = new ClientController();
         ServerController serverCTR = new ServerController("Hans");
+
+
+        new StartServerOrConnectServer(serverCTR).setVisible(true);
+
+
+        /*
+
 
         serverCTR.start();
         new Console(clientCTR, serverCTR).setVisible(true);
+        */
 
     }
 

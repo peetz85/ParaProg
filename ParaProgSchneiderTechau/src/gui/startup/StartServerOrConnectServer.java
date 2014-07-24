@@ -1,13 +1,12 @@
-package gui;
+package gui.startup;
 
 import javax.swing.JDialog;
 
-import java.awt.FlowLayout;
 import java.awt.Toolkit;
 
 import javax.swing.JButton;
 
-import server.CNSServer;
+import cnsserver.CNSServer;
 import server.ServerController;
 
 import java.awt.GridLayout;
@@ -16,33 +15,29 @@ import java.awt.event.ActionEvent;
 
 public class StartServerOrConnectServer extends JDialog{
 	public StartServerOrConnectServer(final ServerController arg) {
-		setTitle("CNS Server");
+		setTitle("Server Startup");
 		setSize(250, 100);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-125,Toolkit.getDefaultToolkit().getScreenSize().height/2-50);
-		setModal(true);
-		
+		setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 - 125, Toolkit.getDefaultToolkit().getScreenSize().height / 2 - 50);
 		getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
 		
 		JButton btnCnsServerStarten = new JButton("CNS Server starten");
 		btnCnsServerStarten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CNSServer.startCNS();
+                new CNSServerStatus().setVisible(true);
 				dispose();
 			}
-		});
+        });
 		getContentPane().add(btnCnsServerStarten);
 		
 		JButton btnStandardCnsServer = new JButton("Standard CNS Server eintragen");
 		btnStandardCnsServer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-                new StandardCNSServer(arg).setVisible(true);
                 dispose();
-
+                new StandardCNSServer(arg).setVisible(true);
 			}
 		});
 		getContentPane().add(btnStandardCnsServer);
 	}
-
 }
