@@ -9,14 +9,17 @@ import org.jcsp.net.cns.CNS;
  */
 public class ServerChannel implements CSProcess {
 
+    private boolean isInitialised;
     private NetChannelOutput output;
     private NetChannelInput input;
 
     private ServerController parent;
+    private String connectionTo;
 
 
     public ServerChannel(ServerController parent) {
         this.parent = parent;
+        isInitialised = false;
     }
 
     public void connect(String arg, boolean localhost) {
@@ -29,13 +32,19 @@ public class ServerChannel implements CSProcess {
         }
     }
 
-    public void send(Message arg) {
+    public void setConnectionTo(String arg){
+        connectionTo = arg;
+    }
 
+    public String getConnectionTo(){
+        return connectionTo;
+    }
+
+    public void send(Message arg) {
         output.write(arg);
     }
 
     public Message recive() {
-
         return (Message) input.read();
     }
 
@@ -46,9 +55,14 @@ public class ServerChannel implements CSProcess {
     @Override
     public void run() {
         while (true) {
-            if (input != null) {
-                Message arg = (Message) input.read();
+            if(!isInitialised){
+                isInitialised = true;
+                connect(parent.getServerName() ,true);
+            }
 
+
+            if (input != null) {
+                Message arg = (Message) recive();
                 System.out.println(arg.getI());
                 arg.setI(arg.getI() + 5);
                 send(arg);

@@ -1,9 +1,6 @@
-package gui.startup;
+package gui.console;
 
-import client.ClientController;
-import gui.maingui.Console;
 import semesteraufgabe.Starter;
-import server.ServerController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,14 +9,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class StandardCNSServer extends JDialog{
+public class StartupConsole extends JDialog{
 
-    public JTextField textField;
+    public JTextField textField_StandardCNSServer;
+    public JLabel label_StandardCNSServer;
+    public JTextField textField_ServerName;
+    public JLabel label_ServerName;
 
 
-    public StandardCNSServer() {
+    public StartupConsole() {
         setTitle("IP Eingeben");
-        setSize(200, 100);
+        setSize(200, 175);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-100,Toolkit.getDefaultToolkit().getScreenSize().height/2-50);
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -33,12 +33,15 @@ public class StandardCNSServer extends JDialog{
         getContentPane().add(panel_1, BorderLayout.CENTER);
         panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-        textField = new JTextField();
-        textField.setText("localhost");
+        label_StandardCNSServer = new JLabel("Standard CNS Server:");
+        panel_1.add(label_StandardCNSServer);
 
-        textField.setColumns(15);
-        panel_1.add(textField);
-        textField.addKeyListener(new KeyAdapter() {
+        textField_StandardCNSServer = new JTextField();
+        textField_StandardCNSServer.setText("localhost");
+
+        textField_StandardCNSServer.setColumns(10);
+        panel_1.add(textField_StandardCNSServer);
+        textField_StandardCNSServer.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -47,6 +50,27 @@ public class StandardCNSServer extends JDialog{
                 }
             }
         });
+
+        label_ServerName = new JLabel("Server Name:");
+        panel_1.add(label_ServerName);
+
+        int random = (int) (Math.random()*1000);
+
+        textField_ServerName = new JTextField();
+        textField_ServerName.setText("Default_" + random);
+
+        textField_ServerName.setColumns(10);
+        panel_1.add(textField_ServerName);
+        textField_ServerName.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    connect_TRUE();
+                    dispose();
+                }
+            }
+        });
+
 
         JButton btnNewButton = new JButton("Ok");
         btnNewButton.addActionListener(new ActionListener() {
@@ -68,7 +92,8 @@ public class StandardCNSServer extends JDialog{
 
     }
 	public void connect_TRUE(){
-        Starter.serverCTR.setCNSServer(textField.getText());
+        Starter.serverCTR.setServerName(textField_ServerName.getText());
+        Starter.serverCTR.setCNSServer(textField_StandardCNSServer.getText());
         new Console().setVisible(true);
 	}
 

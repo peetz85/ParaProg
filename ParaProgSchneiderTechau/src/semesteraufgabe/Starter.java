@@ -19,7 +19,7 @@ public class Starter {
 
 
 
-        serverCTR.start();
+        serverCTR.run();
         /*
         new Console(clientCTR, serverCTR).setVisible(true);
         */

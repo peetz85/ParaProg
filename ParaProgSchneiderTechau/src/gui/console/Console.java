@@ -1,9 +1,6 @@
-package gui.maingui;
+package gui.console;
 
-import client.ClientController;
-import gui.startup.StartServerOrConnectServer;
 import semesteraufgabe.Starter;
-import server.ServerController;
 import server.Message;
 
 import javax.swing.JFrame;
@@ -45,7 +42,7 @@ public class Console extends JFrame{
 		JSeparator separator_1 = new JSeparator();
 		panel_1.add(separator_1, BorderLayout.NORTH);
 		
-		lblNewLabel = new JLabel("IP-Adresse: " + Starter.serverCTR.getIPAdress() + " | Server-Name: " +Starter.serverCTR.serverName);
+		lblNewLabel = new JLabel("IP-Adresse: " + Starter.serverCTR.getServerIP() + " | Server-Name: " +Starter.serverCTR.getServerName());
 		panel_1.add(lblNewLabel, BorderLayout.CENTER);
 		
 		textArea = new JTextArea();
@@ -61,8 +58,6 @@ public class Console extends JFrame{
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 new NewConnection(Starter.serverCTR).setVisible(true);
-
-
             }
         });
 		mnMenu.add(mntmNeueVerbindung);
@@ -70,12 +65,9 @@ public class Console extends JFrame{
 		JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
 		mntmGeneriereGraph.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
                 Message tmp = new Message();
                 tmp.setI(16);
-
 				Starter.serverCTR.connections.get("localhost").send(tmp);
-				
 			}
 		});
 		mnMenu.add(mntmGeneriereGraph);

@@ -7,7 +7,8 @@ import java.awt.Toolkit;
 import javax.swing.JButton;
 
 import cnsserver.CNSServer;
-import server.ServerController;
+import gui.cnsserver.CNSServerStatus;
+import gui.console.StartupConsole;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
@@ -24,7 +25,7 @@ public class StartServerOrConnectServer extends JDialog{
 		JButton btnCnsServerStarten = new JButton("CNS Server starten");
 		btnCnsServerStarten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CNSServer.startCNS();
+                CNSServer.startCNS();
                 new CNSServerStatus().setVisible(true);
 				dispose();
 			}
@@ -35,7 +36,7 @@ public class StartServerOrConnectServer extends JDialog{
 		btnStandardCnsServer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 dispose();
-                new StandardCNSServer().setVisible(true);
+                new StartupConsole().setVisible(true);
 			}
 		});
 		getContentPane().add(btnStandardCnsServer);

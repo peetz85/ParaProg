@@ -1,4 +1,4 @@
-package gui.maingui;
+package gui.console;
 
 import server.ServerController;
 

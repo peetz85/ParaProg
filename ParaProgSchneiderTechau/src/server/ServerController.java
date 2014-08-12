@@ -16,17 +16,41 @@ import java.util.HashMap;
 /**
  * Created by Pascal on 08.07.2014.
  */
-public class ServerController extends Thread implements CSProcess {
-    final public String serverName;
-    final public String serverIP;
+public class ServerController {
+    private String serverName;
+    private String serverIP;
+
     public HashMap<String, ServerChannel> connections;
-    public Parallel channelListener;
+    private Parallel channelListener;
 
     public ServerController(String name) {
-        serverName = name + "." + this.toString();
-        serverIP = getIPAdress();
+        setServerName(name);
+        setServerIP();
+
         connections = new HashMap<String, ServerChannel>();
         channelListener = new Parallel();
+    }
+
+    public void setServerName(String arg){
+        serverName = arg + "." + this.toString();
+    }
+
+    public String getServerName(){
+        return serverName;
+    }
+
+    public void setServerIP(){
+        InetAddress ip = null;
+        try {
+            ip = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        serverIP = (String) ip.getHostAddress();
+    }
+
+    public String getServerIP(){
+        return serverIP;
     }
 
     public void setCNSServer(String arg) {
@@ -42,16 +66,6 @@ public class ServerController extends Thread implements CSProcess {
         //initNewNode();
     }
 
-    public String getIPAdress() {
-        InetAddress ip = null;
-        try {
-            ip = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        return (String) ip.getHostAddress();
-    }
-
     public void run() {
         while (true) {
             channelListener.run();
@@ -63,6 +77,14 @@ public class ServerController extends Thread implements CSProcess {
         connections.put(target, tmp);
         channelListener.addProcess(tmp);
         tmp.connect(target, arg);
+    }
+
+    public void openConnection(){
+
+    }
+
+    public void closeConnection(){
+
     }
 }
 
