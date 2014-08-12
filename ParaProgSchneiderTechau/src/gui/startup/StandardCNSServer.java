@@ -2,6 +2,7 @@ package gui.startup;
 
 import client.ClientController;
 import gui.maingui.Console;
+import semesteraufgabe.Starter;
 import server.ServerController;
 
 import javax.swing.*;
@@ -14,11 +15,9 @@ import java.awt.event.KeyEvent;
 public class StandardCNSServer extends JDialog{
 
     public JTextField textField;
-    public ServerController server;
 
 
-    public StandardCNSServer(ServerController server) {
-        this.server = server;
+    public StandardCNSServer() {
         setTitle("IP Eingeben");
         setSize(200, 100);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-100,Toolkit.getDefaultToolkit().getScreenSize().height/2-50);
@@ -69,8 +68,8 @@ public class StandardCNSServer extends JDialog{
 
     }
 	public void connect_TRUE(){
-        server.setCNSServer(textField.getText());
-        new Console(server).setVisible(true);
+        Starter.serverCTR.setCNSServer(textField.getText());
+        new Console().setVisible(true);
 	}
 
     public void connect_FALSE(){}

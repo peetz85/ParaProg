@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class StartServerOrConnectServer extends JDialog{
-	public StartServerOrConnectServer(final ServerController arg) {
+	public StartServerOrConnectServer() {
 		setTitle("Server Startup");
 		setSize(250, 100);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -35,7 +35,7 @@ public class StartServerOrConnectServer extends JDialog{
 		btnStandardCnsServer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 dispose();
-                new StandardCNSServer(arg).setVisible(true);
+                new StandardCNSServer().setVisible(true);
 			}
 		});
 		getContentPane().add(btnStandardCnsServer);

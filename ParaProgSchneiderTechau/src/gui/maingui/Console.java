@@ -2,6 +2,7 @@ package gui.maingui;
 
 import client.ClientController;
 import gui.startup.StartServerOrConnectServer;
+import semesteraufgabe.Starter;
 import server.ServerController;
 import server.Message;
 
@@ -23,16 +24,11 @@ public class Console extends JFrame{
 	public JLabel lblNewLabel;
 	public JTextArea textArea;
 
-    //public ClientController clientCTR;
-    public ServerController serverCTR;
-    //bla
 	
 	
-	public Console(ServerController sc) {
+	public Console() {
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		//clientCTR = cc;
-        serverCTR = sc;
         setTitle("Client");
         setSize(500,300);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-250,Toolkit.getDefaultToolkit().getScreenSize().height/2-150);
@@ -49,7 +45,7 @@ public class Console extends JFrame{
 		JSeparator separator_1 = new JSeparator();
 		panel_1.add(separator_1, BorderLayout.NORTH);
 		
-		lblNewLabel = new JLabel("IP-Adresse: " + serverCTR.getIPAdress() + " | Server-Name: " +serverCTR.serverName);
+		lblNewLabel = new JLabel("IP-Adresse: " + Starter.serverCTR.getIPAdress() + " | Server-Name: " +Starter.serverCTR.serverName);
 		panel_1.add(lblNewLabel, BorderLayout.CENTER);
 		
 		textArea = new JTextArea();
@@ -64,7 +60,7 @@ public class Console extends JFrame{
 		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                new NewConnection(serverCTR).setVisible(true);
+                new NewConnection(Starter.serverCTR).setVisible(true);
 
 
             }
@@ -78,7 +74,7 @@ public class Console extends JFrame{
                 Message tmp = new Message();
                 tmp.setI(16);
 
-				serverCTR.connections.get("localhost").send(tmp);
+				Starter.serverCTR.connections.get("localhost").send(tmp);
 				
 			}
 		});

@@ -6,6 +6,8 @@ import server.ServerController;
 
 public class Starter {
 
+    public static ServerController serverCTR = new ServerController("Default");
+    public static ClientController clientCTR  = new ClientController();
 
 	/**
 	 * @param args
@@ -13,16 +15,12 @@ public class Starter {
 	public static void main(String[] args) {
 
 
-        ClientController clientCTR = new ClientController();
-        ServerController serverCTR = new ServerController("Hans");
+        new StartServerOrConnectServer().setVisible(true);
 
-        new StartServerOrConnectServer(serverCTR).setVisible(true);
-
-
-        /*
 
 
         serverCTR.start();
+        /*
         new Console(clientCTR, serverCTR).setVisible(true);
         */
 
