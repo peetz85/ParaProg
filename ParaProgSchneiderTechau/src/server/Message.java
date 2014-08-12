@@ -8,8 +8,6 @@ import java.io.Serializable;
 public class Message implements Serializable {
     public boolean WAKEUP;
 
-
-
     private int i;
     public int getI() {
         return i;

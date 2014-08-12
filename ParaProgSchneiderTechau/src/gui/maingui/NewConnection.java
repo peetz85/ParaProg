@@ -16,7 +16,7 @@ public class NewConnection extends JDialog{
     public JTextField textField;
     public ServerController server;
 
-
+//bl
     public NewConnection(ServerController server) {
         this.server = server;
         setTitle("IP Eingeben");

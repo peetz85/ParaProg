@@ -2,6 +2,7 @@ package cnsserver;
 
 import org.jcsp.net.*;
 import org.jcsp.net.cns.CNS;
+import org.jcsp.net.tcpip.TCPIPAddressID;
 
 import java.io.IOException;
 
@@ -14,15 +15,20 @@ public class CNSServer{
     public static void startCNS() {
         NodeKey key = null;
         NodeID localNodeID = null;
+        CNS cnsServer = null;
 
         // NetChannelServer initializierung
         try {
             //Initialize a Node that does not have a CNS client
-            //key = Node.getInstance().init(new XMLNodeFactory("ParaProgSchneiderTechau/src/cnsserver/nocns.xml"));
-            key = Node.getInstance().init(new XMLNodeFactory("src/cnsserver/nocns.xml"));
+            //TODO Netzwerk Test mit richtiger IP adresse eintragen
+            TCPIPAddressID CNSServerAdresse = new TCPIPAddressID("127.0.0.1", 51526, false);
+            key = Node.getInstance().init(CNSServerAdresse);
+
             localNodeID = Node.getInstance().getNodeID();
             //Initialize the CNS Server Process
-            CNS.install(key);
+            cnsServer = new CNS(key);
+
+            cnsServer.start();
             NodeAddressID cnsAddress = localNodeID.getAddresses()[0];
 
         } catch (NodeInitFailedException e) {

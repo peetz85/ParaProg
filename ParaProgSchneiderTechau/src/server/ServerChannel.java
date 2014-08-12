@@ -9,7 +9,6 @@ import org.jcsp.net.cns.CNS;
  */
 public class ServerChannel implements CSProcess {
 
-
     private NetChannelOutput output;
     private NetChannelInput input;
 
