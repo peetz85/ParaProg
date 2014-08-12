@@ -1,5 +1,6 @@
 package gui.console;
 
+import org.jcsp.lang.Parallel;
 import semesteraufgabe.Starter;
 import server.Message;
 
@@ -24,7 +25,9 @@ public class Console extends JFrame{
 	
 	
 	public Console() {
-		
+
+
+
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Client");
         setSize(500,300);
@@ -54,6 +57,18 @@ public class Console extends JFrame{
 		JMenu mnMenu = new JMenu("Menu");
 		menuBar.add(mnMenu);
 
+        JMenuItem mntmAktiviereServer = new JMenuItem("Server Aktivieren");
+        mntmAktiviereServer.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                // Starter.clientCTR.run();
+                Starter.serverCTR.start();
+            }
+        });
+        mnMenu.add(mntmAktiviereServer);
+
+        JSeparator separator_ = new JSeparator();
+        mnMenu.add(separator_);
+
 		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
@@ -65,14 +80,24 @@ public class Console extends JFrame{
 		JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
 		mntmGeneriereGraph.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-                Message tmp = new Message();
-                tmp.setI(16);
-				Starter.serverCTR.connections.get("localhost").send(tmp);
+
+                System.out.println("Nis ist Los");
 			}
 		});
 		mnMenu.add(mntmGeneriereGraph);
-		
-		JSeparator separator = new JSeparator();
+
+        JMenuItem mntmSendMessage = new JMenuItem("Sende Nachricht //DEBUG");
+        mntmGeneriereGraph.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Message tmp = new Message();
+                tmp.setI(16);
+                Starter.serverCTR.connections.get("localhost").send(tmp);
+            }
+        });
+        mnMenu.add(mntmSendMessage);
+
+
+        JSeparator separator = new JSeparator();
 		mnMenu.add(separator);
 		
 		JMenuItem mntmBeenden = new JMenuItem("Beenden");
@@ -82,6 +107,6 @@ public class Console extends JFrame{
 			}
 		});
 		mnMenu.add(mntmBeenden);
-		
+
 	}
 }

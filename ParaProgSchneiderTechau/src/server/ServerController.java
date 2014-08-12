@@ -16,7 +16,7 @@ import java.util.HashMap;
 /**
  * Created by Pascal on 08.07.2014.
  */
-public class ServerController {
+public class ServerController extends Thread{
     private String serverName;
     private String serverIP;
 
@@ -29,10 +29,11 @@ public class ServerController {
 
         connections = new HashMap<String, ServerChannel>();
         channelListener = new Parallel();
+
     }
 
     public void setServerName(String arg){
-        serverName = arg + "." + this.toString();
+        serverName = arg;
     }
 
     public String getServerName(){
@@ -63,12 +64,13 @@ public class ServerController {
         } catch (NodeInitFailedException e) {
             e.printStackTrace();
         }
-        //initNewNode();
     }
 
     public void run() {
         while (true) {
             channelListener.run();
+
+
         }
     }
 

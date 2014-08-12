@@ -1,6 +1,8 @@
 package gui.console;
 
+import client.ClientController;
 import semesteraufgabe.Starter;
+import server.ServerController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,7 +78,6 @@ public class StartupConsole extends JDialog{
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 connect_TRUE();
-                dispose();
             }
         });
         panel.add(btnNewButton);
@@ -85,18 +86,22 @@ public class StartupConsole extends JDialog{
         btnNewButton_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 connect_FALSE();
-                dispose();
             }
         });
         panel.add(btnNewButton_1);
 
     }
 	public void connect_TRUE(){
-        Starter.serverCTR.setServerName(textField_ServerName.getText());
+
+        Starter.clientCTR = new ClientController(textField_ServerName.getText());
+        Starter.serverCTR = new ServerController(textField_ServerName.getText());
         Starter.serverCTR.setCNSServer(textField_StandardCNSServer.getText());
+        dispose();
         new Console().setVisible(true);
 	}
 
-    public void connect_FALSE(){}
+    public void connect_FALSE(){
+        dispose();
+    }
 	
 }

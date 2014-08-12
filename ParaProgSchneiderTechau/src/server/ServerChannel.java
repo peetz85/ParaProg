@@ -22,6 +22,11 @@ public class ServerChannel implements CSProcess {
         isInitialised = false;
     }
 
+    public ServerChannel(ServerController parent, boolean isInitialised){
+        this.parent = parent;
+        this.isInitialised = isInitialised;
+    }
+
     public void connect(String arg, boolean localhost) {
         if (localhost) {
             output = CNS.createOne2Net(arg + "_Output");
@@ -55,17 +60,13 @@ public class ServerChannel implements CSProcess {
     @Override
     public void run() {
         while (true) {
-            if(!isInitialised){
-                isInitialised = true;
-                connect(parent.getServerName() ,true);
-            }
 
 
             if (input != null) {
-                Message arg = (Message) recive();
-                System.out.println(arg.getI());
-                arg.setI(arg.getI() + 5);
-                send(arg);
+                try {
+                    Thread.sleep(2000);
+                    System.out.println("Lebe noch");
+                } catch (Exception e){}
             }
         }
     }
