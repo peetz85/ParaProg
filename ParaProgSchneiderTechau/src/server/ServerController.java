@@ -16,20 +16,27 @@ import java.util.HashMap;
 /**
  * Created by Pascal on 08.07.2014.
  */
-public class ServerController extends Thread{
+public class ServerController{
     private String serverName;
     private String serverIP;
 
+    private int nextFreePort;
+
     public HashMap<String, ServerChannel> connections;
-    private Parallel channelListener;
+    //private Parallel channelListener;
 
     public ServerController(String name) {
         setServerName(name);
         setServerIP();
 
         connections = new HashMap<String, ServerChannel>();
-        channelListener = new Parallel();
+        //channelListener = new Parallel();
+        nextFreePort = 0;
 
+    }
+
+    public int getNextFreePort(){
+        return nextFreePort;
     }
 
     public void setServerName(String arg){
@@ -66,19 +73,18 @@ public class ServerController extends Thread{
         }
     }
 
-    public void run() {
-        while (true) {
-            channelListener.run();
-
-
-        }
-    }
-
     public void connectToNode(String target, boolean arg) {
         ServerChannel tmp = new ServerChannel(this);
         connections.put(target, tmp);
-        channelListener.addProcess(tmp);
+        ++nextFreePort;
         tmp.connect(target, arg);
+        tmp.start();
+    }
+
+    public void removeConnection(String server){
+        ServerChannel toDelete = connections.get(server);
+        toDelete.setRunning(false);
+        connections.remove(server);
     }
 
     public void openConnection(){

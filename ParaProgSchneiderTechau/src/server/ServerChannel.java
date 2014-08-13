@@ -7,8 +7,9 @@ import org.jcsp.net.cns.CNS;
 /**
  * Created by Pascal on 09.07.2014.
  */
-public class ServerChannel implements CSProcess {
+public class ServerChannel extends Thread /*implements CSProcess*/ {
 
+    private boolean running = true;
     private boolean isInitialised;
     private NetChannelOutput output;
     private NetAltingChannelInput input;
@@ -25,6 +26,15 @@ public class ServerChannel implements CSProcess {
     public ServerChannel(ServerController parent, boolean isInitialised) {
         this.parent = parent;
         this.isInitialised = isInitialised;
+    }
+
+
+    public void setRunning(boolean arg){
+        running = arg;
+    }
+
+    public boolean isRunning(){
+        return running;
     }
 
     public void connect(String arg, boolean localhost) {
@@ -63,7 +73,7 @@ public class ServerChannel implements CSProcess {
 
     @Override
     public void run() {
-        while (true) {
+        while (running) {
             Message msg = recive();
 
             try {
@@ -72,10 +82,13 @@ public class ServerChannel implements CSProcess {
             } catch (Exception e) {}
 
             if(msg != null){
-                if(msg.cInteger){
+                if(msg.iscInteger()){
                     System.out.println(msg.getI());
                     msg.setI(msg.getI()+5);
                     send(msg);
+                }
+                if(msg.isTerminateSignal()){
+                    parent.removeConnection(msg.getTerminateServerName());
                 }
             }
         }

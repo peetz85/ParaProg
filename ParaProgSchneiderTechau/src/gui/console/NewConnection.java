@@ -13,14 +13,16 @@ import java.awt.event.KeyEvent;
  * Created by Pascal on 23.07.2014.
  */
 public class NewConnection extends JDialog{
-    public JTextField textField;
-    public ServerController server;
+    public JTextField textFieldServer;
+    public JTextField textFieldPort;
+    public ServerController serverCTR;
+    public JLabel label;
 
-//bl
+
     public NewConnection(ServerController server) {
-        this.server = server;
+        serverCTR = server;
         setTitle("IP Eingeben");
-        setSize(300, 100);
+        setSize(300, 125);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-100,Toolkit.getDefaultToolkit().getScreenSize().height/2-50);
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -34,12 +36,14 @@ public class NewConnection extends JDialog{
         getContentPane().add(panel_1, BorderLayout.CENTER);
         panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-        textField = new JTextField();
-        textField.setText("localhost");
+        label = new JLabel("Server:");
+        panel_1.add(label);
 
-        textField.setColumns(15);
-        panel_1.add(textField);
-        textField.addKeyListener(new KeyAdapter() {
+        textFieldServer = new JTextField();
+        textFieldServer.setText(serverCTR.getServerName());
+        textFieldServer.setColumns(15);
+        panel_1.add(textFieldServer);
+        textFieldServer.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -49,16 +53,31 @@ public class NewConnection extends JDialog{
             }
         });
 
-        JButton btnNewButton = new JButton("Start Connection");
+        label = new JLabel("Port:");
+        panel_1.add(label);
+
+        textFieldPort = new JTextField();
+        textFieldPort.setText(String.valueOf(serverCTR.getNextFreePort()));
+        textFieldPort.setColumns(15);
+        panel_1.add(textFieldPort);
+        textFieldPort.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    connect_TRUE();
+                    dispose();
+                }
+            }
+        });
+
+        JButton btnNewButton = new JButton("Verbindung bereitstellen");
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
                 connect_TRUE();
             }
         });
         panel.add(btnNewButton);
 
-        JButton btnNewButton_1 = new JButton("Recive Connection");
+        JButton btnNewButton_1 = new JButton("Verbindung aufbauen");
         btnNewButton_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 connect_FALSE();
@@ -70,13 +89,13 @@ public class NewConnection extends JDialog{
 
     public void connect_TRUE(){
 
-        server.connectToNode(textField.getText(),true);
+        serverCTR.connectToNode(textFieldServer.getText()+textFieldPort.getText(), true);
         dispose();
     }
 
     public void connect_FALSE(){
 
-        server.connectToNode(textField.getText(),false);
+        serverCTR.connectToNode(textFieldServer.getText()+textFieldPort.getText(), false);
         dispose();
     }
 }

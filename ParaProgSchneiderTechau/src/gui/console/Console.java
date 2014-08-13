@@ -66,8 +66,7 @@ public class Console extends JFrame{
         JMenuItem mntmAktiviereServer = new JMenuItem("Server Aktivieren");
         mntmAktiviereServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                // Starter.clientCTR.run();
-                serverCTR.start();
+                System.out.println("mach ich nix!");
             }
         });
         mnMenu.add(mntmAktiviereServer);
@@ -88,21 +87,21 @@ public class Console extends JFrame{
 		mntmGeneriereGraph.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-                System.out.println("Nis ist Los");
+                System.out.println("Nix ist Los");
 			}
 		});
 		mnMenu.add(mntmGeneriereGraph);
 
-        JMenuItem mntmNachricht = new JMenuItem("Neue Nachricht");
+        JMenuItem mntmNachricht = new JMenuItem("Sende WakeUp");
         mntmNachricht.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                System.out.println("test");
-                if(serverCTR.connections.isEmpty())
-                    System.out.println("HashMap ist Leer!");
-
-                Message tmp = new Message();
-                tmp.setI(16);
-                serverCTR.connections.get("localhost").send(tmp);
+                if(!serverCTR.connections.isEmpty()) {
+                    Message tmp = new Message();
+                    tmp.setI(11);
+                    for (ServerChannel value : serverCTR.connections.values()) {
+                        value.send(tmp);
+                    }
+                }
             }
         });
         mnMenu.add(mntmNachricht);
@@ -113,10 +112,21 @@ public class Console extends JFrame{
 		JMenuItem mntmBeenden = new JMenuItem("Beenden");
 		mntmBeenden.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				terminate();
+                System.exit(0);
 			}
 		});
 		mnMenu.add(mntmBeenden);
 
 	}
+
+    public void terminate(){
+        if(!serverCTR.connections.isEmpty()) {
+            Message terminateSignal = new Message();
+            terminateSignal.setTerminateSignal(serverCTR.getServerName());
+            for (ServerChannel value : serverCTR.connections.values()) {
+                value.send(terminateSignal);
+            }
+        }
+    }
 }

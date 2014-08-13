@@ -5,6 +5,7 @@ import org.jcsp.net.cns.CNS;
 import org.jcsp.net.tcpip.TCPIPAddressID;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 /**
  * Created by Pascal on 15.07.2014.
@@ -16,6 +17,11 @@ public class CNSServer{
         NodeKey key = null;
         NodeID localNodeID = null;
         CNS cnsServer = null;
+
+        InetAddress ip = null;
+        try {
+            ip = InetAddress.getLocalHost();
+        } catch (Exception e) { }
 
         // NetChannelServer initializierung
         try {
