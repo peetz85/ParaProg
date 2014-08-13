@@ -11,7 +11,7 @@ public class ServerChannel implements CSProcess {
 
     private boolean isInitialised;
     private NetChannelOutput output;
-    private NetChannelInput input;
+    private NetAltingChannelInput input;
 
     private ServerController parent;
     private String connectionTo;
@@ -22,7 +22,7 @@ public class ServerChannel implements CSProcess {
         isInitialised = false;
     }
 
-    public ServerChannel(ServerController parent, boolean isInitialised){
+    public ServerChannel(ServerController parent, boolean isInitialised) {
         this.parent = parent;
         this.isInitialised = isInitialised;
     }
@@ -37,11 +37,11 @@ public class ServerChannel implements CSProcess {
         }
     }
 
-    public void setConnectionTo(String arg){
+    public void setConnectionTo(String arg) {
         connectionTo = arg;
     }
 
-    public String getConnectionTo(){
+    public String getConnectionTo() {
         return connectionTo;
     }
 
@@ -49,8 +49,12 @@ public class ServerChannel implements CSProcess {
         output.write(arg);
     }
 
-    public Message recive() {
-        return (Message) input.read();
+    public Message recive(){
+        if(input.pending()){
+            return (Message) input.read();
+        } else {
+            return null;
+        }
     }
 
     public void wakeup() {
@@ -60,13 +64,19 @@ public class ServerChannel implements CSProcess {
     @Override
     public void run() {
         while (true) {
+            Message msg = recive();
 
+            try {
+                Thread.sleep(1500);
+                System.out.println("Lebe noch");
+            } catch (Exception e) {}
 
-            if (input != null) {
-                try {
-                    Thread.sleep(2000);
-                    System.out.println("Lebe noch");
-                } catch (Exception e){}
+            if(msg != null){
+                if(msg.cInteger){
+                    System.out.println(msg.getI());
+                    msg.setI(msg.getI()+5);
+                    send(msg);
+                }
             }
         }
     }

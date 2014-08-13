@@ -19,7 +19,7 @@ public class StartupConsole extends JDialog{
     public JLabel label_ServerName;
 
 
-    public StartupConsole() {
+    public StartupConsole(final ServerController serverCTR, final ClientController clientCTR) {
         setTitle("IP Eingeben");
         setSize(200, 175);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-100,Toolkit.getDefaultToolkit().getScreenSize().height/2-50);
@@ -47,7 +47,7 @@ public class StartupConsole extends JDialog{
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    connect_TRUE();
+                    connect_TRUE(serverCTR,clientCTR);
                     dispose();
                 }
             }
@@ -67,7 +67,7 @@ public class StartupConsole extends JDialog{
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    connect_TRUE();
+                    connect_TRUE(serverCTR,clientCTR);
                     dispose();
                 }
             }
@@ -77,7 +77,7 @@ public class StartupConsole extends JDialog{
         JButton btnNewButton = new JButton("Ok");
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                connect_TRUE();
+                connect_TRUE(serverCTR,clientCTR);
             }
         });
         panel.add(btnNewButton);
@@ -91,13 +91,12 @@ public class StartupConsole extends JDialog{
         panel.add(btnNewButton_1);
 
     }
-	public void connect_TRUE(){
+	public void connect_TRUE(ServerController serverCTR, ClientController clientCTR){
 
-        Starter.clientCTR = new ClientController(textField_ServerName.getText());
-        Starter.serverCTR = new ServerController(textField_ServerName.getText());
-        Starter.serverCTR.setCNSServer(textField_StandardCNSServer.getText());
+        clientCTR.setClientName(textField_ServerName.getText());
+        serverCTR.setServerName(textField_ServerName.getText());
+        serverCTR.setCNSServer(textField_StandardCNSServer.getText());
         dispose();
-        new Console().setVisible(true);
 	}
 
     public void connect_FALSE(){

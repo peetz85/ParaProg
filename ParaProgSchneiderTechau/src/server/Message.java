@@ -8,6 +8,8 @@ import java.io.Serializable;
 public class Message implements Serializable {
     public boolean WAKEUP;
 
+    public boolean cInteger;
+
 
 
     private int i;
@@ -17,5 +19,6 @@ public class Message implements Serializable {
 
     public void setI(int i) {
         this.i = i;
+        cInteger = true;
     }
 }

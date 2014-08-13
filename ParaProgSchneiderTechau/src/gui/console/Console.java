@@ -1,8 +1,10 @@
 package gui.console;
 
+import client.ClientController;
 import org.jcsp.lang.Parallel;
 import semesteraufgabe.Starter;
 import server.Message;
+import server.ServerController;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -21,19 +23,22 @@ public class Console extends JFrame{
 	
 	public JLabel lblNewLabel;
 	public JTextArea textArea;
+    public static ServerController serverCTR;
+    public static ClientController clientCTR;
 
 	
 	
 	public Console() {
 
-
-
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Client");
         setSize(500,300);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-250,Toolkit.getDefaultToolkit().getScreenSize().height/2-150);
-        
-        
+
+        serverCTR = new ServerController("Default");
+        clientCTR = new ClientController("Default");
+        new StartupConsole(serverCTR, clientCTR).setVisible(true);
+
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BorderLayout(0, 0));
@@ -45,7 +50,7 @@ public class Console extends JFrame{
 		JSeparator separator_1 = new JSeparator();
 		panel_1.add(separator_1, BorderLayout.NORTH);
 		
-		lblNewLabel = new JLabel("IP-Adresse: " + Starter.serverCTR.getServerIP() + " | Server-Name: " +Starter.serverCTR.getServerName());
+		lblNewLabel = new JLabel("IP-Adresse: " + serverCTR.getServerIP() + " | Server-Name: " +serverCTR.getServerName());
 		panel_1.add(lblNewLabel, BorderLayout.CENTER);
 		
 		textArea = new JTextArea();
@@ -61,7 +66,7 @@ public class Console extends JFrame{
         mntmAktiviereServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 // Starter.clientCTR.run();
-                Starter.serverCTR.start();
+                serverCTR.start();
             }
         });
         mnMenu.add(mntmAktiviereServer);
@@ -72,7 +77,7 @@ public class Console extends JFrame{
 		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                new NewConnection(Starter.serverCTR).setVisible(true);
+                new NewConnection(serverCTR).setVisible(true);
             }
         });
 		mnMenu.add(mntmNeueVerbindung);
@@ -91,7 +96,7 @@ public class Console extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 Message tmp = new Message();
                 tmp.setI(16);
-                Starter.serverCTR.connections.get("localhost").send(tmp);
+                serverCTR.connections.get("localhost").send(tmp);
             }
         });
         mnMenu.add(mntmSendMessage);

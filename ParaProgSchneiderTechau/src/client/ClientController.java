@@ -12,6 +12,10 @@ public class ClientController {
 
     }
 
+    public void setClientName(String arg){
+        clientName = arg;
+    }
+
 
     public void run(){
 

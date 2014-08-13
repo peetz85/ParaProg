@@ -8,7 +8,7 @@ import javax.swing.JButton;
 
 import cnsserver.CNSServer;
 import gui.cnsserver.CNSServerStatus;
-import gui.console.StartupConsole;
+import gui.console.Console;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
@@ -17,7 +17,7 @@ import java.awt.event.ActionEvent;
 public class StartServerOrConnectServer extends JDialog{
 	public StartServerOrConnectServer() {
 		setTitle("Server Startup");
-		setSize(250, 100);
+		setSize(200, 100);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 - 125, Toolkit.getDefaultToolkit().getScreenSize().height / 2 - 50);
 		getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
@@ -32,11 +32,11 @@ public class StartServerOrConnectServer extends JDialog{
         });
 		getContentPane().add(btnCnsServerStarten);
 		
-		JButton btnStandardCnsServer = new JButton("Standard CNS Server eintragen");
+		JButton btnStandardCnsServer = new JButton("Node starten");
 		btnStandardCnsServer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 dispose();
-                new StartupConsole().setVisible(true);
+                new Console().setVisible(true);
 			}
 		});
 		getContentPane().add(btnStandardCnsServer);
