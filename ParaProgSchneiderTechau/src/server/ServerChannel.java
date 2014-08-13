@@ -67,8 +67,8 @@ public class ServerChannel implements CSProcess {
             Message msg = recive();
 
             try {
-                Thread.sleep(1500);
-                System.out.println("Lebe noch");
+                Thread.sleep(1000);
+                //System.out.println("Lebe noch");
             } catch (Exception e) {}
 
             if(msg != null){

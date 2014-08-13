@@ -4,6 +4,7 @@ import client.ClientController;
 import org.jcsp.lang.Parallel;
 import semesteraufgabe.Starter;
 import server.Message;
+import server.ServerChannel;
 import server.ServerController;
 
 import javax.swing.JFrame;
@@ -77,6 +78,7 @@ public class Console extends JFrame{
 		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
+                System.out.println("test");
                 new NewConnection(serverCTR).setVisible(true);
             }
         });
@@ -91,16 +93,19 @@ public class Console extends JFrame{
 		});
 		mnMenu.add(mntmGeneriereGraph);
 
-        JMenuItem mntmSendMessage = new JMenuItem("Sende Nachricht //DEBUG");
-        mntmGeneriereGraph.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        JMenuItem mntmNachricht = new JMenuItem("Neue Nachricht");
+        mntmNachricht.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                System.out.println("test");
+                if(serverCTR.connections.isEmpty())
+                    System.out.println("HashMap ist Leer!");
+
                 Message tmp = new Message();
                 tmp.setI(16);
                 serverCTR.connections.get("localhost").send(tmp);
             }
         });
-        mnMenu.add(mntmSendMessage);
-
+        mnMenu.add(mntmNachricht);
 
         JSeparator separator = new JSeparator();
 		mnMenu.add(separator);
