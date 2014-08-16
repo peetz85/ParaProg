@@ -22,7 +22,7 @@ public class NewConnection extends JDialog{
     public NewConnection(ServerController server) {
         serverCTR = server;
         setTitle("IP Eingeben");
-        setSize(300, 150);
+        setSize(300, 120);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-100,Toolkit.getDefaultToolkit().getScreenSize().height/2-50);
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -39,14 +39,14 @@ public class NewConnection extends JDialog{
         panel_1.add(label);
 
         textFieldServer = new JTextField();
-        textFieldServer.setText(serverCTR.getServerName());
+        textFieldServer.setText("Default_");
         textFieldServer.setColumns(15);
         panel_1.add(textFieldServer);
         textFieldServer.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    openConnection();
+                    connectConnection();
                     dispose();
                 }
             }
@@ -56,29 +56,18 @@ public class NewConnection extends JDialog{
                         panel_1.add(label);
         
                 textFieldPort = new JTextField();
-                textFieldPort.setText(String.valueOf(serverCTR.getNextFreePort()));
+//                textFieldPort.setText(String.valueOf(serverCTR.getNextFreePort()));
                 textFieldPort.setColumns(15);
                 panel_1.add(textFieldPort);
                 textFieldPort.addKeyListener(new KeyAdapter() {
                     public void keyPressed(KeyEvent e) {
                         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                            openConnection();
+                            connectConnection();
                             dispose();
                         }
                     }
                 });
         panel.setLayout(new GridLayout(0, 1, 0, 0));
-        
-        JPanel panel_2 = new JPanel();
-        panel.add(panel_2);
-        
-                JButton btnNewButton = new JButton("Verbindung bereitstellen");
-                panel_2.add(btnNewButton);
-                btnNewButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        openConnection();
-                    }
-                });
         
         JPanel panel_3 = new JPanel();
         panel.add(panel_3);
@@ -91,12 +80,6 @@ public class NewConnection extends JDialog{
                     }
                 });
 
-    }
-
-    public void openConnection(){
-
-        serverCTR.connectToNode(textFieldServer.getText(), textFieldPort.getText(), true);
-        dispose();
     }
 
     public void connectConnection(){

@@ -63,18 +63,24 @@ public class Console extends JFrame{
 		JMenu mnMenu = new JMenu("Menu");
 		menuBar.add(mnMenu);
 
-//        JMenuItem mntmAktiviereServer = new JMenuItem("Server Aktivieren");
-//        mntmAktiviereServer.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent arg0) {
-//                System.out.println("mach ich nix!");
-//            }
-//        });
-//        mnMenu.add(mntmAktiviereServer);
+        JMenuItem mntmAktiviereServer = new JMenuItem("Verbindung bereitstellen");
+        mntmAktiviereServer.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                OpenConnection arg = new OpenConnection(serverCTR);
+                arg.setVisible(true);
+                try {
+					Thread.sleep(500);
+				} catch (Exception e) {
+				}
+//        		serverCTR.connectToNode(serverCTR.getServerName(), String.valueOf(serverCTR.getNextFreePort()), true);
+//        		arg.dispose();
+            }
+        });
+        mnMenu.add(mntmAktiviereServer);
 
 		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                System.out.println("test");
                 new NewConnection(serverCTR).setVisible(true);
             }
         });
