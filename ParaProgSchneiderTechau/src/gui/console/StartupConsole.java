@@ -30,8 +30,8 @@ public class StartupConsole extends JDialog{
 
         setTitle("IP Eingeben");
         setSize(200, 175);
-        setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-100,Toolkit.getDefaultToolkit().getScreenSize().height/2-50);
         setModal(true);
+        setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-100,Toolkit.getDefaultToolkit().getScreenSize().height/2-50);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout(0, 0));
 
@@ -110,5 +110,5 @@ public class StartupConsole extends JDialog{
     public void connect_FALSE(){
         dispose();
     }
-	
+
 }

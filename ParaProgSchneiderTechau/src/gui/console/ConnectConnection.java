@@ -51,7 +51,7 @@ public class ConnectConnection extends JDialog{
                 }
             }
         });
-                
+
                         label = new JLabel("Port:");
                         panel_1.add(label);
         
