@@ -48,7 +48,8 @@ public class ServerController{
         if(!connections.isEmpty()) {
             System.out.println("keine Verbindungen");
             for (ConnectionLabel key : connections.keySet()) {
-                    if(key.getServerName() == server){
+                System.out.println(key.getServerName() + " " + server);
+                    if(key.getServerName().equals(server)){
                         returnValue = connections.get(key);
                         System.out.println("treffer - ServerChannel Gefunden");
                     }
