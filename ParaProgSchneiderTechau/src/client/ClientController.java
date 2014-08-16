@@ -46,26 +46,32 @@ public class ClientController {
 
     public void answerEcho(Message msg) {
         if(msg.isEchoAnswer()){
+            System.out.println("antwort_1");
             ReturnType waitingFor = returnToSender.get(msg.getMESSAGE_CREATOR());
             if(waitingFor !=null){
+                System.out.println("antwort_2");
                 waitingFor.getAnswers().add(msg);
                 waitingFor.getWaitingForAnswer().remove(msg.getMessageFrom());
             }
             if(waitingFor.getWaitingForAnswer().isEmpty()){
+                System.out.println("antwort_3");
                 int retInt =0;
                 ArrayList<Message> messages = waitingFor.getAnswers();
                 for(int count=0; count<=messages.size();++count){
                     retInt += messages.get(count).getNodeCount();
                 }
                 if(serverCTR.getServerName() == msg.getMESSAGE_CREATOR()){
+                    System.out.println("antwort_4");
                     System.out.println("Soooo viele Knoten: " + retInt);
                 } else {
+                    System.out.println("antwort_5");
                     msg.setNodeCount(retInt, serverCTR.getServerName());
                     serverCTR.sendOnly(waitingFor.getSendBackTo(), msg);
                 }
             }
 
         } else {
+            System.out.println("Antwort_6");
             Message returnMessage = msg;
             returnMessage.setNodeCount(1,serverCTR.getServerName());
             serverCTR.sendOnly(msg.getMessageFrom(),returnMessage);
