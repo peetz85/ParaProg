@@ -25,6 +25,8 @@ public class OpenConnection extends JDialog{
 		lblNewLabel_1 = new JLabel("Server: " +serverCTR.getServerName()+" Port: "+String.valueOf(serverCTR.getNextFreePort()));
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 13));
 		getContentPane().add(lblNewLabel_1);
-
+        setVisible(true);
+        serverCTR.connectToNode(serverCTR.getServerName(), String.valueOf(serverCTR.getNextFreePort()), true);
+       	dispose();
 	}
 }

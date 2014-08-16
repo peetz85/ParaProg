@@ -64,14 +64,7 @@ public class Console extends JFrame{
         JMenuItem mntmAktiviereServer = new JMenuItem("Verbindung bereitstellen");
         mntmAktiviereServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                OpenConnection arg = new OpenConnection(serverCTR);
-                arg.setVisible(true);
-                try {
-					Thread.sleep(500);
-				} catch (Exception e) {
-				}
-//        		serverCTR.connectToNode(serverCTR.getServerName(), String.valueOf(serverCTR.getNextFreePort()), true);
-//        		arg.dispose();
+                new OpenConnection(serverCTR);
             }
         });
         mnMenu.add(mntmAktiviereServer);
