@@ -82,11 +82,10 @@ public class Console extends JFrame{
         JSeparator separator_ = new JSeparator();
         mnMenu.add(separator_);
 		
-		JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
+		JMenuItem mntmGeneriereGraph = new JMenuItem("Knoten zählen");
 		mntmGeneriereGraph.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-                System.out.println("Nix ist Los");
+                serverCTR.clientCTR.initEcho();
 			}
 		});
 		mnMenu.add(mntmGeneriereGraph);
@@ -95,7 +94,7 @@ public class Console extends JFrame{
         mntmNachricht.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 if(!serverCTR.connections.isEmpty()) {
-                    Message tmp = new Message();
+                    Message tmp = new Message(serverCTR.getServerName());
                     tmp.setI(11);
                     for (ServerChannel value : serverCTR.connections.values()) {
                         value.send(tmp);
@@ -121,7 +120,7 @@ public class Console extends JFrame{
 
     public void terminate(){
         if(!serverCTR.connections.isEmpty()) {
-            Message terminateSignal = new Message();
+            Message terminateSignal = new Message(serverCTR.getServerName());
             terminateSignal.setTerminateSignal(serverCTR.getServerName());
             for (ServerChannel value : serverCTR.connections.values()) {
                 value.send(terminateSignal);

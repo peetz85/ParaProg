@@ -39,7 +39,7 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
     }
 
     public void handshake(){
-        Message msg = new Message();
+        Message msg = new Message(parent.getServerName());
         msg.setLabel(parent.getServerName(), true);
         send(msg);
     }
@@ -79,7 +79,7 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
 
                 if(msg.isHandshake()){
                     if(msg.isHandshakeRequest()){
-                        msg = new Message();
+                        msg = new Message(parent.getServerName());
                         msg.setLabel(parent.getServerName(),false);
                         send(msg);
                     }else {

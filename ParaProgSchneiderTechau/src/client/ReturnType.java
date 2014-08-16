@@ -13,6 +13,10 @@ public class ReturnType {
     public ReturnType(){}
 
     private boolean echoRequest;
+
+
+
+    private String sendBackTo;
     private HashSet<String> waitingForAnswer;
     private ArrayList<Message> answers;
     public boolean isEchoRequest() {
@@ -21,14 +25,17 @@ public class ReturnType {
     public HashSet<String> getWaitingForAnswer(){
         return waitingForAnswer;
     }
-    public void setEchoRequest(HashSet<String> waitingForAnswer) {
+    public void setEchoRequest(HashSet<String> waitingForAnswer, String sendBackTo) {
         this.echoRequest = true;
         this.waitingForAnswer = waitingForAnswer;
         answers = new ArrayList<Message>();
+        this.sendBackTo = sendBackTo;
     }
     public ArrayList<Message> getAnswers(){
         return answers;
     }
-
+    public String getSendBackTo() {
+        return sendBackTo;
+    }
 
 }

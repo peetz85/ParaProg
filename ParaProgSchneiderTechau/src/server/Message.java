@@ -8,9 +8,20 @@ import java.util.HashSet;
  */
 public class Message implements Serializable {
 
+    final private String MESSAGE_CREATOR;
+    public Message(String MESSAGE_CREATOR) {
+        this.MESSAGE_CREATOR = MESSAGE_CREATOR;
+    }
+    public String getMESSAGE_CREATOR(){
+        return MESSAGE_CREATOR;
+    }
+
     //Wird benötigt für:    Request Echo +
     //
     private String messageFrom;
+
+
+
     public String getMessageFrom() {
         return messageFrom;
     }
@@ -99,6 +110,7 @@ public class Message implements Serializable {
 	public void setNodeCount(int nodeCount, String messageFrom) {
 		echoRequest = true;
 		echoAnswer = true;
+        nodeSet = null;
 		this.nodeCount = nodeCount;
         this.messageFrom = messageFrom;
 	}

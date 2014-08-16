@@ -58,11 +58,13 @@ public class ServerController{
     public void sendAll(HashSet<String> nodeSet, boolean except, Message msg) {
         if (!connections.isEmpty()) {
             if (except) {
+                //Nachricht an ALLE senden die NICHT in der Liste sind!!!!
                 for (Map.Entry<ConnectionLabel, ServerChannel> entry : connections.entrySet()) {
                     if (!nodeSet.contains(entry.getKey().getServerName()))
                         entry.getValue().send(msg);
                 }
             } else {
+                //Nachricht an ALLE senden die in der Liste vorhanden sind
                 for (Map.Entry<ConnectionLabel, ServerChannel> entry : connections.entrySet()) {
                     if (nodeSet.contains(entry.getKey().getServerName()))
                         entry.getValue().send(msg);
