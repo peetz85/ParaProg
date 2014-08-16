@@ -1,17 +1,13 @@
 package server;
 
 
-import org.jcsp.lang.CSProcess;
-import org.jcsp.lang.Parallel;
-import org.jcsp.lang.ProcessManager;
 import org.jcsp.net.*;
-import org.jcsp.net.cns.CNS;
-import org.jcsp.net.cns.CNSService;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Created by Pascal on 08.07.2014.
@@ -33,7 +29,16 @@ public class ServerController{
         connections = new HashMap<ConnectionLabel, ServerChannel>();
         //channelListener = new Parallel();
         nextFreePort = 0;
+    }
 
+    public HashSet<String> generateNodeSet(){
+        HashSet<String> nodeSet = new HashSet<String>();
+        if(!connections.isEmpty()) {
+            for (ConnectionLabel key : connections.keySet()) {
+                nodeSet.add(key.getServerName());
+                }
+            }
+        return nodeSet;
     }
 
     public ServerChannel getServerChannel(String server){
@@ -47,6 +52,29 @@ public class ServerController{
         }
         return returnValue;
     }
+
+    public void sendAll(HashSet<String> nodeSet, boolean except, Message msg) {
+        if (!connections.isEmpty()) {
+            if (except) {
+                for (Map.Entry<ConnectionLabel, ServerChannel> entry : connections.entrySet()) {
+                    if (!nodeSet.contains(entry.getKey().getServerName()))
+                        entry.getValue().send(msg);
+                }
+            } else {
+                for (Map.Entry<ConnectionLabel, ServerChannel> entry : connections.entrySet()) {
+                    if (!nodeSet.contains(entry.getKey().getServerName()))
+                        entry.getValue().send(msg);
+                }
+            }
+        }
+    }
+
+    public void sendOnly(String arg, Message msg){
+        ServerChannel connection = getServerChannel(arg);
+        if(connection != null)
+            connection.send(msg);
+    }
+
 
     public int getNextFreePort(){
         return nextFreePort;

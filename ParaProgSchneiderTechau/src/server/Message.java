@@ -73,4 +73,6 @@ public class Message implements Serializable {
 
         return label;
     }
+
+    //
 }
