@@ -22,7 +22,7 @@ public class NewConnection extends JDialog{
     public NewConnection(ServerController server) {
         serverCTR = server;
         setTitle("IP Eingeben");
-        setSize(300, 125);
+        setSize(300, 150);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-100,Toolkit.getDefaultToolkit().getScreenSize().height/2-50);
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -30,11 +30,10 @@ public class NewConnection extends JDialog{
 
         JPanel panel = new JPanel();
         getContentPane().add(panel, BorderLayout.SOUTH);
-        panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
         JPanel panel_1 = new JPanel();
         getContentPane().add(panel_1, BorderLayout.CENTER);
-        panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        panel_1.setLayout(new GridLayout(2, 2));
 
         label = new JLabel("Server:");
         panel_1.add(label);
@@ -52,38 +51,45 @@ public class NewConnection extends JDialog{
                 }
             }
         });
-
-        label = new JLabel("Port:");
-        panel_1.add(label);
-
-        textFieldPort = new JTextField();
-        textFieldPort.setText(String.valueOf(serverCTR.getNextFreePort()));
-        textFieldPort.setColumns(15);
-        panel_1.add(textFieldPort);
-        textFieldPort.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    connect_TRUE();
-                    dispose();
-                }
-            }
-        });
-
-        JButton btnNewButton = new JButton("Verbindung bereitstellen");
-        btnNewButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                connect_TRUE();
-            }
-        });
-        panel.add(btnNewButton);
-
-        JButton btnNewButton_1 = new JButton("Verbindung aufbauen");
-        btnNewButton_1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                connect_FALSE();
-            }
-        });
-        panel.add(btnNewButton_1);
+                
+                        label = new JLabel("Port:");
+                        panel_1.add(label);
+        
+                textFieldPort = new JTextField();
+                textFieldPort.setText(String.valueOf(serverCTR.getNextFreePort()));
+                textFieldPort.setColumns(15);
+                panel_1.add(textFieldPort);
+                textFieldPort.addKeyListener(new KeyAdapter() {
+                    public void keyPressed(KeyEvent e) {
+                        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            connect_TRUE();
+                            dispose();
+                        }
+                    }
+                });
+        panel.setLayout(new GridLayout(0, 1, 0, 0));
+        
+        JPanel panel_2 = new JPanel();
+        panel.add(panel_2);
+        
+                JButton btnNewButton = new JButton("Verbindung bereitstellen");
+                panel_2.add(btnNewButton);
+                btnNewButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        connect_TRUE();
+                    }
+                });
+        
+        JPanel panel_3 = new JPanel();
+        panel.add(panel_3);
+        
+                JButton btnNewButton_1 = new JButton("Verbindung aufbauen");
+                panel_3.add(btnNewButton_1);
+                btnNewButton_1.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        connect_FALSE();
+                    }
+                });
 
     }
 
