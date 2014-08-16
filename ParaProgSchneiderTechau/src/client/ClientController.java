@@ -41,6 +41,11 @@ public class ClientController {
         HashSet<String> dontVisit = new HashSet<String>(serverCTR.generateNodeSet());
         msg.setNodeSet(dontVisit,clientName);
         HashSet<String> empty = new HashSet<String>();
+
+        ReturnType retType = new ReturnType();
+        retType.setEchoRequest(dontVisit, clientName);
+        returnToSender.put(clientName,retType);
+
         serverCTR.sendAll(empty, true, msg);
     }
 
