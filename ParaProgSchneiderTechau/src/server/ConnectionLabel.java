@@ -15,7 +15,7 @@ public class ConnectionLabel {
 
     @Override
     public String toString(){
-        return serverName+serverPort;
+        return serverName+":"+serverPort;
     }
 
     public String getServerName(){

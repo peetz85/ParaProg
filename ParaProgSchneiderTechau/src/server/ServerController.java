@@ -117,9 +117,11 @@ public class ServerController{
     }
 
     public void saveConnection(Message msg){
+        System.out.println(msg.getLabel()+" " +String.valueOf(nextFreePort-1));
         ConnectionLabel connection = new ConnectionLabel(msg.getLabel(),String.valueOf(nextFreePort-1));
         connections.put(connection,incomingConnection);
         incomingConnection = null;
+        printAllNodes();
     }
 
     public void connectToNode(String target, String port, boolean arg) {
@@ -132,10 +134,10 @@ public class ServerController{
             ++nextFreePort;
         }
         channel.connect(target+port, arg);
+        channel.start();
         if(arg){
             channel.handshake();
         }
-        channel.start();
 
     }
 
@@ -143,6 +145,12 @@ public class ServerController{
         ServerChannel toDelete = connections.get(server);
         toDelete.setRunning(false);
         connections.remove(server);
+    }
+
+    public void printAllNodes(){
+        for (ConnectionLabel key : connections.keySet()) {
+            System.out.println(key);
+        }
     }
 }
 

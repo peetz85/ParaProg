@@ -75,7 +75,9 @@ public class ClientController {
     }
 
     public void forwardEcho(Message msg) {
-        if (!isLastNode(msg.getNodeSet())) {
+
+        if (isLastNode(msg.getNodeSet())) {
+            System.out.println("LastNode");
             if (!returnToSender.containsKey(msg.getMessageFrom())) {
 
                 //ReturnType erstellen mit Sender der Generator der alten Nachricht
@@ -94,8 +96,11 @@ public class ClientController {
 
                 serverCTR.sendAll(waitingFor, false, msg);
             }
-        } else
+        } else {
+            System.out.println("Zurück damit");
             answerEcho(msg);
+        }
+
     }
 
     public boolean isLastNode(HashSet<String> visited) {

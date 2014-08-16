@@ -78,6 +78,7 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
                 }
 
                 if(msg.isHandshake()){
+                    System.out.println("Handshake");
                     if(msg.isHandshakeRequest()){
                         msg = new Message(parent.getServerName());
                         msg.setLabel(parent.getServerName(),false);
