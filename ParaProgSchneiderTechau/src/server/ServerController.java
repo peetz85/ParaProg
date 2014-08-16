@@ -64,7 +64,7 @@ public class ServerController{
                 }
             } else {
                 for (Map.Entry<ConnectionLabel, ServerChannel> entry : connections.entrySet()) {
-                    if (!nodeSet.contains(entry.getKey().getServerName()))
+                    if (nodeSet.contains(entry.getKey().getServerName()))
                         entry.getValue().send(msg);
                 }
             }

@@ -21,8 +21,8 @@ public class ReturnType {
     public HashSet<String> getWaitingForAnswer(){
         return waitingForAnswer;
     }
-    public void setEchoRequest(boolean echoRequest, HashSet<String> waitingForAnswer) {
-        this.echoRequest = echoRequest;
+    public void setEchoRequest(HashSet<String> waitingForAnswer) {
+        this.echoRequest = true;
         this.waitingForAnswer = waitingForAnswer;
         answers = new ArrayList<Message>();
     }

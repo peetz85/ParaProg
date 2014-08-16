@@ -15,45 +15,63 @@ public class ClientController {
     private String clientName;
     private ServerController serverCTR;
 
-    private HashMap<String,ReturnType>returnToSender;
+    private HashMap<String, ReturnType> returnToSender;
 
-    public ClientController(String name){
+    public ClientController(String name) {
         clientName = name;
         returnToSender = new HashMap<String, ReturnType>();
     }
 
-    public void setServerCTR(ServerController serverCTR){
+    public void setServerCTR(ServerController serverCTR) {
         this.serverCTR = serverCTR;
     }
 
-    public void setClientName(String arg){
+    public void setClientName(String arg) {
         clientName = arg;
     }
 
 
-    public void run(){
+    public void run() {
 
     }
 
     public void answerEcho(Message msg) {
-    }
+        if(msg.isEchoAnswer()){
 
-    public void forwardEcho(Message msg) {
-        if(!returnToSender.containsKey(msg.getMessageFrom())){
-            ReturnType sendBack = new ReturnType();
+        } else {
+            Message returnMessage = new Message();
+            returnMessage.setNodeCount(1,serverCTR.getServerName());
 
         }
 
 
-        if(!isLastNode(msg.getNodeSet())) {
-            HashSet<String> dontVisit = msg.getNodeSet();
-            msg.getNodeSet().addAll(serverCTR.generateNodeSet());
-            serverCTR.sendAll(dontVisit, true, msg);
+    }
+
+    public void forwardEcho(Message msg) {
+        if (!isLastNode(msg.getNodeSet())) {
+            if (!returnToSender.containsKey(msg.getMessageFrom())) {
+
+                //ReturnType erstellen mit Sender der alten Nachricht und
+                //Liste(HashSet) der abzuwartenden Sender
+                ReturnType sendBack = new ReturnType();
+                HashSet<String> waitingFor = serverCTR.generateNodeSet();
+                waitingFor.removeAll(msg.getNodeSet());
+                sendBack.setEchoRequest(waitingFor);
+                returnToSender.put(msg.getMessageFrom(), sendBack);
+
+                //Neue Liste für nächsten Node mit aktualisierter Liste
+                //der nicht zu besuchenden Nodes
+                HashSet<String> dontVisist = msg.getNodeSet();
+                dontVisist.addAll(waitingFor);
+                msg.setNodeSet(dontVisist, serverCTR.getServerName());
+
+                serverCTR.sendAll(waitingFor, false, msg);
+            }
         } else
             answerEcho(msg);
     }
 
-    public boolean isLastNode(HashSet<String> visited){
+    public boolean isLastNode(HashSet<String> visited) {
         return serverCTR.generateNodeSet().containsAll(visited);
     }
 
