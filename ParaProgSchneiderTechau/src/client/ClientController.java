@@ -83,7 +83,6 @@ public class ClientController {
     }
 
     public void forwardEcho(Message msg) {
-/*
         if (!isLastNode(msg.getNodeSet())) {
             System.out.println("LastNode");
             if (!returnToSender.containsKey(msg.getMessageFrom())) {
@@ -104,10 +103,10 @@ public class ClientController {
 
                 serverCTR.sendAll(waitingFor, false, msg);
             }
-        } else {*/
+        } else {
             System.out.println("Zurück damit");
             answerEcho(msg);
-        //}
+        }
 
     }
 
