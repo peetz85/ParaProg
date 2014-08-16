@@ -64,7 +64,7 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
 
             try {
                 Thread.sleep(1000);
-                //System.out.println("Lebe noch");
+                System.out.println("Lebe noch");
             } catch (Exception e) {}
 
             if(msg != null){
@@ -88,6 +88,7 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
                 }
 
                 if(msg.isEchoRequest()){
+                    System.out.println("Es gibt ein ECHO Request!");
                     if(msg.isEchoAnswer()){
                         parent.clientCTR.answerEcho(msg);
                     } else {
