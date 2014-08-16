@@ -36,6 +36,18 @@ public class ServerController{
 
     }
 
+    public ServerChannel getServerChannel(String server){
+        ServerChannel returnValue = null;
+        if(!connections.isEmpty()) {
+            for (ConnectionLabel key : connections.keySet()) {
+                    if(key.getServerName() == server){
+                        returnValue = connections.get(key);
+                    }
+            }
+        }
+        return returnValue;
+    }
+
     public int getNextFreePort(){
         return nextFreePort;
     }
