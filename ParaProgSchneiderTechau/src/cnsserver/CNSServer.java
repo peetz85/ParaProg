@@ -27,7 +27,7 @@ public class CNSServer{
         try {
             //Initialize a Node that does not have a CNS client
             //TODO Netzwerk Test mit richtiger IP adresse eintragen
-            TCPIPAddressID CNSServerAdresse = new TCPIPAddressID("127.0.0.1", 51526, false);
+            TCPIPAddressID CNSServerAdresse = new TCPIPAddressID(ip.getHostAddress(), 51526, false);
             key = Node.getInstance().init(CNSServerAdresse);
 
             localNodeID = Node.getInstance().getNodeID();
