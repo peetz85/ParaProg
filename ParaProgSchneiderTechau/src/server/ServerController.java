@@ -46,6 +46,7 @@ public class ServerController{
     public ServerChannel getServerChannel(String server){
         ServerChannel returnValue = null;
         if(!connections.isEmpty()) {
+            System.out.println("keine Verbindungen");
             for (ConnectionLabel key : connections.keySet()) {
                     if(key.getServerName() == server){
                         returnValue = connections.get(key);
