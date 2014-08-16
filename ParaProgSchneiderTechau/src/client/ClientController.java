@@ -4,6 +4,7 @@ import server.ConnectionLabel;
 import server.Message;
 import server.ServerController;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -14,9 +15,11 @@ public class ClientController {
     private String clientName;
     private ServerController serverCTR;
 
+    private HashMap<String,ReturnType>returnToSender;
+
     public ClientController(String name){
         clientName = name;
-
+        returnToSender = new HashMap<String, ReturnType>();
     }
 
     public void setServerCTR(ServerController serverCTR){
@@ -36,6 +39,12 @@ public class ClientController {
     }
 
     public void forwardEcho(Message msg) {
+        if(!returnToSender.containsKey(msg.getMessageFrom())){
+            ReturnType sendBack = new ReturnType();
+
+        }
+
+
         if(!isLastNode(msg.getNodeSet())) {
             HashSet<String> dontVisit = msg.getNodeSet();
             msg.getNodeSet().addAll(serverCTR.generateNodeSet());

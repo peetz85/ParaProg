@@ -8,14 +8,11 @@ import java.util.HashSet;
  */
 public class Message implements Serializable {
 
-    //Wakeup Signal
-    private boolean wakeup;
-
-    public boolean isWakeup() {
-        return wakeup;
-    }
-    public void setWakeup(boolean WAKEUP) {
-        wakeup = WAKEUP;
+    //Wird benötigt für:    Request Echo +
+    //
+    private String messageFrom;
+    public String getMessageFrom() {
+        return messageFrom;
     }
 
     //Channel löschen
@@ -55,7 +52,7 @@ public class Message implements Serializable {
     //Handshake Singal
     private boolean handshake;
     private boolean handshakeRequest;
-    String label;
+    private String label;
 
     public void setLabel(String label, boolean handshakeRequest){
         this.label = label;
@@ -90,18 +87,20 @@ public class Message implements Serializable {
     public HashSet<String> getNodeSet() {
 		return nodeSet;
 	}
-	public void setNodeSet(HashSet<String> nodeSet) {
+	public void setNodeSet(HashSet<String> nodeSet, String messageFrom) {
 		echoRequest = true;
 		echoAnswer = false;
 		this.nodeSet = nodeSet;
+        this.messageFrom = messageFrom;
 	}
 	public int getNodeCount() {
 		return nodeCount;
 	}
-	public void setNodeCount(int nodeCount) {
+	public void setNodeCount(int nodeCount, String messageFrom) {
 		echoRequest = true;
 		echoAnswer = true;
 		this.nodeCount = nodeCount;
+        this.messageFrom = messageFrom;
 	}
 	
     
