@@ -12,14 +12,14 @@ import java.awt.event.KeyEvent;
 /**
  * Created by Pascal on 23.07.2014.
  */
-public class NewConnection extends JDialog{
+public class ConnectConnection extends JDialog{
     public JTextField textFieldServer;
     public JTextField textFieldPort;
     public ServerController serverCTR;
     public JLabel label;
 
 
-    public NewConnection(ServerController server) {
+    public ConnectConnection(ServerController server) {
         serverCTR = server;
         setTitle("IP Eingeben");
         setSize(300, 120);

@@ -1,8 +1,6 @@
 package gui.console;
 
 import client.ClientController;
-import org.jcsp.lang.Parallel;
-import semesteraufgabe.Starter;
 import server.Message;
 import server.ServerChannel;
 import server.ServerController;
@@ -81,7 +79,7 @@ public class Console extends JFrame{
 		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                new NewConnection(serverCTR).setVisible(true);
+                new ConnectConnection(serverCTR).setVisible(true);
             }
         });
 		mnMenu.add(mntmNeueVerbindung);

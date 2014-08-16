@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class StartupConsole extends JDialog{
 
@@ -20,6 +22,12 @@ public class StartupConsole extends JDialog{
 
 
     public StartupConsole(final ServerController serverCTR, final ClientController clientCTR) {
+
+        InetAddress ip = null;
+        try {
+            ip = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {  }
+
         setTitle("IP Eingeben");
         setSize(200, 175);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-100,Toolkit.getDefaultToolkit().getScreenSize().height/2-50);
@@ -39,7 +47,7 @@ public class StartupConsole extends JDialog{
         panel_1.add(label_StandardCNSServer);
 
         textField_StandardCNSServer = new JTextField();
-        textField_StandardCNSServer.setText("localhost");
+        textField_StandardCNSServer.setText(ip.getHostAddress());
 
         textField_StandardCNSServer.setColumns(10);
         panel_1.add(textField_StandardCNSServer);
