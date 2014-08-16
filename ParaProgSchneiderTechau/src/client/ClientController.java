@@ -90,8 +90,7 @@ public class ClientController {
     public void forwardEcho(Message msg) {
         if (!isLastNode(msg.getNodeSet())) {
             System.out.println("LastNode");
-            if (!returnToSender.containsKey(msg.getMessageFrom())) {
-
+            if (!returnToSender.containsKey(msg.getMESSAGE_CREATOR())) {
                 //ReturnType erstellen mit Sender der Generator der alten Nachricht
                 //und Liste(HashSet) der abzuwartenden Sender
                 ReturnType sendBack = new ReturnType();
