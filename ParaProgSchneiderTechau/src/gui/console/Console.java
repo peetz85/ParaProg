@@ -63,16 +63,13 @@ public class Console extends JFrame{
 		JMenu mnMenu = new JMenu("Menu");
 		menuBar.add(mnMenu);
 
-        JMenuItem mntmAktiviereServer = new JMenuItem("Server Aktivieren");
-        mntmAktiviereServer.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                System.out.println("mach ich nix!");
-            }
-        });
-        mnMenu.add(mntmAktiviereServer);
-
-        JSeparator separator_ = new JSeparator();
-        mnMenu.add(separator_);
+//        JMenuItem mntmAktiviereServer = new JMenuItem("Server Aktivieren");
+//        mntmAktiviereServer.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent arg0) {
+//                System.out.println("mach ich nix!");
+//            }
+//        });
+//        mnMenu.add(mntmAktiviereServer);
 
 		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
@@ -82,6 +79,9 @@ public class Console extends JFrame{
             }
         });
 		mnMenu.add(mntmNeueVerbindung);
+		
+        JSeparator separator_ = new JSeparator();
+        mnMenu.add(separator_);
 		
 		JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
 		mntmGeneriereGraph.addActionListener(new ActionListener() {
