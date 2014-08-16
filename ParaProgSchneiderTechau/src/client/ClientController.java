@@ -72,9 +72,11 @@ public class ClientController {
 
         } else {
             System.out.println("Antwort_6");
+            String sendTo = msg.getMessageFrom();
             Message returnMessage = msg;
             returnMessage.setNodeCount(1,serverCTR.getServerName());
-            serverCTR.sendOnly(msg.getMessageFrom(),returnMessage);
+            System.out.println(sendTo);
+            serverCTR.sendOnly(sendTo,returnMessage);
         }
 
 
@@ -82,7 +84,7 @@ public class ClientController {
 
     public void forwardEcho(Message msg) {
 /*
-        if (isLastNode(msg.getNodeSet())) {
+        if (!isLastNode(msg.getNodeSet())) {
             System.out.println("LastNode");
             if (!returnToSender.containsKey(msg.getMessageFrom())) {
 
