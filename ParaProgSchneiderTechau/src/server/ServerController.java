@@ -49,6 +49,7 @@ public class ServerController{
             for (ConnectionLabel key : connections.keySet()) {
                     if(key.getServerName() == server){
                         returnValue = connections.get(key);
+                        System.out.println("treffer - ServerChannel Gefunden");
                     }
             }
         }
@@ -75,6 +76,7 @@ public class ServerController{
 
     public void sendOnly(String arg, Message msg){
         ServerChannel connection = getServerChannel(arg);
+        System.out.println(arg);
         if(connection != null)
             connection.send(msg);
     }
