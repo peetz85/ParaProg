@@ -10,24 +10,15 @@ import org.jcsp.net.cns.CNS;
 public class ServerChannel extends Thread /*implements CSProcess*/ {
 
     private boolean running = true;
-    private boolean isInitialised;
     private NetChannelOutput output;
     private NetAltingChannelInput input;
 
     private ServerController parent;
-    private String connectionTo;
 
 
     public ServerChannel(ServerController parent) {
         this.parent = parent;
-        isInitialised = false;
     }
-
-    public ServerChannel(ServerController parent, boolean isInitialised) {
-        this.parent = parent;
-        this.isInitialised = isInitialised;
-    }
-
 
     public void setRunning(boolean arg){
         running = arg;
@@ -47,19 +38,17 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
         }
     }
 
-    public void setConnectionTo(String arg) {
-        connectionTo = arg;
-    }
-
-    public String getConnectionTo() {
-        return connectionTo;
+    public void handshake(){
+        Message msg = new Message();
+        msg.setLabel(parent.getServerName(), true);
+        send(msg);
     }
 
     public void send(Message arg) {
         output.write(arg);
     }
 
-    public Message recive(){
+    private Message recive(){
         if(input.pending()){
             return (Message) input.read();
         } else {
@@ -67,14 +56,11 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
         }
     }
 
-    public void wakeup() {
-        System.out.println("Aufwachen du Lutscher!!!");
-    }
-
     @Override
     public void run() {
+        Message msg;
         while (running) {
-            Message msg = recive();
+            msg = recive();
 
             try {
                 Thread.sleep(1000);
@@ -90,6 +76,17 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
                 if(msg.isTerminateSignal()){
                     parent.removeConnection(msg.getTerminateServerName());
                 }
+
+                if(msg.isHandshake()){
+                    if(msg.isHandshakeRequest()){
+                        msg = new Message();
+                        msg.setLabel(parent.getServerName(),false);
+                        send(msg);
+                    }else {
+                        parent.saveConnection(msg);
+                    }
+                }
+
             }
         }
     }

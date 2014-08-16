@@ -21,15 +21,16 @@ public class ServerController{
     private String serverIP;
 
     private int nextFreePort;
+    private ServerChannel incomingConnection;
 
-    public HashMap<String, ServerChannel> connections;
+    public HashMap<ConnectionLabel, ServerChannel> connections;
     //private Parallel channelListener;
 
     public ServerController(String name) {
         setServerName(name);
         setServerIP();
 
-        connections = new HashMap<String, ServerChannel>();
+        connections = new HashMap<ConnectionLabel, ServerChannel>();
         //channelListener = new Parallel();
         nextFreePort = 0;
 
@@ -68,31 +69,36 @@ public class ServerController{
         try {
             System.setProperty("org.jcsp.tcpip.DefaultCNSServer", arg);
             Node.getInstance().init();
-        } catch (NodeInitFailedException e) {
-            e.printStackTrace();
-        }
+        } catch (NodeInitFailedException e) {}
     }
 
-    public void connectToNode(String target, boolean arg) {
-        ServerChannel tmp = new ServerChannel(this);
-        connections.put(target, tmp);
-        ++nextFreePort;
-        tmp.connect(target, arg);
-        tmp.start();
+    public void saveConnection(Message msg){
+        ConnectionLabel connection = new ConnectionLabel(msg.getLabel(),String.valueOf(nextFreePort-1));
+        connections.put(connection,incomingConnection);
+        incomingConnection = null;
+    }
+
+    public void connectToNode(String target, String port, boolean arg) {
+        ServerChannel channel = new ServerChannel(this);
+        if(!arg){
+            ConnectionLabel connection = new ConnectionLabel(target,port);
+            connections.put(connection, channel);
+        } else {
+            incomingConnection = channel;
+            ++nextFreePort;
+        }
+        channel.connect(target+port, arg);
+        if(arg){
+            channel.handshake();
+        }
+        channel.start();
+
     }
 
     public void removeConnection(String server){
         ServerChannel toDelete = connections.get(server);
         toDelete.setRunning(false);
         connections.remove(server);
-    }
-
-    public void openConnection(){
-
-    }
-
-    public void closeConnection(){
-
     }
 }
 

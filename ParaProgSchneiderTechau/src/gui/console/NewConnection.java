@@ -46,7 +46,7 @@ public class NewConnection extends JDialog{
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    connect_TRUE();
+                    openConnection();
                     dispose();
                 }
             }
@@ -62,7 +62,7 @@ public class NewConnection extends JDialog{
                 textFieldPort.addKeyListener(new KeyAdapter() {
                     public void keyPressed(KeyEvent e) {
                         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                            connect_TRUE();
+                            openConnection();
                             dispose();
                         }
                     }
@@ -76,7 +76,7 @@ public class NewConnection extends JDialog{
                 panel_2.add(btnNewButton);
                 btnNewButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        connect_TRUE();
+                        openConnection();
                     }
                 });
         
@@ -87,21 +87,21 @@ public class NewConnection extends JDialog{
                 panel_3.add(btnNewButton_1);
                 btnNewButton_1.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        connect_FALSE();
+                        connectConnection();
                     }
                 });
 
     }
 
-    public void connect_TRUE(){
+    public void openConnection(){
 
-        serverCTR.connectToNode(textFieldServer.getText()+textFieldPort.getText(), true);
+        serverCTR.connectToNode(textFieldServer.getText(), textFieldPort.getText(), true);
         dispose();
     }
 
-    public void connect_FALSE(){
+    public void connectConnection(){
 
-        serverCTR.connectToNode(textFieldServer.getText()+textFieldPort.getText(), false);
+        serverCTR.connectToNode(textFieldServer.getText(), textFieldPort.getText(), false);
         dispose();
     }
 }
