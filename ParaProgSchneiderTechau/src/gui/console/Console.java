@@ -34,8 +34,10 @@ public class Console extends JFrame{
         setSize(500,300);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-250,Toolkit.getDefaultToolkit().getScreenSize().height/2-150);
 
-        serverCTR = new ServerController("Default");
         clientCTR = new ClientController("Default");
+        serverCTR = new ServerController("Default", clientCTR);
+        clientCTR.setServerCTR(serverCTR);
+
         new StartupConsole(serverCTR, clientCTR).setVisible(true);
 
 		JPanel panel = new JPanel();

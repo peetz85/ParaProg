@@ -87,6 +87,14 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
                     }
                 }
 
+                if(msg.isEchoRequest()){
+                    if(msg.isEchoAnswer()){
+                        parent.clientCTR.answerEcho(msg);
+                    } else {
+                        parent.clientCTR.forwardEcho(msg);
+                    }
+                }
+
             }
         }
     }

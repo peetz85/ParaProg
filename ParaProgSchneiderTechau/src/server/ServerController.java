@@ -1,6 +1,7 @@
 package server;
 
 
+import client.ClientController;
 import org.jcsp.net.*;
 
 import java.net.InetAddress;
@@ -15,16 +16,17 @@ import java.util.Map;
 public class ServerController{
     private String serverName;
     private String serverIP;
+    public ClientController clientCTR;
 
     private int nextFreePort;
     private ServerChannel incomingConnection;
 
     public HashMap<ConnectionLabel, ServerChannel> connections;
-    //private Parallel channelListener;
 
-    public ServerController(String name) {
+    public ServerController(String name, ClientController clientCTR) {
         setServerName(name);
         setServerIP();
+        this.clientCTR = clientCTR;
 
         connections = new HashMap<ConnectionLabel, ServerChannel>();
         //channelListener = new Parallel();
