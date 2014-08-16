@@ -1,6 +1,7 @@
 package server;
 
 import java.io.Serializable;
+import java.util.HashSet;
 
 /**
  * Created by Pascal on 09.07.2014.
@@ -74,5 +75,34 @@ public class Message implements Serializable {
         return label;
     }
 
-    //
+    //Request Echo
+    private boolean echoRequest;
+    private boolean echoAnswer;
+    private HashSet<String> nodeSet;
+    private int nodeCount;
+    
+    public boolean isEchoRequest() {
+		return echoRequest;
+	}
+	public boolean isEchoAnswer() {
+		return echoAnswer;
+	}  
+    public HashSet<String> getNodeSet() {
+		return nodeSet;
+	}
+	public void setNodeSet(HashSet<String> nodeSet) {
+		echoRequest = true;
+		echoAnswer = false;
+		this.nodeSet = nodeSet;
+	}
+	public int getNodeCount() {
+		return nodeCount;
+	}
+	public void setNodeCount(int nodeCount) {
+		echoRequest = true;
+		echoAnswer = true;
+		this.nodeCount = nodeCount;
+	}
+	
+    
 }
