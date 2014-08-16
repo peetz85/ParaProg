@@ -90,8 +90,10 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
                 if(msg.isEchoRequest()){
                     System.out.println("Es gibt ein ECHO Request!");
                     if(msg.isEchoAnswer()){
+                        System.out.println("echo Antwort");
                         parent.clientCTR.answerEcho(msg);
                     } else {
+                        System.out.println("echo Forward");
                         parent.clientCTR.forwardEcho(msg);
                     }
                 }
