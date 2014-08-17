@@ -66,7 +66,9 @@ public class Console extends JFrame{
         JMenuItem mntmAktiviereServer = new JMenuItem("Verbindung bereitstellen");
         mntmAktiviereServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                new OpenConnection(serverCTR).setVisible(true);;
+                OpenConnection arg = new OpenConnection(serverCTR);
+                arg.setLocation(getLocationOnScreen().x+100,getLocationOnScreen().y+90);
+                arg.setVisible(true);
             }
         });
         mnMenu.add(mntmAktiviereServer);
@@ -74,7 +76,9 @@ public class Console extends JFrame{
 		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                new ConnectConnection(serverCTR).setVisible(true);
+                ConnectConnection arg = new ConnectConnection(serverCTR);
+                arg.setLocation(getLocationOnScreen().x+100,getLocationOnScreen().y+90);
+                arg.setVisible(true);
             }
         });
 		mnMenu.add(mntmNeueVerbindung);

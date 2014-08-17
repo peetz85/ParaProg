@@ -1,12 +1,12 @@
 package client;
 
-import server.ConnectionLabel;
+import semesteraufgabe.Starter;
 import server.Message;
 import server.ServerController;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Created by Pascal on 08.07.2014.
@@ -40,6 +40,7 @@ public class ClientController {
         Message msg = new Message(clientName);
         HashSet<String> dontVisit = new HashSet<String>(serverCTR.generateNodeSet());
         msg.setNodeSet(dontVisit,clientName);
+
         HashSet<String> empty = new HashSet<String>();
 
         ReturnType retType = new ReturnType();
@@ -50,54 +51,56 @@ public class ClientController {
     }
 
     public void answerEcho(Message msg) {
-        if(msg.isEchoAnswer()){
+        if(msg.isEchoRequest_2nd()){
             System.out.println("antwort_1");
-            ReturnType waitingFor = returnToSender.get(msg.getMESSAGE_CREATOR());
-            if(waitingFor !=null){
+            ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
+            if(deliveryInformations.waitingForAnswer.contains(serverCTR.getServerName()))
+                deliveryInformations.waitingForAnswer.remove(serverCTR.getServerName());
+            if(deliveryInformations !=null){
                 System.out.println("antwort_2");
-                waitingFor.getAnswers().add(msg);
-                waitingFor.getWaitingForAnswer().remove(msg.getMessageFrom());
+                deliveryInformations.answers.add(msg);
+                deliveryInformations.waitingForAnswer.remove(msg.getMessageFrom());
             }
-            if(waitingFor.getWaitingForAnswer().isEmpty()){
+            if(deliveryInformations.waitingForAnswer.isEmpty()){
                 System.out.println("antwort_3");
-                int retInt =0;
-                ArrayList<Message> messages = waitingFor.getAnswers();
-                for(int count=0; count<=messages.size();++count){
-                    retInt += messages.get(count).getNodeCount();
+                int retInt=1;
+                for (int count = 0; count < deliveryInformations.answers.size(); count++) {
+                    if(deliveryInformations.answers.get(count) != null){
+                        retInt += deliveryInformations.answers.get(count).getNodeCount();
+                    }
                 }
-                if(serverCTR.getServerName() == msg.getMESSAGE_CREATOR()){
+                if(serverCTR.getServerName().equals(msg.getREQUEST_CREATOR())){
                     System.out.println("antwort_4");
                     System.out.println("Soooo viele Knoten: " + retInt);
                 } else {
                     System.out.println("antwort_5");
                     msg.setNodeCount(retInt, serverCTR.getServerName());
-                    serverCTR.sendOnly(waitingFor.getSendBackTo(), msg);
+                    serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
                 }
             }
-
         } else {
             System.out.println("Antwort_6");
-            String sendTo = msg.getMessageFrom();
-            Message returnMessage = msg;
-            returnMessage.setNodeCount(1,serverCTR.getServerName());
-            System.out.println(sendTo);
-            serverCTR.sendOnly(sendTo,returnMessage);
+            String sendBackTo = msg.getMessageFrom();
+            msg.setNodeCount(1,serverCTR.getServerName());
+            System.out.println(sendBackTo);
+            serverCTR.sendOnly(sendBackTo,msg);
         }
-
-
     }
 
     public void forwardEcho(Message msg) {
-        if (!isLastNode(msg.getNodeSet())) {
+        if (isLastNode(msg.getNodeSet())) {
+            System.out.println("Zurück damit");
+            answerEcho(msg);
+        } else {
             System.out.println("LastNode");
-            if (returnToSender.containsKey(msg.getMESSAGE_CREATOR())) {
+            if (returnToSender.containsKey(msg.getREQUEST_CREATOR())) {
                 //ReturnType erstellen mit Sender der Generator der alten Nachricht
                 //und Liste(HashSet) der abzuwartenden Sender
                 ReturnType sendBack = new ReturnType();
                 HashSet<String> waitingFor = serverCTR.generateNodeSet();
                 waitingFor.removeAll(msg.getNodeSet());
-                sendBack.setEchoRequest(waitingFor,msg.getMessageFrom());
-                returnToSender.put(msg.getMESSAGE_CREATOR(), sendBack);
+                sendBack.setEchoRequest(waitingFor, msg.getMessageFrom());
+                returnToSender.put(msg.getREQUEST_CREATOR(), sendBack);
 
                 //Neue Liste für nächsten Node mit aktualisierter Liste
                 //der nicht zu besuchenden Nodes
@@ -107,11 +110,8 @@ public class ClientController {
 
                 serverCTR.sendAll(waitingFor, false, msg);
             }
-        } else {
-            System.out.println("Zurück damit");
-            answerEcho(msg);
-        }
 
+        }
     }
 
     public boolean isLastNode(HashSet<String> visited) {

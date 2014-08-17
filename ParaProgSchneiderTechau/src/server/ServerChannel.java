@@ -1,6 +1,5 @@
 package server;
 
-import org.jcsp.lang.*;
 import org.jcsp.net.*;
 import org.jcsp.net.cns.CNS;
 
@@ -77,9 +76,8 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
                     parent.removeConnection(msg.getTerminateServerName());
                 }
 
-                if(msg.isHandshake()){
-                    System.out.println("Handshake");
-                    if(msg.isHandshakeRequest()){
+                if(msg.isHandshake_1st()){
+                    if(msg.isHandshake_2nd()){
                         msg = new Message(parent.getServerName());
                         msg.setLabel(parent.getServerName(),false);
                         send(msg);
@@ -88,13 +86,10 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
                     }
                 }
 
-                if(msg.isEchoRequest()){
-                    System.out.println("Es gibt ein ECHO Request!");
-                    if(msg.isEchoAnswer()){
-                        System.out.println("echo Antwort");
+                if(msg.isEchoRequest_1st()){
+                    if(msg.isEchoRequest_2nd()){
                         parent.clientCTR.answerEcho(msg);
                     } else {
-                        System.out.println("echo Forward");
                         parent.clientCTR.forwardEcho(msg);
                     }
                 }

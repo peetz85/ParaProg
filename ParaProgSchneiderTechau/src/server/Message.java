@@ -8,20 +8,17 @@ import java.util.HashSet;
  */
 public class Message implements Serializable {
 
-    final private String MESSAGE_CREATOR;
-    public Message(String MESSAGE_CREATOR) {
-        this.MESSAGE_CREATOR = MESSAGE_CREATOR;
+    final private String REQUEST_CREATOR;
+    public Message(String REQUEST_CREATOR) {
+        this.REQUEST_CREATOR = REQUEST_CREATOR;
     }
-    public String getMESSAGE_CREATOR(){
-        return MESSAGE_CREATOR;
+    public String getREQUEST_CREATOR(){
+        return REQUEST_CREATOR;
     }
 
     //Wird benötigt für:    Request Echo +
     //
     private String messageFrom;
-
-
-
     public String getMessageFrom() {
         return messageFrom;
     }
@@ -61,21 +58,21 @@ public class Message implements Serializable {
     }
 
     //Handshake Singal
-    private boolean handshake;
-    private boolean handshakeRequest;
+    private boolean handshake_1st;
+    private boolean handshake_2nd;
     private String label;
 
-    public void setLabel(String label, boolean handshakeRequest){
+    public void setLabel(String label, boolean handshake_2nd){
         this.label = label;
-        handshake = true;
-        this.handshakeRequest = handshakeRequest;
+        handshake_1st = true;
+        this.handshake_2nd = handshake_2nd;
     }
-    public boolean isHandshake(){
+    public boolean isHandshake_1st(){
 
-        return handshake;
+        return handshake_1st;
     }
-    public boolean isHandshakeRequest(){
-        return handshakeRequest;
+    public boolean isHandshake_2nd(){
+        return handshake_2nd;
     }
 
     public String getLabel(){
@@ -84,23 +81,23 @@ public class Message implements Serializable {
     }
 
     //Request Echo
-    private boolean echoRequest;
-    private boolean echoAnswer;
+    private boolean echoRequest_1st; //Deklariert ob die Message eine Echo-Anfrage ist
+    private boolean echoRequest_2nd; //Deklariert ob die Message eine Antwort auf eine Echo-Anfrage ist
     private HashSet<String> nodeSet;
     private int nodeCount;
     
-    public boolean isEchoRequest() {
-		return echoRequest;
+    public boolean isEchoRequest_1st() {
+		return echoRequest_1st;
 	}
-	public boolean isEchoAnswer() {
-		return echoAnswer;
+	public boolean isEchoRequest_2nd() {
+		return echoRequest_2nd;
 	}  
     public HashSet<String> getNodeSet() {
 		return nodeSet;
 	}
 	public void setNodeSet(HashSet<String> nodeSet, String messageFrom) {
-		echoRequest = true;
-		echoAnswer = false;
+		echoRequest_1st = true;
+		echoRequest_2nd = false;
 		this.nodeSet = nodeSet;
         this.messageFrom = messageFrom;
 	}
@@ -108,8 +105,8 @@ public class Message implements Serializable {
 		return nodeCount;
 	}
 	public void setNodeCount(int nodeCount, String messageFrom) {
-		echoRequest = true;
-		echoAnswer = true;
+		echoRequest_1st = true;
+		echoRequest_2nd = true;
         nodeSet = null;
 		this.nodeCount = nodeCount;
         this.messageFrom = messageFrom;

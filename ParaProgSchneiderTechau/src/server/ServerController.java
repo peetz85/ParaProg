@@ -29,7 +29,6 @@ public class ServerController{
         this.clientCTR = clientCTR;
 
         connections = new HashMap<ConnectionLabel, ServerChannel>();
-        //channelListener = new Parallel();
         nextFreePort = 0;
     }
 
@@ -40,18 +39,16 @@ public class ServerController{
                 nodeSet.add(key.getServerName());
                 }
             }
+        nodeSet.add(serverName);
         return nodeSet;
     }
 
     public ServerChannel getServerChannel(String server){
         ServerChannel returnValue = null;
         if(!connections.isEmpty()) {
-            System.out.println("keine Verbindungen");
             for (ConnectionLabel key : connections.keySet()) {
-                System.out.println(key.getServerName() + " " + server);
                     if(key.getServerName().equals(server)){
                         returnValue = connections.get(key);
-                        System.out.println("treffer - ServerChannel Gefunden");
                     }
             }
         }
@@ -78,11 +75,10 @@ public class ServerController{
 
     public void sendOnly(String arg, Message msg){
         ServerChannel connection = getServerChannel(arg);
-        System.out.println(arg);
-        if(connection != null)
+        if(connection != null) {
             connection.send(msg);
+        }
     }
-
 
     public int getNextFreePort(){
         return nextFreePort;
@@ -111,11 +107,8 @@ public class ServerController{
     }
 
     public void setCNSServer(String arg) {
-        System.out.println("Setting CNS Server!");
-        arg += ":51526";
-
         try {
-            System.setProperty("org.jcsp.tcpip.DefaultCNSServer", arg);
+            System.setProperty("org.jcsp.tcpip.DefaultCNSServer", arg+":51526");
             Node.getInstance().init();
         } catch (NodeInitFailedException e) {}
     }
