@@ -83,7 +83,7 @@ public class ClientController {
         } else {
             System.out.println("Nachricht von "+ msg.getMessageFrom()+":"+"Antwort_6");
             String sendBackTo = msg.getMessageFrom();
-            msg.setNodeCount(1,serverCTR.getServerName());
+            msg.setNodeCount(1, serverCTR.getServerName());
             serverCTR.sendOnly(sendBackTo,msg);
         }
     }
@@ -112,9 +112,7 @@ public class ClientController {
 
                 serverCTR.sendAll(waitingFor, false, msg);
             } else {
-
             }
-
         }
     }
 
@@ -123,4 +121,17 @@ public class ClientController {
         return visited.containsAll(serverCTR.generateNodeSet());
     }
 
+    public GraphPaul generateGraph(){
+        HashSet<String> arg = serverCTR.generateNodeSet();
+        String[] array = arg.toArray(new String[0]);
+
+        GraphPaul graph = new GraphPaul(array);
+
+        for(int i=0; i<array.length;++i){
+            for(int c=0; c<array.length;++c){
+                graph.verbindeKnoten(array[i],array[c]);
+            }
+        }
+        return graph;
+    }
 }

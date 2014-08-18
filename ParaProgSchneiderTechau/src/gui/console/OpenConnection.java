@@ -60,6 +60,5 @@ public class OpenConnection extends JDialog{
 	void init(){
 		serverCTR.connectToNode(serverCTR.getServerName(), String.valueOf(serverCTR.getNextFreePort()), true);
        	dispose();
-        serverCTR.printAllNodesFancy();
 	}
 }

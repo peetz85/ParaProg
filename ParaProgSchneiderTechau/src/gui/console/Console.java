@@ -100,13 +100,22 @@ public class Console extends JFrame{
         JSeparator separator_ = new JSeparator();
         mnMenu.add(separator_);
 		
-		JMenuItem mntmGeneriereGraph = new JMenuItem("Knoten zählen");
-		mntmGeneriereGraph.addActionListener(new ActionListener() {
+		JMenuItem mntmCountNode = new JMenuItem("Knoten zählen");
+		mntmCountNode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 serverCTR.clientCTR.initEcho();
 			}
 		});
-		mnMenu.add(mntmGeneriereGraph);
+		mnMenu.add(mntmCountNode);
+
+        JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
+        mntmGeneriereGraph.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                System.out.println(serverCTR.clientCTR.generateGraph());
+            }
+        });
+        mnMenu.add(mntmGeneriereGraph);
 
         JMenuItem mntmNachricht = new JMenuItem("Sende WakeUp");
         mntmNachricht.addActionListener(new ActionListener() {
