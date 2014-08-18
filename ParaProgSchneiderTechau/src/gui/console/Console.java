@@ -5,17 +5,12 @@ import server.Message;
 import server.ServerChannel;
 import server.ServerController;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.*;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JSeparator;
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 public class Console extends JFrame{
@@ -30,6 +25,12 @@ public class Console extends JFrame{
 	public Console() {
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent event1) {
+                beenden();
+            }
+        });
+
         setTitle("Client");
         setSize(500,300);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width/2-250,Toolkit.getDefaultToolkit().getScreenSize().height/2-150);
@@ -55,7 +56,11 @@ public class Console extends JFrame{
 		panel_1.add(lblNewLabel, BorderLayout.CENTER);
 		
 		textArea = new JTextArea();
-		panel.add(textArea, BorderLayout.CENTER);
+        panel.add(new JScrollPane(textArea), BorderLayout.CENTER);
+        MessageConsole mc = new MessageConsole(textArea);
+        mc.redirectOut();
+        mc.redirectErr(Color.RED, null);
+        mc.setMessageLines(100);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -82,6 +87,15 @@ public class Console extends JFrame{
             }
         });
 		mnMenu.add(mntmNeueVerbindung);
+
+        JMenuItem mntmShowConnections = new JMenuItem("Zeige Nachbarn");
+        mntmShowConnections.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+
+                serverCTR.printAllNodesFancy();
+            }
+        });
+        mnMenu.add(mntmShowConnections);
 		
         JSeparator separator_ = new JSeparator();
         mnMenu.add(separator_);
@@ -114,21 +128,16 @@ public class Console extends JFrame{
 		JMenuItem mntmBeenden = new JMenuItem("Beenden");
 		mntmBeenden.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				terminate();
-                System.exit(0);
+                beenden();
 			}
 		});
 		mnMenu.add(mntmBeenden);
 
 	}
 
-    public void terminate(){
-        if(!serverCTR.connections.isEmpty()) {
-            Message terminateSignal = new Message(serverCTR.getServerName());
-            terminateSignal.setTerminateSignal(serverCTR.getServerName());
-            for (ServerChannel value : serverCTR.connections.values()) {
-                value.send(terminateSignal);
-            }
-        }
+    public void beenden(){
+        //TODO serverCTR.terminateConnections();
+        System.exit(0);
     }
+
 }

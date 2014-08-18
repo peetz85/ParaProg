@@ -86,5 +86,6 @@ public class ConnectConnection extends JDialog{
 
         serverCTR.connectToNode(textFieldServer.getText(), textFieldPort.getText(), false);
         dispose();
+        serverCTR.printAllNodesFancy();
     }
 }

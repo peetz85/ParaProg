@@ -52,17 +52,17 @@ public class ClientController {
 
     public void answerEcho(Message msg) {
         if(msg.isEchoRequest_2nd()){
-            System.out.println("antwort_1");
+            System.out.println("Nachricht von "+ msg.getMessageFrom()+":"+ "answerEcho - Message ist eine Antwort");
             ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
             if(deliveryInformations.waitingForAnswer.contains(serverCTR.getServerName()))
                 deliveryInformations.waitingForAnswer.remove(serverCTR.getServerName());
             if(deliveryInformations !=null){
-                System.out.println("antwort_2");
+                System.out.println("Nachricht von "+ msg.getMessageFrom()+":"+"answerEcho - Für die Message gibt es einen Eintrag");
                 deliveryInformations.answers.add(msg);
                 deliveryInformations.waitingForAnswer.remove(msg.getMessageFrom());
             }
             if(deliveryInformations.waitingForAnswer.isEmpty()){
-                System.out.println("antwort_3");
+                System.out.println("Nachricht von "+ msg.getMessageFrom()+":"+"answerEcho - Keine ausstehenden Antworten");
                 int retInt=1;
                 for (int count = 0; count < deliveryInformations.answers.size(); count++) {
                     if(deliveryInformations.answers.get(count) != null){
@@ -70,30 +70,32 @@ public class ClientController {
                     }
                 }
                 if(serverCTR.getServerName().equals(msg.getREQUEST_CREATOR())){
-                    System.out.println("antwort_4");
+                    System.out.println("Nachricht von "+ msg.getMessageFrom()+":"+"answerEcho - Ich bin der Knoten der gefragt hat");
                     System.out.println("Soooo viele Knoten: " + retInt);
+                    returnToSender.remove(msg.getREQUEST_CREATOR());
                 } else {
-                    System.out.println("antwort_5");
+                    System.out.println("Nachricht von "+ msg.getMessageFrom()+":"+"answerEcho - Ich bin nicht der Knoten der gefragt hat");
                     msg.setNodeCount(retInt, serverCTR.getServerName());
                     serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
+                    returnToSender.remove(msg.getREQUEST_CREATOR());
                 }
             }
         } else {
-            System.out.println("Antwort_6");
+            System.out.println("Nachricht von "+ msg.getMessageFrom()+":"+"Antwort_6");
             String sendBackTo = msg.getMessageFrom();
             msg.setNodeCount(1,serverCTR.getServerName());
-            System.out.println(sendBackTo);
             serverCTR.sendOnly(sendBackTo,msg);
         }
     }
 
     public void forwardEcho(Message msg) {
         if (isLastNode(msg.getNodeSet())) {
-            System.out.println("Zurück damit");
+            System.out.println("Nachricht von "+ msg.getMessageFrom()+":"+"Zurück damit. Bin der Letzte Node");
             answerEcho(msg);
         } else {
-            System.out.println("LastNode");
-            if (returnToSender.containsKey(msg.getREQUEST_CREATOR())) {
+            System.out.println("Nachricht von "+ msg.getMessageFrom()+":"+"Nicht der letzte Node. Nachricht Weiterleiten!");
+            if (!returnToSender.containsKey(msg.getREQUEST_CREATOR())) {
+                System.out.println("Es gibt noch keinen Eintrag mit dieser Anfrage");
                 //ReturnType erstellen mit Sender der Generator der alten Nachricht
                 //und Liste(HashSet) der abzuwartenden Sender
                 ReturnType sendBack = new ReturnType();
@@ -109,13 +111,16 @@ public class ClientController {
                 msg.setNodeSet(dontVisist, serverCTR.getServerName());
 
                 serverCTR.sendAll(waitingFor, false, msg);
+            } else {
+
             }
 
         }
     }
 
     public boolean isLastNode(HashSet<String> visited) {
-        return serverCTR.generateNodeSet().containsAll(visited);
+
+        return visited.containsAll(serverCTR.generateNodeSet());
     }
 
 }

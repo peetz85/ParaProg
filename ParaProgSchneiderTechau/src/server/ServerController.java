@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -55,19 +56,35 @@ public class ServerController{
         return returnValue;
     }
 
+    private void removeServerChannel(String server){
+        if(!connections.isEmpty()) {
+            for (ConnectionLabel key : connections.keySet()) {
+                if(key.getServerName().equals(server)){
+                    connections.remove(key);
+                }
+            }
+        }
+    }
+
+
     public void sendAll(HashSet<String> nodeSet, boolean except, Message msg) {
         if (!connections.isEmpty()) {
+            System.out.println("Sende Nachricht an:");
             if (except) {
                 //Nachricht an ALLE senden die NICHT in der Liste sind!!!!
                 for (Map.Entry<ConnectionLabel, ServerChannel> entry : connections.entrySet()) {
-                    if (!nodeSet.contains(entry.getKey().getServerName()))
+                    if (!nodeSet.contains(entry.getKey().getServerName())) {
                         entry.getValue().send(msg);
+                        System.out.println(entry.getKey().getServerName());
+                    }
                 }
             } else {
                 //Nachricht an ALLE senden die in der Liste vorhanden sind
                 for (Map.Entry<ConnectionLabel, ServerChannel> entry : connections.entrySet()) {
-                    if (nodeSet.contains(entry.getKey().getServerName()))
+                    if (nodeSet.contains(entry.getKey().getServerName())){
                         entry.getValue().send(msg);
+                        System.out.println(entry.getKey().getServerName());
+                    }
                 }
             }
         }
@@ -114,11 +131,9 @@ public class ServerController{
     }
 
     public void saveConnection(Message msg){
-        System.out.println(msg.getLabel()+" " +String.valueOf(nextFreePort-1));
         ConnectionLabel connection = new ConnectionLabel(msg.getLabel(),String.valueOf(nextFreePort-1));
         connections.put(connection,incomingConnection);
         incomingConnection = null;
-        printAllNodes();
     }
 
     public void connectToNode(String target, String port, boolean arg) {
@@ -139,16 +154,39 @@ public class ServerController{
     }
 
     public void removeConnection(String server){
-        ServerChannel toDelete = connections.get(server);
+        ServerChannel toDelete = getServerChannel(server);
         toDelete.setRunning(false);
         connections.remove(server);
     }
 
+    public void printAllNodesFancy(){
+        System.out.println("- - - Node Connections - - -");
+        printAllNodes();
+        System.out.println("- - - - - - - - - - - - - - - - - - - - -");
+    }
     public void printAllNodes(){
         for (ConnectionLabel key : connections.keySet()) {
             System.out.println(key);
         }
     }
+    public void printAllNodes(HashSet<String> arg){
+        Iterator iter = arg.iterator();
+        while (iter.hasNext()) {
+            System.out.println(iter.next());
+        }
+    }
+
+    public void terminateConnections(){
+        if(!connections.isEmpty()) {
+            Message terminateSignal = new Message(serverName);
+            terminateSignal.setTerminateSignal(serverName);
+
+            for (ServerChannel value : connections.values()) {
+                value.send(terminateSignal);
+            }
+        }
+    }
+
 }
 
 

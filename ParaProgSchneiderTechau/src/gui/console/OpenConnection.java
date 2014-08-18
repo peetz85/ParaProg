@@ -1,7 +1,6 @@
 package gui.console;
 
 import javax.swing.JDialog;
-import java.awt.FlowLayout;
 
 import javax.swing.JLabel;
 
@@ -61,5 +60,6 @@ public class OpenConnection extends JDialog{
 	void init(){
 		serverCTR.connectToNode(serverCTR.getServerName(), String.valueOf(serverCTR.getNextFreePort()), true);
        	dispose();
+        serverCTR.printAllNodesFancy();
 	}
 }
