@@ -111,6 +111,4 @@ public class Message implements Serializable {
 		this.nodeCount = nodeCount;
         this.messageFrom = messageFrom;
 	}
-	
-    
 }

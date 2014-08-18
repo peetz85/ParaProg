@@ -4,9 +4,7 @@ import semesteraufgabe.Starter;
 import server.Message;
 import server.ServerController;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Created by Pascal on 08.07.2014.
@@ -16,11 +14,14 @@ public class ClientController {
     private String clientName;
     private ServerController serverCTR;
 
-    private HashMap<String, ReturnType> returnToSender;
+    private Map<String, ReturnType> returnToSender;
 
     public ClientController(String name) {
         clientName = name;
-        returnToSender = new HashMap<String, ReturnType>();
+
+        HashMap hashMap = new HashMap<String,ReturnType>();
+
+        returnToSender = Collections.synchronizedMap(hashMap);
     }
 
     public void setServerCTR(ServerController serverCTR) {
@@ -36,7 +37,7 @@ public class ClientController {
 
     }
 
-    public void initEcho(){
+    public synchronized void initEcho(){
         Message msg = new Message(clientName);
         HashSet<String> dontVisit = new HashSet<String>(serverCTR.generateNodeSet());
         msg.setNodeSet(dontVisit,clientName);
@@ -50,7 +51,7 @@ public class ClientController {
         serverCTR.sendAll(empty, true, msg);
     }
 
-    public void answerEcho(Message msg) {
+    public synchronized void answerEcho(Message msg) {
         if(msg.isEchoRequest_2nd()){
             System.out.println("Nachricht von "+ msg.getMessageFrom()+":"+ "answerEcho - Message ist eine Antwort");
             ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
@@ -88,7 +89,7 @@ public class ClientController {
         }
     }
 
-    public void forwardEcho(Message msg) {
+    public synchronized void forwardEcho(Message msg) {
         if (isLastNode(msg.getNodeSet())) {
             System.out.println("Nachricht von "+ msg.getMessageFrom()+":"+"Zurück damit. Bin der Letzte Node");
             answerEcho(msg);
@@ -112,12 +113,15 @@ public class ClientController {
 
                 serverCTR.sendAll(waitingFor, false, msg);
             } else {
+                System.out.println("Nachricht von "+ msg.getMessageFrom()+":"+ "Der bekommt nur Müll zurück");
+                String sendBackTo = msg.getMessageFrom();
+                msg.setNodeCount(0, serverCTR.getServerName());
+                serverCTR.sendOnly(sendBackTo,msg);
             }
         }
     }
 
     public boolean isLastNode(HashSet<String> visited) {
-
         return visited.containsAll(serverCTR.generateNodeSet());
     }
 
