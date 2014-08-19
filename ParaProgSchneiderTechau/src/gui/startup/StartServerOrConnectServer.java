@@ -42,7 +42,7 @@ public class StartServerOrConnectServer extends JDialog{
 		});
 		getContentPane().add(btnStandardCnsServer);
 	}
-
+//
     void init(){
         dispose();
         new Console().setVisible(true);
