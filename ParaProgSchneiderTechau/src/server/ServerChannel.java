@@ -54,7 +54,7 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
         Message msg = null;
         while (running) {
             try {
-                Thread.sleep(50);
+                Thread.sleep(250);
                 if (input.pending())
                     msg = (Message) input.read();
             } catch (Exception e) {}
@@ -71,9 +71,11 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
                             parent.saveConnection(msg);
                         }
                     }
-                } else
+                } else {
                     parent.putMessage(msg);
+                }
             }
+            msg = null;
         }
     }
 }

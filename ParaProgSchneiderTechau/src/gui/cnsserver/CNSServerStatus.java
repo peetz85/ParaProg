@@ -16,8 +16,6 @@ public class CNSServerStatus extends JFrame{
 
 
     public CNSServerStatus() {
-
-
         InetAddress ip = null;
         try {
             ip = InetAddress.getLocalHost();
@@ -26,7 +24,7 @@ public class CNSServerStatus extends JFrame{
         }
 
         setTitle("CNS Server: " + ip.getHostAddress()+":51526");
-        setSize(350, 100);
+        setSize(400, 150);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 - 125, Toolkit.getDefaultToolkit().getScreenSize().height / 2 - 50);
         getContentPane().setLayout(new GridLayout(0, 1, 0, 0));

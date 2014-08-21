@@ -9,13 +9,17 @@ import java.util.HashSet;
 public class Message implements Serializable {
 
     final private String REQUEST_CREATOR;
+    final private long REQUEST_TIMESTAMP;
     public Message(String REQUEST_CREATOR) {
         this.REQUEST_CREATOR = REQUEST_CREATOR;
+        REQUEST_TIMESTAMP = System.currentTimeMillis();
     }
     public String getREQUEST_CREATOR(){
         return REQUEST_CREATOR;
     }
-
+    public long getREQUEST_TIMESTAMP(){
+        return REQUEST_TIMESTAMP;
+    }
     //Wird benötigt für:    Request Echo +
     //
     private String messageFrom;

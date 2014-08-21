@@ -10,12 +10,16 @@ import java.util.HashSet;
  */
 public class ReturnType {
 
-    public ReturnType(){}
+    public ReturnType(long timeStamp){
+        REQUEST_TIMESTAMP = timeStamp;
+    }
 
     private boolean echoRequest;
+    public final long REQUEST_TIMESTAMP;
     private String sendBackTo;
     public HashSet<String> waitingForAnswer;
     public ArrayList<Message> answers;
+
 
     public boolean isEchoRequest() {
         return echoRequest;

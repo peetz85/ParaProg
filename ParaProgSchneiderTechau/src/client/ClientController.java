@@ -43,7 +43,6 @@ public class ClientController extends Thread{
             if(msg == null){
                 msg = serverCTR.getMessage();
             }
-
             if(msg != null){
                     if(msg.iscInteger()){
                         System.out.println(msg.getI());
@@ -59,17 +58,9 @@ public class ClientController extends Thread{
                             forwardEcho(msg);
                         }
                     }
-
+                msg = null;
                 }
-
-
-
-
-
         }
-
-
-
     }
 
     public synchronized void initEcho() {
@@ -79,7 +70,7 @@ public class ClientController extends Thread{
 
         HashSet<String> empty = new HashSet<String>();
 
-        ReturnType retType = new ReturnType();
+        ReturnType retType = new ReturnType(msg.getREQUEST_TIMESTAMP());
         retType.setEchoRequest(dontVisit, clientName);
         returnToSender.put(clientName, retType);
 
@@ -125,15 +116,18 @@ public class ClientController extends Thread{
     }
 
     public synchronized void forwardEcho(Message msg) {
-        if (!returnToSender.containsKey(msg.getREQUEST_CREATOR())) {
+        if (!returnToSender.containsKey(msg.getREQUEST_CREATOR()) ||
+             returnToSender.get(msg.getREQUEST_CREATOR()).REQUEST_TIMESTAMP != msg.getREQUEST_TIMESTAMP()) {
             if (isLastNode(msg.getNodeSet())) {
                 System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "Zurück damit. Bin der Letzte Node");
                 answerEcho(msg);
+                ReturnType sendBack = new ReturnType(msg.getREQUEST_TIMESTAMP());
+                returnToSender.put(msg.getREQUEST_CREATOR(),sendBack);
             } else {
                 System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "Nicht der letzte Node. Nachricht Weiterleiten!");
                 //ReturnType erstellen mit Sender der Generator der alten Nachricht
                 //und Liste(HashSet) der abzuwartenden Sender
-                ReturnType sendBack = new ReturnType();
+                ReturnType sendBack = new ReturnType(msg.getREQUEST_TIMESTAMP());
                 HashSet<String> waitingFor = serverCTR.generateNodeSet();
                 waitingFor.removeAll(msg.getNodeSet());
                 sendBack.setEchoRequest(waitingFor, msg.getMessageFrom());

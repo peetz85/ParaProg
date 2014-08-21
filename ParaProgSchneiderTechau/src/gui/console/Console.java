@@ -38,6 +38,7 @@ public class Console extends JFrame{
         clientCTR = new ClientController("Default");
         serverCTR = new ServerController("Default", clientCTR);
         clientCTR.setServerCTR(serverCTR);
+        clientCTR.start();
 
         new StartupConsole(serverCTR, clientCTR).setVisible(true);
 
