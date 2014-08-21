@@ -52,9 +52,10 @@ public class Message implements Serializable {
         return i;
     }
 
-    public void setI(int i) {
+    public void setI(int i, String from) {
         this.i = i;
         cInteger = true;
+        messageFrom = from;
     }
 
     //Handshake Singal

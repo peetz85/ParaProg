@@ -122,7 +122,7 @@ public class Console extends JFrame{
             public void actionPerformed(ActionEvent arg0) {
                 if(!serverCTR.connections.isEmpty()) {
                     Message tmp = new Message(serverCTR.getServerName());
-                    tmp.setI(11);
+                    tmp.setI(11,serverCTR.getServerName());
                     for (ServerChannel value : serverCTR.connections.values()) {
                         value.send(tmp);
                     }

@@ -3,6 +3,9 @@ package server;
 import org.jcsp.net.*;
 import org.jcsp.net.cns.CNS;
 
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * Created by Pascal on 09.07.2014.
  */
@@ -11,19 +14,18 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
     private boolean running = true;
     private NetChannelOutput output;
     private NetAltingChannelInput input;
-
     private ServerController parent;
-
 
     public ServerChannel(ServerController parent) {
         this.parent = parent;
     }
 
-    public void setRunning(boolean arg){
+    public void setRunning(boolean arg) {
         running = arg;
     }
 
-    public boolean isRunning(){
+
+    public boolean isRunning() {
         return running;
     }
 
@@ -37,7 +39,7 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
         }
     }
 
-    public void handshake(){
+    public void handshake() {
         Message msg = new Message(parent.getServerName());
         msg.setLabel(parent.getServerName(), true);
         send(msg);
@@ -47,53 +49,30 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
         output.write(arg);
     }
 
-    private Message recive(){
-        if(input.pending()){
-            return (Message) input.read();
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public void run() {
-        Message msg;
+        Message msg = null;
         while (running) {
-            msg = recive();
-
             try {
-                Thread.sleep(1);
-                //System.out.println("Lebe noch");
+                Thread.sleep(50);
+                if (input.pending())
+                    msg = (Message) input.read();
             } catch (Exception e) {}
-
-            if(msg != null){
-                if(msg.iscInteger()){
-                    System.out.println(msg.getI());
-                    msg.setI(msg.getI()+5);
-                    send(msg);
-                }
-                if(msg.isTerminateSignal()){
-                    parent.removeConnection(msg.getTerminateServerName());
-                }
-
-                if(msg.isHandshake_1st()){
-                    if(msg.isHandshake_2nd()){
-                        msg = new Message(parent.getServerName());
-                        msg.setLabel(parent.getServerName(),false);
-                        send(msg);
-                    }else {
-                        parent.saveConnection(msg);
+            if (msg != null) {
+                if (msg.isTerminateSignal() || msg.isHandshake_1st()) {
+                    if (msg.isTerminateSignal()) {
+                        parent.removeConnection(msg.getTerminateServerName());
+                    } else if (msg.isHandshake_1st()) {
+                        if (msg.isHandshake_2nd()) {
+                            msg = new Message(parent.getServerName());
+                            msg.setLabel(parent.getServerName(), false);
+                            send(msg);
+                        } else {
+                            parent.saveConnection(msg);
+                        }
                     }
-                }
-
-                if(msg.isEchoRequest_1st()){
-                    if(msg.isEchoRequest_2nd()){
-                        parent.clientCTR.answerEcho(msg);
-                    } else {
-                        parent.clientCTR.forwardEcho(msg);
-                    }
-                }
-
+                } else
+                    parent.putMessage(msg);
             }
         }
     }

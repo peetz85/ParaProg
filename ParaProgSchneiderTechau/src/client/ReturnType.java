@@ -13,12 +13,10 @@ public class ReturnType {
     public ReturnType(){}
 
     private boolean echoRequest;
-
-
-
     private String sendBackTo;
     public HashSet<String> waitingForAnswer;
     public ArrayList<Message> answers;
+
     public boolean isEchoRequest() {
         return echoRequest;
     }

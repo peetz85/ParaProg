@@ -25,7 +25,7 @@ public class CNSServerStatus extends JFrame{
             e.printStackTrace();
         }
 
-        setTitle("CNS Server: " + ip.getHostAddress());
+        setTitle("CNS Server: " + ip.getHostAddress()+":51526");
         setSize(350, 100);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 - 125, Toolkit.getDefaultToolkit().getScreenSize().height / 2 - 50);

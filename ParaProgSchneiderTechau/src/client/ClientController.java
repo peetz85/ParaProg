@@ -1,6 +1,6 @@
 package client;
 
-import semesteraufgabe.Starter;
+import server.ConnectionLabel;
 import server.Message;
 import server.ServerController;
 
@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Created by Pascal on 08.07.2014.
  */
-public class ClientController {
+public class ClientController extends Thread{
 
     private String clientName;
     private ServerController serverCTR;
@@ -34,6 +34,41 @@ public class ClientController {
 
 
     public void run() {
+        Message msg = null;
+        while(true){
+            try {
+                Thread.sleep(5);
+            } catch (Exception e){}
+
+            if(msg == null){
+                msg = serverCTR.getMessage();
+            }
+
+            if(msg != null){
+                    if(msg.iscInteger()){
+                        System.out.println(msg.getI());
+                        String sendTo = msg.getMessageFrom();
+                        msg.setI(msg.getI()+5,clientName);
+                        serverCTR.sendOnly(sendTo, msg);
+                    }
+
+                    if(msg.isEchoRequest_1st()){
+                        if(msg.isEchoRequest_2nd()){
+                            answerEcho(msg);
+                        } else {
+                            forwardEcho(msg);
+                        }
+                    }
+
+                }
+
+
+
+
+
+        }
+
+
 
     }
 

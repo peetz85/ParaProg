@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by Pascal on 08.07.2014.
@@ -18,6 +19,8 @@ public class ServerController{
     private String serverName;
     private String serverIP;
     public ClientController clientCTR;
+
+    private LinkedBlockingQueue<Message> incommingMessages;
 
     private int nextFreePort;
     private ServerChannel incomingConnection;
@@ -28,9 +31,20 @@ public class ServerController{
         setServerName(name);
         setServerIP();
         this.clientCTR = clientCTR;
+        incommingMessages = new LinkedBlockingQueue<Message>();
 
         connections = new HashMap<ConnectionLabel, ServerChannel>();
         nextFreePort = 0;
+    }
+
+    public synchronized void putMessage(Message arg ){
+        try {
+            incommingMessages.put(arg);
+        } catch (InterruptedException e) {}
+    }
+
+    public synchronized Message getMessage(){
+        return incommingMessages.poll();
     }
 
     public HashSet<String> generateNodeSet(){
