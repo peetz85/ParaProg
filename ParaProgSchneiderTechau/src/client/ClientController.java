@@ -154,7 +154,7 @@ public class ClientController extends Thread{
                 System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "Der bekommt einen Leeren Graphen");
             String sendBackTo = msg.getMessageFrom();
             msg.setNodeGrapAnswer(serverCTR.getServerName(), new GraphPaul());
-            serverCTR.sendOnly(sendBackTo, msg);
+            //serverCTR.sendOnly(sendBackTo, msg);
         }
     }
 
