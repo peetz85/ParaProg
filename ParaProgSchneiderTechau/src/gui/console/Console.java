@@ -73,6 +73,7 @@ public class Console extends JFrame{
         mntmAktiviereServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 OpenConnection arg = new OpenConnection(serverCTR);
+                serverCTR.connectToNode(serverCTR.getServerName(), String.valueOf(serverCTR.getNextFreePort()));
                 arg.setLocation(getLocationOnScreen().x+100,getLocationOnScreen().y+90);
                 arg.setVisible(true);
             }
@@ -104,7 +105,7 @@ public class Console extends JFrame{
 		JMenuItem mntmCountNode = new JMenuItem("Knoten zählen");
 		mntmCountNode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-                serverCTR.clientCTR.initEcho();
+                serverCTR.clientCTR.initNodeCount();
 			}
 		});
 		mnMenu.add(mntmCountNode);
@@ -112,8 +113,7 @@ public class Console extends JFrame{
         JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
         mntmGeneriereGraph.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
-                System.out.println(serverCTR.clientCTR.generateGraph());
+                serverCTR.clientCTR.initNodeGraph();
             }
         });
         mnMenu.add(mntmGeneriereGraph);

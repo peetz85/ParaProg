@@ -145,26 +145,23 @@ public class ServerController{
     }
 
     public void saveConnection(Message msg){
-        ConnectionLabel connection = new ConnectionLabel(msg.getLabel(),String.valueOf(nextFreePort-1));
+        ConnectionLabel connection = new ConnectionLabel(msg.getMessageFrom(),String.valueOf(nextFreePort-1));
         connections.put(connection,incomingConnection);
         incomingConnection = null;
     }
 
-    public void connectToNode(String target, String port, boolean arg) {
-        ServerChannel channel = new ServerChannel(this);
-        if(!arg){
-            ConnectionLabel connection = new ConnectionLabel(target,port);
-            connections.put(connection, channel);
-        } else {
+    public void connectToNode(String target, String port) {
+        ServerChannel channel;
+        if(target.contains(serverName)){
+            channel = new ServerChannel(target+":"+port, this);
             incomingConnection = channel;
             ++nextFreePort;
+        } else {
+            channel = new ServerChannel(target+":"+port, this);
+            ConnectionLabel connection = new ConnectionLabel(target,port);
+            connections.put(connection, channel);
         }
-        channel.connect(target+port, arg);
         channel.start();
-        if(arg){
-            channel.handshake();
-        }
-
     }
 
     public void removeConnection(String server){

@@ -11,25 +11,36 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class ServerChannel extends Thread /*implements CSProcess*/ {
 
-    private boolean running = true;
+    private boolean running;
     private NetChannelOutput output;
     private NetAltingChannelInput input;
     private ServerController parent;
 
-    public ServerChannel(ServerController parent) {
+    private String connectTo;
+
+    public ServerChannel(String connectTo, ServerController parent) {
+        running = true;
         this.parent = parent;
+        this.connectTo = connectTo;
     }
 
     public void setRunning(boolean arg) {
         running = arg;
     }
 
-
     public boolean isRunning() {
         return running;
     }
 
-    public void connect(String arg, boolean localhost) {
+    public String getConnectTo() {
+        return connectTo;
+    }
+
+    public void setConnectTo(String connectTo) {
+        this.connectTo = connectTo;
+    }
+
+    private void connect(String arg, boolean localhost) {
         if (localhost) {
             output = CNS.createOne2Net(arg + "_Output");
             input = CNS.createNet2One(arg + "_Input");
@@ -39,7 +50,7 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
         }
     }
 
-    public void handshake() {
+    private void handshake() {
         Message msg = new Message(parent.getServerName());
         msg.setLabel(parent.getServerName(), true);
         send(msg);
@@ -51,6 +62,11 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
 
     @Override
     public void run() {
+        connect(connectTo,connectTo.contains(parent.getServerName()));
+        if(connectTo.contains(parent.getServerName())){
+            handshake();
+        }
+
         Message msg = null;
         while (running) {
             try {
