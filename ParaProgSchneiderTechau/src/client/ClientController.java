@@ -81,7 +81,7 @@ public class ClientController extends Thread{
         serverCTR.sendAll(new HashSet<String>(), true, msg);
     }
     public synchronized void answerNodeGraph(Message msg) {
-        if (msg.isNodeCount_2nd()) {
+        if (msg.isNodeGraph_2nd()) {
             if(debugMode)
                 System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "answerNodeCount - Message ist eine Antwort");
             ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
@@ -128,9 +128,9 @@ public class ClientController extends Thread{
             if (isLastNode(msg.getNodeSet())) {
                 if(debugMode)
                     System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "Ich bin der Letzte Knoten -> Generiere meinen Graph");
-                answerNodeGraph(msg);
                 ReturnType sendBack = new ReturnType(msg.getREQUEST_TIMESTAMP());
                 returnToSender.put(msg.getREQUEST_CREATOR(),sendBack);
+                answerNodeGraph(msg);
             } else {
                 if(debugMode)
                     System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "Nicht der letzte Knoten. Nachricht Weiterleiten!");
@@ -154,7 +154,7 @@ public class ClientController extends Thread{
                 System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "Der bekommt einen Leeren Graphen");
             String sendBackTo = msg.getMessageFrom();
             msg.setNodeGrapAnswer(serverCTR.getServerName(), new GraphPaul());
-            //serverCTR.sendOnly(sendBackTo, msg);
+            serverCTR.sendOnly(sendBackTo, msg);
         }
     }
 

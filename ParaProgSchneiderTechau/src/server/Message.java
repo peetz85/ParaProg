@@ -133,7 +133,7 @@ public class Message implements Serializable {
     private GraphPaul spannBaum;
 
     public boolean isNodeGraph_1st(){return nodeGraph_1st;}
-    public boolean isNodeGraph_2nd(){return nodeCount_2nd;}
+    public boolean isNodeGraph_2nd(){return nodeGraph_2nd;}
     public GraphPaul getSpannBaum() {return spannBaum;}
 
 
