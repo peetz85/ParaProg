@@ -146,7 +146,12 @@ public class Console extends JFrame{
 	}
 
     public void beenden(){
-        //TODO serverCTR.terminateConnections();
+        serverCTR.terminateConnections();
+
+        try {
+            Thread.sleep(500);
+        }catch (Exception e){}
+
         System.exit(0);
     }
 

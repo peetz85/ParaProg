@@ -11,7 +11,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class ServerChannel extends Thread /*implements CSProcess*/ {
 
-    private boolean running;
     private NetChannelOutput output;
     private NetAltingChannelInput input;
     private ServerController parent;
@@ -19,17 +18,8 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
     private String connectTo;
 
     public ServerChannel(String connectTo, ServerController parent) {
-        running = true;
         this.parent = parent;
         this.connectTo = connectTo;
-    }
-
-    public void setRunning(boolean arg) {
-        running = arg;
-    }
-
-    public boolean isRunning() {
-        return running;
     }
 
     public String getConnectTo() {
@@ -68,7 +58,7 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
         }
 
         Message msg = null;
-        while (running) {
+        while (!isInterrupted()) {
             try {
                 Thread.sleep(250);
                 if (input.pending())
@@ -77,7 +67,7 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
             if (msg != null) {
                 if (msg.isTerminateSignal() || msg.isHandshake_1st()) {
                     if (msg.isTerminateSignal()) {
-                        parent.removeConnection(msg.getTerminateServerName());
+                        parent.removeConnection(msg);
                     } else if (msg.isHandshake_1st()) {
                         if (msg.isHandshake_2nd()) {
                             msg = new Message(parent.getServerName());

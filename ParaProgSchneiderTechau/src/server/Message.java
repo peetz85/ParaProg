@@ -40,25 +40,13 @@ public class Message implements Serializable {
         return nodeSet;
     }
 
-    //Channel löschen
-    //TODO
+    //--------------------------Terminate Signal--------------------------
     private boolean terminateSignal;
-    private String terminateServerName;
 
-    public boolean isTerminateSignal(){
+    public boolean isTerminateSignal(){ return terminateSignal; }
+    public void setTerminateSignal(){ terminateSignal = true; }
 
-        return terminateSignal;
-    }
-    public String getTerminateServerName(){
-
-        return terminateServerName;
-    }
-    public void setTerminateSignal(String serverName){
-        terminateServerName = serverName;
-        terminateSignal = true;
-    }
-
-    //Test Integer
+    //--------------------------Test Integer--------------------------
     //Debug Test ... Kann gelöscht werden
     //TODO
     private boolean cInteger;

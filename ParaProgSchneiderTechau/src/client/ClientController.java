@@ -10,7 +10,7 @@ import java.util.*;
  */
 public class ClientController extends Thread{
 
-    private boolean debugMode = true;
+    private boolean debugMode = false;
     private String clientName;
     private ServerController serverCTR;
 
@@ -96,7 +96,8 @@ public class ClientController extends Thread{
             if (deliveryInformations.waitingForAnswer.isEmpty()) {
                 if(debugMode)
                     System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "answerNodeCount - Keine ausstehenden Antworten");
-                GraphPaul returnGraph = generateGraph();
+                GraphPaul returnGraph = new GraphPaul();
+                returnGraph.addNodeSet(serverCTR.generateNodeSet());
                 for (int count = 0; count < deliveryInformations.answers.size(); count++) {
                     returnGraph.addGraph(deliveryInformations.answers.get(count).getSpannBaum());
                     }
@@ -106,8 +107,12 @@ public class ClientController extends Thread{
                     System.out.println(returnGraph);
                     returnToSender.remove(msg.getREQUEST_CREATOR());
                 } else {
-                    System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "answerNodeCount - Ich bin nicht der Knoten der gefragt hat");
+                    if(debugMode)
+                        System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "answerNodeCount - Ich bin nicht der Knoten der gefragt hat");
                     msg.setNodeGrapAnswer(serverCTR.getServerName(),returnGraph);
+                    System.out.println(returnGraph);
+                    if(debugMode)
+                        System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "Sende Nachricht an " + msg.getREQUEST_CREATOR());
                     serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
                     returnToSender.remove(msg.getREQUEST_CREATOR());
                 }
@@ -116,8 +121,11 @@ public class ClientController extends Thread{
             if(debugMode)
                 System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "Antwort_6 Ich bin der Letzte Knoten  in der Kette");
             String sendBackTo = msg.getMessageFrom();
-            GraphPaul returnGraph = generateGraph();
+            GraphPaul returnGraph = new GraphPaul();
+            returnGraph.addNodeSet(serverCTR.generateNodeSet());
             msg.setNodeGrapAnswer(serverCTR.getServerName(),returnGraph);
+            if(debugMode)
+                System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "Sende Nachricht an " + sendBackTo);
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
@@ -201,7 +209,8 @@ public class ClientController extends Thread{
                     System.out.println("Soooo viele Knoten: " + retInt);
                     returnToSender.remove(msg.getREQUEST_CREATOR());
                 } else {
-                    System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "answerNodeCount - Ich bin nicht der Knoten der gefragt hat");
+                    if(debugMode)
+                        System.out.println("Nachricht von " + msg.getMessageFrom() + ":" + "answerNodeCount - Ich bin nicht der Knoten der gefragt hat");
                     msg.setNodeCountAnswer(retInt, serverCTR.getServerName());
                     serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
                     returnToSender.remove(msg.getREQUEST_CREATOR());
@@ -261,11 +270,11 @@ public class ClientController extends Thread{
         HashSet<String> arg = serverCTR.generateNodeSet();
         String[] array = arg.toArray(new String[0]);
 
-        GraphPaul graph = new GraphPaul(array);
+        GraphPaul graph = new GraphPaul();
 
         for (int i = 0; i < array.length; ++i) {
             for (int c = 0; c < array.length; ++c) {
-                graph.verbindeKnoten(array[i], array[c]);
+                graph.connectNode(array[i], array[c]);
             }
         }
         return graph;

@@ -1,6 +1,7 @@
 package client;
 
 import java.io.Serializable;
+import java.util.HashSet;
 
 public class GraphPaul implements Serializable {
 
@@ -8,16 +9,16 @@ public class GraphPaul implements Serializable {
     // Konstruktoren
     // ----------------------------------------------
 
-    GraphPaul() {
+    public GraphPaul() {
         m_KnotenNamen = null;
         m_Matrix = null;
     }
 
-    GraphPaul(String name) {
-        this(new String[] { name });
+    public GraphPaul(String name) {
+        addNode(name);
     }
 
-    GraphPaul(String[] knotenNamen) {
+    public GraphPaul(String[] knotenNamen) {
         m_KnotenNamen = knotenNamen;
         m_Matrix = new boolean[knotenNamen.length][knotenNamen.length];
     }
@@ -47,17 +48,17 @@ public class GraphPaul implements Serializable {
 
     // Setze Verbindung zwischen Knoten mit Namen s1 und s2
     // (synchronized, weil Arbeiter-Thread zugreift)
-    public synchronized boolean verbindeKnoten(String s1, String s2) {
+    public synchronized boolean connectNode(String s1, String s2) {
         // Graph noch leer
         if (m_KnotenNamen == null)
             return false;
         int s1Index = -1, s2Index = -1;
-        for (int i = 0; i < m_KnotenNamen.length; ++i)
+        for (int i = 0; i < m_KnotenNamen.length; i++) {
             if (m_KnotenNamen[i].equals(s1))
                 s1Index = i;
-        for (int i = 0; i < m_KnotenNamen.length; ++i)
             if (m_KnotenNamen[i].equals(s2))
                 s2Index = i;
+        }
         if (s1Index == -1 || s2Index == -1)
             return false;
         m_Matrix[s1Index][s2Index] = true;
@@ -65,64 +66,91 @@ public class GraphPaul implements Serializable {
         return true;
     }
 
-    // Teste Verbindung
-    // (synchronized, weil Arbeiter-Thread zugreift)
-    public synchronized boolean sindKnotenVerbunden(String s1, String s2) {
-        // Graph noch leer
-        if (m_KnotenNamen == null)
-            return false;
-        int s1Index = -1, s2Index = -1;
-        for (int i = 0; i < m_KnotenNamen.length; ++i)
-            if (m_KnotenNamen[i].equals(s1))
-                s1Index = i;
-        for (int i = 0; i < m_KnotenNamen.length; ++i)
-            if (m_KnotenNamen[i].equals(s2))
-                s2Index = i;
-        if (s1Index == -1 || s2Index == -1)
-            return false;
-        if (m_Matrix[s1Index][s2Index] && m_Matrix[s2Index][s1Index])
-            return true;
-        else
-            return false;
+
+    public void addNodeSet(HashSet<String> nodeSet) {
+        String[] toConnect;
+        int i = 0;
+
+        if (nodeSet != null) {
+            toConnect = new String[nodeSet.size()];
+            for (String s : nodeSet) {
+                if (!isNodeInGraph(s)) {
+                    addNode(s);
+                    toConnect[i++] = s;
+                }
+            }
+            for (int c = 0; c < toConnect.length; c++) {
+                if (c != toConnect.length - 1) {
+                    connectNode(toConnect[c], toConnect[c + 1]);
+                    connectNode(toConnect[c + 1], toConnect[c + 1]);
+                    connectNode(toConnect[c], toConnect[c]);
+                }
+            }
+        }
     }
 
-    // Prüfe ob ein Knoten mit Namen s1 in Graph existiert
+
+    // Teste Verbindung
     // (synchronized, weil Arbeiter-Thread zugreift)
-    public synchronized boolean istKnotenInGraph(String s1) {
+    public boolean isNodeConnected(String s1, String s2) {
         // Graph noch leer
         if (m_KnotenNamen == null)
             return false;
-        for (int i = 0; i < m_KnotenNamen.length; ++i)
+
+        int s1Index = -1, s2Index = -1;
+        for (int i = 0; i < m_KnotenNamen.length; ++i) {
             if (m_KnotenNamen[i].equals(s1))
+                s1Index = i;
+            if (m_KnotenNamen[i].equals(s2))
+                s2Index = i;
+        }
+        if (s1Index == -1 || s2Index == -1)
+            return false;
+
+        return (m_Matrix[s1Index][s2Index] && m_Matrix[s2Index][s1Index]);
+    }
+
+    public boolean isNodeInGraph(String s1) {
+        if (m_KnotenNamen == null) {
+            return false;
+        }
+        for (int i = 0; i < m_KnotenNamen.length; ++i) {
+            if (m_KnotenNamen[i].equals(s1)) {
                 return true;
+            }
+        }
         return false;
     }
 
-    // Füge einen neuen Knoten mit Namen s1 in Graph ein
-    // (synchronized, weil Arbeiter-Thread zugreift)
-    public synchronized boolean addKnoten(String s1) {
+    public synchronized boolean addNode(String s1) {
         // Graph noch leer
         if (m_KnotenNamen == null) {
             m_Matrix = new boolean[1][1];
-            m_KnotenNamen = new String[] { s1 };
-            return true;
+            m_KnotenNamen = new String[]{s1};
+            m_Matrix[0][0] = true;
         }
         // Knoten schon drin? → Ende
-        for (int i = 0; i < m_KnotenNamen.length; ++i)
-            if (m_KnotenNamen[i].equals(s1))
-                return false;
-        boolean[][] matrixNeu = new boolean[m_Matrix.length + 1][m_Matrix.length + 1];
-        String[] knotenNamenNeu = new String[m_Matrix.length + 1];
-        // Kopiere Matrix
-        for (int zeile = 0; zeile < m_Matrix.length; ++zeile)
-            for (int spalte = 0; spalte < m_Matrix.length; ++spalte)
-                matrixNeu[zeile][spalte] = m_Matrix[zeile][spalte];
-        // Kopiere Namen
-        for (int i = 0; i < m_Matrix.length; ++i)
-            knotenNamenNeu[i] = m_KnotenNamen[i];
-        knotenNamenNeu[knotenNamenNeu.length - 1] = s1;
-        m_KnotenNamen = knotenNamenNeu;
-        m_Matrix = matrixNeu;
+        if (!isNodeInGraph(s1)) {
+            boolean[][] matrixNeu = new boolean[m_Matrix.length + 1][m_Matrix.length + 1];
+            String[] knotenNamenNeu = new String[m_Matrix.length + 1];
+            knotenNamenNeu[knotenNamenNeu.length - 1] = s1;
+            // Kopiere Matrix
+            for (int zeile = 0; zeile < m_Matrix.length; zeile++) {
+                for (int spalte = 0; spalte < m_Matrix.length; spalte++) {
+                    matrixNeu[zeile][spalte] = m_Matrix[zeile][spalte];
+                }
+            }
+
+            // Kopiere Namen
+            for (int i = 0; i < m_Matrix.length; ++i) {
+                knotenNamenNeu[i] = m_KnotenNamen[i];
+            }
+
+
+            m_KnotenNamen = knotenNamenNeu;
+            m_Matrix = matrixNeu;
+            connectNode(s1, s1);
+        }
         return true;
     }
 
@@ -186,15 +214,19 @@ public class GraphPaul implements Serializable {
 
     // Füge einen anderen gesamten Graphen hinzu
     public synchronized GraphPaul addGraph(GraphPaul graph2) {
-        // Hat Graph2 überhaupt Knoten?
         if (graph2 != null && graph2.m_KnotenNamen != null) {
-            String[] namenGraph2 = graph2.getKnotenNamen();
-            // Füge alle Knoten und Verbindungen aus Graph2 ein
-            for (String name1 : namenGraph2) {
-                addKnoten(name1);
-                for (String name2 : namenGraph2)
-                    if (graph2.sindKnotenVerbunden(name1, name2))
-                        verbindeKnoten(name1, name2);
+            String[] toConnect = graph2.getKnotenNamen();
+            for (int c = 0; c < toConnect.length; c++) {
+                if (!isNodeInGraph(toConnect[c])) {
+                    addNode(toConnect[c]);
+                }
+            }
+            for (int c = 0; c < toConnect.length; c++) {
+                for (int i = 0; i < toConnect.length; i++) {
+                    if (graph2.isNodeConnected(toConnect[c], toConnect[i])) {
+                        connectNode(toConnect[c], toConnect[i]);
+                    }
+                }
             }
         }
         return this;

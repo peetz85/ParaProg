@@ -16,6 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Pascal on 08.07.2014.
  */
 public class ServerController{
+
     private String serverName;
     private String serverIP;
     public ClientController clientCTR;
@@ -27,6 +28,11 @@ public class ServerController{
 
     public HashMap<ConnectionLabel, ServerChannel> connections;
 
+    /**
+     * Konstruktor
+     * @param name
+     * @param clientCTR
+     */
     public ServerController(String name, ClientController clientCTR) {
         setServerName(name);
         setServerIP();
@@ -70,26 +76,24 @@ public class ServerController{
         return returnValue;
     }
 
-    private void removeServerChannel(String server){
-        if(!connections.isEmpty()) {
-            for (ConnectionLabel key : connections.keySet()) {
-                if(key.getServerName().equals(server)){
-                    connections.remove(key);
-                }
-            }
-        }
-    }
+//    private void removeServerChannel(String server){
+//        if(!connections.isEmpty()) {
+//            for (ConnectionLabel key : connections.keySet()) {
+//                if(key.getServerName().equals(server)){
+//                    connections.remove(key);
+//                }
+//            }
+//        }
+//    }
 
 
     public void sendAll(HashSet<String> nodeSet, boolean except, Message msg) {
         if (!connections.isEmpty()) {
-            System.out.println("Sende Nachricht an:");
             if (except) {
                 //Nachricht an ALLE senden die NICHT in der Liste sind!!!!
                 for (Map.Entry<ConnectionLabel, ServerChannel> entry : connections.entrySet()) {
                     if (!nodeSet.contains(entry.getKey().getServerName())) {
                         entry.getValue().send(msg);
-                        System.out.println(entry.getKey().getServerName());
                     }
                 }
             } else {
@@ -97,7 +101,6 @@ public class ServerController{
                 for (Map.Entry<ConnectionLabel, ServerChannel> entry : connections.entrySet()) {
                     if (nodeSet.contains(entry.getKey().getServerName())){
                         entry.getValue().send(msg);
-                        System.out.println(entry.getKey().getServerName());
                     }
                 }
             }
@@ -164,11 +167,7 @@ public class ServerController{
         channel.start();
     }
 
-    public void removeConnection(String server){
-        ServerChannel toDelete = getServerChannel(server);
-        toDelete.setRunning(false);
-        connections.remove(server);
-    }
+
 
     public void printAllNodesFancy(){
         System.out.println("- - - Node Connections - - -");
@@ -187,17 +186,25 @@ public class ServerController{
         }
     }
 
-    public void terminateConnections(){
-        if(!connections.isEmpty()) {
-            Message terminateSignal = new Message(serverName);
-            terminateSignal.setTerminateSignal(serverName);
-
-            for (ServerChannel value : connections.values()) {
-                value.send(terminateSignal);
+    public void removeConnection(Message msg){
+        System.out.println("Recieved Terminate Signal");
+        for (Map.Entry<ConnectionLabel, ServerChannel> entry : connections.entrySet()) {
+            ConnectionLabel key = entry.getKey();
+            if(key.getServerName().equals(msg.getREQUEST_CREATOR())){
+                ServerChannel toRemove = entry.getValue();
+                toRemove.interrupt();
+                connections.remove(key);
             }
         }
     }
 
+    public void terminateConnections(){
+        if(!connections.isEmpty()) {
+            Message terminateSignal = new Message(serverName);
+            terminateSignal.setTerminateSignal();
+            sendAll(new HashSet<String>(),true,terminateSignal);
+        }
+    }
 }
 
 
