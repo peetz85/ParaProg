@@ -25,38 +25,38 @@ public class Starter {
 //        gra1.addNode("node2");
 //        gra1.addNode("node3");
 //        gra1.addNode("node4");
-//        gra1.connectNode("node1","node2");
-//        gra1.connectNode("node1","node3");
-//        gra1.connectNode("node1","node4");
+//        gra1.addConnection("node1","node2");
+//        gra1.addConnection("node1","node3");
+//        gra1.addConnection("node1","node4");
 //
 //
 //        GraphPaul gra2 = new GraphPaul();
 //        gra2.addNode("node2");
 //        gra2.addNode("node1");
-//        gra2.connectNode("node1","node2");
+//        gra2.addConnection("node1","node2");
 //
 //        GraphPaul gra3 = new GraphPaul();
 //        gra3.addNode("node3");
 //        gra3.addNode("node1");
-//        gra3.connectNode("node1","node3");
+//        gra3.addConnection("node1","node3");
 //
 //
 //        GraphPaul gra4 = new GraphPaul();
 //        gra4.addNode("node4");
 //        gra4.addNode("node1");
-//        gra4.connectNode("node1","node4");
+//        gra4.addConnection("node1","node4");
 //
 //        GraphPaul gra5 = new GraphPaul();
 //        gra5.addNode("node5");
 //        gra5.addNode("node4");
-//        gra5.connectNode("node5","node4");
+//        gra5.addConnection("node5","node4");
 //
 //        GraphPaul gra6 = new GraphPaul();
 //        gra6.addNode("node6");
 //        gra6.addNode("node2");
 //        gra6.addNode("node4");
-//        gra6.connectNode("node6","node4");
-//        gra6.connectNode("node6","node2");
+//        gra6.addConnection("node6","node4");
+//        gra6.addConnection("node6","node2");
 //
 //        gra1.addGraph(gra2);
 //        gra1.addGraph(gra3);

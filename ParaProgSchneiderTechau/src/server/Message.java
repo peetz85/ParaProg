@@ -41,10 +41,27 @@ public class Message implements Serializable {
     }
 
     //--------------------------Terminate Signal--------------------------
+    // Dieses Signal wird vom ServerChannel verarbeitet und nicht in die
+    // MessageBox weitergeleitet
     private boolean terminateSignal;
-
     public boolean isTerminateSignal(){ return terminateSignal; }
     public void setTerminateSignal(){ terminateSignal = true; }
+
+    //--------------------------Handshake Singal--------------------------
+    // Dieses Signal wird vom ServerChannel verarbeitet und nicht in die
+    // MessageBox weitergeleitet
+    private boolean handshake_1st;
+    private boolean handshake_2nd;
+    public void setLabel(String label, boolean handshake_2nd){
+        messageFrom = label;
+        handshake_1st = true;
+        this.handshake_2nd = handshake_2nd;
+    }
+    public boolean isHandshake_1st() { return handshake_1st; }
+    public boolean isHandshake_2nd(){
+        return handshake_2nd;
+    }
+
 
     //--------------------------Test Integer--------------------------
     //Debug Test ... Kann gelöscht werden
@@ -64,21 +81,6 @@ public class Message implements Serializable {
         this.i = i;
         cInteger = true;
         messageFrom = from;
-    }
-
-    //Handshake Singal
-    private boolean handshake_1st;
-    private boolean handshake_2nd;
-    //private String messageFrom
-
-    public void setLabel(String label, boolean handshake_2nd){
-        messageFrom = label;
-        handshake_1st = true;
-        this.handshake_2nd = handshake_2nd;
-    }
-    public boolean isHandshake_1st() { return handshake_1st; }
-    public boolean isHandshake_2nd(){
-        return handshake_2nd;
     }
 
 

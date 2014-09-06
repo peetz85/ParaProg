@@ -57,6 +57,7 @@ public class Console extends JFrame{
 		panel_1.add(lblNewLabel, BorderLayout.CENTER);
 		
 		textArea = new JTextArea();
+        textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
         panel.add(new JScrollPane(textArea), BorderLayout.CENTER);
         MessageConsole mc = new MessageConsole(textArea);
         mc.redirectOut();
