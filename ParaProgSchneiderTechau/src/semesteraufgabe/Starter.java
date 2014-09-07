@@ -10,6 +10,8 @@ import java.util.Iterator;
 public class Starter {
 
 
+    public static boolean debugMode = true;
+
 	/**
 	 * @param args
 	 */

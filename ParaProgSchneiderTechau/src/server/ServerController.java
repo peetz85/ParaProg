@@ -2,6 +2,7 @@ package server;
 
 
 import client.ClientController;
+import gui.console.OpenConnection;
 import org.jcsp.net.*;
 
 import java.net.InetAddress;
@@ -24,9 +25,12 @@ public class ServerController{
     private LinkedBlockingQueue<Message> incommingMessages;
 
     private int nextFreePort;
-    private ServerChannel incomingConnection;
+    private HashMap<String,ServerChannel> incomingConnection;
 
     public HashMap<ConnectionLabel, ServerChannel> connections;
+
+    public HashMap<String,OpenConnection> openConnections;
+
 
     /**
      * Konstruktor
@@ -40,7 +44,9 @@ public class ServerController{
         incommingMessages = new LinkedBlockingQueue<Message>();
 
         connections = new HashMap<ConnectionLabel, ServerChannel>();
-        nextFreePort = 0;
+        nextFreePort = 1;
+        openConnections = new HashMap<String, OpenConnection>();
+        incomingConnection = new HashMap<String, ServerChannel>();
     }
 
     public synchronized void putMessage(Message arg ){
@@ -149,15 +155,17 @@ public class ServerController{
 
     public void saveConnection(Message msg){
         ConnectionLabel connection = new ConnectionLabel(msg.getMessageFrom(),String.valueOf(nextFreePort-1));
-        connections.put(connection,incomingConnection);
-        incomingConnection = null;
+        connections.put(connection, incomingConnection.get(msg.getPortNumber()));
+        incomingConnection.remove(msg.getPortNumber());
+        openConnections.get(msg.getPortNumber()).dispose();
+        openConnections.remove(msg.getPortNumber());
     }
 
     public void connectToNode(String target, String port) {
         ServerChannel channel;
         if(target.contains(serverName)){
             channel = new ServerChannel(target+":"+port, this);
-            incomingConnection = channel;
+            incomingConnection.put(target+":"+port,channel);
             ++nextFreePort;
         } else {
             channel = new ServerChannel(target+":"+port, this);
@@ -170,9 +178,9 @@ public class ServerController{
 
 
     public void printAllNodesFancy(){
-        System.out.println("- - - Node Connections - - -");
+        System.out.println("- - - - - - - Connections - - - - - - -");
         printAllNodes();
-        System.out.println("- - - - - - - - - - - - - - - - - - - - -");
+        System.out.println("- - - - - - - - - - - - - - - - - - - -");
     }
     public void printAllNodes(){
         for (ConnectionLabel key : connections.keySet()) {
@@ -187,13 +195,12 @@ public class ServerController{
     }
 
     public void removeConnection(Message msg){
-        System.out.println("Recieved Terminate Signal");
+        System.out.println("#S: Recieved Terminate Signal From " + msg.getMessageFrom());
         for (Map.Entry<ConnectionLabel, ServerChannel> entry : connections.entrySet()) {
             ConnectionLabel key = entry.getKey();
             if(key.getServerName().equals(msg.getREQUEST_CREATOR())){
-                ServerChannel toRemove = entry.getValue();
+                ServerChannel toRemove = connections.remove(key);
                 toRemove.interrupt();
-                connections.remove(key);
             }
         }
     }
@@ -201,7 +208,7 @@ public class ServerController{
     public void terminateConnections(){
         if(!connections.isEmpty()) {
             Message terminateSignal = new Message(serverName);
-            terminateSignal.setTerminateSignal();
+            terminateSignal.setTerminateSignal(serverName);
             sendAll(new HashSet<String>(),true,terminateSignal);
         }
     }

@@ -45,22 +45,28 @@ public class Message implements Serializable {
     // MessageBox weitergeleitet
     private boolean terminateSignal;
     public boolean isTerminateSignal(){ return terminateSignal; }
-    public void setTerminateSignal(){ terminateSignal = true; }
+    public void setTerminateSignal(String messageFrom){
+        terminateSignal = true;
+        this.messageFrom = messageFrom;
+    }
 
     //--------------------------Handshake Singal--------------------------
     // Dieses Signal wird vom ServerChannel verarbeitet und nicht in die
     // MessageBox weitergeleitet
     private boolean handshake_1st;
     private boolean handshake_2nd;
-    public void setLabel(String label, boolean handshake_2nd){
+    private String portNumber;
+    public void setLabel(String label, boolean handshake_2nd, String portNumber){
         messageFrom = label;
         handshake_1st = true;
         this.handshake_2nd = handshake_2nd;
+        this.portNumber = portNumber;
     }
     public boolean isHandshake_1st() { return handshake_1st; }
     public boolean isHandshake_2nd(){
         return handshake_2nd;
     }
+    public String getPortNumber(){ return portNumber;}
 
 
     //--------------------------Test Integer--------------------------

@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashMap;
 
 
 public class Console extends JFrame{
@@ -20,8 +21,7 @@ public class Console extends JFrame{
     public static ServerController serverCTR;
     public static ClientController clientCTR;
 
-	
-	
+
 	public Console() {
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -74,14 +74,18 @@ public class Console extends JFrame{
         mntmAktiviereServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 OpenConnection arg = new OpenConnection(serverCTR);
-                serverCTR.connectToNode(serverCTR.getServerName(), String.valueOf(serverCTR.getNextFreePort()));
+
+                String port = String.valueOf(serverCTR.getNextFreePort());
+                serverCTR.openConnections.put(serverCTR.getServerName()+":"+port,arg);
+                serverCTR.connectToNode(serverCTR.getServerName(),port);
+
                 arg.setLocation(getLocationOnScreen().x+100,getLocationOnScreen().y+90);
                 arg.setVisible(true);
             }
         });
         mnMenu.add(mntmAktiviereServer);
 
-		JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
+        JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 ConnectConnection arg = new ConnectConnection(serverCTR);
@@ -148,11 +152,6 @@ public class Console extends JFrame{
 
     public void beenden(){
         serverCTR.terminateConnections();
-
-        try {
-            Thread.sleep(500);
-        }catch (Exception e){}
-
         System.exit(0);
     }
 

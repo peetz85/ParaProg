@@ -40,21 +40,27 @@ public class OpenConnection extends JDialog{
 		JPanel panel_1 = new JPanel();
 		getContentPane().add(panel_1, BorderLayout.SOUTH);
 		
-		JButton btnNewButton = new JButton("Ok");
+		JButton btnNewButton = new JButton("Abbrechen");
 		btnNewButton.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				if(arg0.getKeyCode() == KeyEvent.VK_ENTER){
-                    dispose();
+                    beenden();
 				}
 			}
 		});
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
-			}
+				beenden();			}
 		});
 		panel_1.add(btnNewButton);
         
 	}
+
+    public void beenden(){
+
+
+
+        dispose();
+    }
 }

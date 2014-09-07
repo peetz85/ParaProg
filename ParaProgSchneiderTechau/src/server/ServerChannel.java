@@ -40,9 +40,9 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
         }
     }
 
-    private void handshake() {
+    private void handshake(String portNumber) {
         Message msg = new Message(parent.getServerName());
-        msg.setLabel(parent.getServerName(), true);
+        msg.setLabel(parent.getServerName(), true, portNumber);
         send(msg);
     }
 
@@ -54,24 +54,22 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
     public void run() {
         connect(connectTo,connectTo.contains(parent.getServerName()));
         if(connectTo.contains(parent.getServerName())){
-            handshake();
+            handshake(connectTo);
         }
-
         Message msg = null;
         while (!isInterrupted()) {
-            try {
-                Thread.sleep(250);
-                if (input.pending())
-                    msg = (Message) input.read();
-            } catch (Exception e) {}
+            if (input.pending()) {
+                msg = (Message) input.read();
+            }
             if (msg != null) {
                 if (msg.isTerminateSignal() || msg.isHandshake_1st()) {
                     if (msg.isTerminateSignal()) {
                         parent.removeConnection(msg);
                     } else if (msg.isHandshake_1st()) {
                         if (msg.isHandshake_2nd()) {
+                            String port = msg.getPortNumber();
                             msg = new Message(parent.getServerName());
-                            msg.setLabel(parent.getServerName(), false);
+                            msg.setLabel(parent.getServerName(), false, port);
                             send(msg);
                         } else {
                             parent.saveConnection(msg);
@@ -82,6 +80,10 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
                 }
             }
             msg = null;
+
+            try {
+                Thread.sleep(50);
+            }catch (Exception e){}
         }
     }
 }
