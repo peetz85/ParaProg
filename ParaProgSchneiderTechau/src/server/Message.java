@@ -94,9 +94,6 @@ public class Message implements Serializable {
     private boolean nodeCount_1st; //Deklariert ob die Message eine Node Count ist
     private boolean nodeCount_2nd; //Deklariert ob die Message eine Antwort auf eine Node Count ist
     private int nodeCount;
-    //final String  MESSAGE_CREATOR;
-    //private String messageFrom
-    //private HashSet nodeSet;
 
     public boolean isNodeCount_1st() {
 		return nodeCount_1st;
@@ -123,9 +120,6 @@ public class Message implements Serializable {
     //--------------------------Request NodeGraph "Spannbaum"--------------------------
     private boolean nodeGraph_1st;
     private boolean nodeGraph_2nd;
-    //final String  MESSAGE_CREATOR;
-    //private String messageFrom
-    //private HashSet nodeSet
     private GraphPaul spannBaum;
 
     public boolean isNodeGraph_1st(){return nodeGraph_1st;}
@@ -145,4 +139,25 @@ public class Message implements Serializable {
         this.messageFrom = messageFrom;
         this.spannBaum = spannBaum;
     }
+
+    //--------------------------Election--------------------------
+    private boolean election_1st;
+    private boolean election_2nd;
+
+    public boolean isElection_1st() { return election_1st; }
+    public boolean isElection_2nd() { return election_2nd; }
+
+    public void setElectionRequest(String messageFrom, HashSet<String> nodeSet){
+        election_1st = true;
+        election_2nd = false;
+        this.messageFrom = messageFrom;
+        this.nodeSet = nodeSet;
+    }
+
+    public void setElectionAwnser(String messageFrom){
+        election_1st = true;
+        election_2nd = true;
+    }
+
+
 }

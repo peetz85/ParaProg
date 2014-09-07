@@ -15,6 +15,9 @@ public class ClientController extends Thread{
     private String clientName;
     private ServerController serverCTR;
 
+    private int nextElectionTimeInSeconds;
+    private long nextElectionTimeStamp;
+
     private HashMap<String, ReturnType> returnToSender;
 
 
@@ -22,6 +25,16 @@ public class ClientController extends Thread{
     public ClientController(String name) {
         clientName = name;
         returnToSender = new HashMap<String, ReturnType>();
+        nextElectionTimeInSeconds = generateElectionTime();
+        nextElectionTimeStamp = System.currentTimeMillis()+(nextElectionTimeInSeconds*1000);
+
+
+    }
+
+    private int generateElectionTime(){
+        int min = 60;
+        int max = 120;
+        return (min + (int)(Math.random() * ((max - min) + 1)));
     }
 
     public void setServerCTR(ServerController serverCTR) {
@@ -46,8 +59,14 @@ public class ClientController extends Thread{
         Message msg = null;
         while(true){
             try {
-                Thread.sleep(5);
+                Thread.sleep(250);
             } catch (Exception e){}
+
+            if(System.currentTimeMillis() >= nextElectionTimeStamp){
+                System.out.println(nextElectionTimeInSeconds);
+                nextElectionTimeInSeconds = generateElectionTime();
+                nextElectionTimeStamp = System.currentTimeMillis()+(nextElectionTimeInSeconds*1000);
+            }
 
             if(msg == null){
                 msg = serverCTR.getMessage();
@@ -73,25 +92,31 @@ public class ClientController extends Thread{
                             forwardNodeGraph(msg);
                         }
                     }
+                    if(msg.isElection_1st()){
+                        if(msg.isElection_2nd()){
+                            answerElection(msg);
+                        } else {
+                            forwardElection(msg);
+                        }
+                    }
                 msg = null;
                 }
         }
     }
 
-    public synchronized void initNodeGraph() {
+    public synchronized void initElection() {
         Message msg = new Message(clientName);
         HashSet<String> dontVisit = new HashSet<String>(serverCTR.generateNodeSet());
-        msg.setNodeGraphRequest(clientName, dontVisit);
+        msg.setElectionRequest(clientName, dontVisit);
 
         ReturnType retType = new ReturnType(msg.getREQUEST_TIMESTAMP(),msg);
-        retType.setEchoRequest(dontVisit, clientName);
+        retType.setElection(dontVisit, clientName);
         returnToSender.put(clientName, retType);
         if(Starter.debugMode)
-            System.out.println("#S: " + "Spannbaum Request generiert!");
+            System.out.println("#S: " + "Election Request generiert!");
         serverCTR.sendAll(new HashSet<String>(), true, msg);
     }
-
-    public synchronized void answerNodeGraph(Message msg) {
+    public synchronized void answerElection(Message msg) {
         if (msg.isNodeGraph_2nd()) {
             if (returnToSender.containsKey(msg.getREQUEST_CREATOR())) {
                 ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
@@ -113,6 +138,10 @@ public class ClientController extends Thread{
                             returnGraph.addGraph(deliveryInformations.answers.get(count).getSpannBaum());
                         }
                     }
+                    //TODO
+                    //TODO Nodes aus dem Graphen entfernen die wir nicht besuchen sollen
+                    //TODO Wird momentan nur bei Nodes gemacht von denen wir ein Null zurück bekommen
+                    //TODO
 
                     if (clientName.equals(msg.getREQUEST_CREATOR())) {
                         if(Starter.debugMode)
@@ -140,7 +169,107 @@ public class ClientController extends Thread{
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
+    public synchronized void forwardElection(Message msg) {
+        if (checkIfRequestExist(msg)){
+            if(Starter.debugMode)
+                System.out.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Election Request bereits von einem anderen Node erhalten, Sende leere Nachricht!");
+            String sendBackTo = msg.getMessageFrom();
+            msg.setElectionAwnser(clientName);
+            serverCTR.sendOnly(sendBackTo, msg);
+        } else {
+            if (isLastNode(msg.getNodeSet())) {
+                if (Starter.debugMode)
+                    System.out.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Ich bin der letzte Node im Baum. Sende Election Awnser zurück");
+                //Falls Anfragen von anderen Nodes kommen um diese abzulehnen
+                returnToSender.put(msg.getREQUEST_CREATOR(), new ReturnType(msg.getREQUEST_TIMESTAMP(), msg));
+                answerElection(msg);
+            } else {
+                if (Starter.debugMode)
+                    System.out.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Nicht der letzte Node im Baum. Election Anfrage Weiterleiten!");
+                //ReturnType erstellen mit Sender der Generator der alten Nachricht
+                //und Liste(HashSet) der abzuwartenden Sender
+                ReturnType sendBack = new ReturnType(msg.getREQUEST_TIMESTAMP(), msg);
+                HashSet<String> waitingFor = serverCTR.generateNodeSet();
+                waitingFor.removeAll(msg.getNodeSet());
+                sendBack.setElection(waitingFor, msg.getMessageFrom());
+                returnToSender.put(msg.getREQUEST_CREATOR(), sendBack);
 
+                //Neue Liste für nächsten Node mit aktualisierter Liste
+                //der nicht zu besuchenden Nodes
+                HashSet<String> dontVisist = msg.getNodeSet();
+                dontVisist.addAll(waitingFor);
+                msg.setElectionRequest(serverCTR.getServerName(), dontVisist);
+                serverCTR.sendAll(waitingFor, false, msg);
+            }
+        }
+    }
+
+
+    public synchronized void initNodeGraph() {
+        Message msg = new Message(clientName);
+        HashSet<String> dontVisit = new HashSet<String>(serverCTR.generateNodeSet());
+        msg.setNodeGraphRequest(clientName, dontVisit);
+
+        ReturnType retType = new ReturnType(msg.getREQUEST_TIMESTAMP(),msg);
+        retType.setEchoRequest(dontVisit, clientName);
+        returnToSender.put(clientName, retType);
+        if(Starter.debugMode)
+            System.out.println("#S: " + "Spannbaum Request generiert!");
+        serverCTR.sendAll(new HashSet<String>(), true, msg);
+    }
+    public synchronized void answerNodeGraph(Message msg) {
+        if (msg.isNodeGraph_2nd()) {
+            if (returnToSender.containsKey(msg.getREQUEST_CREATOR())) {
+                ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
+                if (deliveryInformations.waitingForAnswer.contains(serverCTR.getServerName())) {
+                    deliveryInformations.waitingForAnswer.remove(serverCTR.getServerName());
+                }
+                deliveryInformations.answers.add(msg);
+                deliveryInformations.waitingForAnswer.remove(msg.getMessageFrom());
+
+                if (deliveryInformations.waitingForAnswer.isEmpty()) {
+
+                    GraphPaul returnGraph = new GraphPaul();
+                    returnGraph.addNodeSet(serverCTR.generateNodeSet(),clientName);
+                    for (int count = 0; count < deliveryInformations.answers.size(); count++) {
+                        if(deliveryInformations.answers.get(count).getSpannBaum().getKnotenNamen() == null){
+                            System.out.println("Lösche Verbindung zum Graphen");
+                            returnGraph.deleteConnection(deliveryInformations.answers.get(count).getMessageFrom(),clientName);
+                        } else {
+                            returnGraph.addGraph(deliveryInformations.answers.get(count).getSpannBaum());
+                        }
+                    }
+                    //TODO
+                    //TODO Nodes aus dem Graphen entfernen die wir nicht besuchen sollen
+                    //TODO Wird momentan nur bei Nodes gemacht von denen wir ein Null zurück bekommen
+                    //TODO
+
+                    if (clientName.equals(msg.getREQUEST_CREATOR())) {
+                        if(Starter.debugMode)
+                            System.out.println("#S: " + "Ich bin der Node der gefragt hat. Spannbaum ausgeben!");
+                        System.out.println(returnGraph);
+                        returnToSender.remove(msg.getREQUEST_CREATOR());
+                    } else {
+                        if(Starter.debugMode)
+                            System.out.println("<- Nachricht an " + msg.getMessageFrom() + ":" + "Antwort Graph zurückleiten an Request Node");
+                        msg.setNodeGrapAnswer(serverCTR.getServerName(), returnGraph);
+                        serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
+                        returnToSender.remove(msg.getREQUEST_CREATOR());
+                    }
+                }
+            }
+        } else {
+            if(Starter.debugMode)
+                System.out.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "Spannbaum genriert. Sende Spannbaum zurück!");
+            String sendBackTo = msg.getMessageFrom();
+            GraphPaul returnGraph = new GraphPaul();
+            returnGraph.addNode(sendBackTo);
+            returnGraph.addNode(clientName);
+            returnGraph.addConnection(sendBackTo, clientName);
+            msg.setNodeGrapAnswer(serverCTR.getServerName(),returnGraph);
+            serverCTR.sendOnly(sendBackTo, msg);
+        }
+    }
     public synchronized void forwardNodeGraph(Message msg) {
         if (checkIfRequestExist(msg)){
             if(Starter.debugMode)
@@ -190,7 +319,6 @@ public class ClientController extends Thread{
 
         serverCTR.sendAll(empty, true, msg);
     }
-
     public synchronized void answerNodeCount(Message msg) {
         if (msg.isNodeCount_2nd()) {
             if(Starter.debugMode)
@@ -234,7 +362,6 @@ public class ClientController extends Thread{
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
-
     public synchronized void forwardNodeCount(Message msg) {
         if (!returnToSender.containsKey(msg.getREQUEST_CREATOR()) ||
              returnToSender.get(msg.getREQUEST_CREATOR()).REQUEST_TIMESTAMP != msg.getREQUEST_TIMESTAMP()) {
