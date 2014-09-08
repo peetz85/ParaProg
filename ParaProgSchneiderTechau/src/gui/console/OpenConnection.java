@@ -4,6 +4,8 @@ import javax.swing.JDialog;
 
 import javax.swing.JLabel;
 
+import server.ConnectionLabel;
+import server.ServerChannel;
 import server.ServerController;
 
 import java.awt.Font;
@@ -14,14 +16,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Map;
 
 public class OpenConnection extends JDialog{
 	
 	private JLabel lblNewLabel_1;
 	private ServerController serverCTR;
+    private String port;
 	
-	public OpenConnection(ServerController serverCTR) {
-		
+	public OpenConnection(ServerController serverCTR,String port) {
+		this.port = port;
 		this.serverCTR = serverCTR;
 		setTitle("Offene Verbindung");
         setSize(300, 120);
@@ -33,7 +37,7 @@ public class OpenConnection extends JDialog{
 		JLabel lblNewLabel = new JLabel("Verbindung steht unter folgendem Namen bereit: ");
 		panel.add(lblNewLabel);
 		
-		lblNewLabel_1 = new JLabel("Server: " +serverCTR.getServerName()+" Port: "+String.valueOf(serverCTR.getNextFreePort()));
+		lblNewLabel_1 = new JLabel("Server: " +serverCTR.getServerName()+" Port: "+port);
 		panel.add(lblNewLabel_1);
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 13));
 		
@@ -46,7 +50,6 @@ public class OpenConnection extends JDialog{
 			public void keyPressed(KeyEvent arg0) {
 				if(arg0.getKeyCode() == KeyEvent.VK_ENTER){
                     beenden();
-                    //TODO Verbindung löschen wenn Abbrechen
 				}
 			}
 		});
@@ -55,13 +58,18 @@ public class OpenConnection extends JDialog{
 				beenden();			}
 		});
 		panel_1.add(btnNewButton);
-        
+
+
 	}
 
     public void beenden(){
 
-
-
         dispose();
+
+        serverCTR.openConnections.remove(serverCTR.getServerName() + ":" + port);
+//        ServerChannel toRemove = serverCTR.incomingConnection.remove(serverCTR.getServerName()+":"+port);
+//        try {
+//            toRemove.interrupt();
+//        } catch (Exception e){}
     }
 }

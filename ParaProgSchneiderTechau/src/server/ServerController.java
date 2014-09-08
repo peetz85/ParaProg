@@ -25,7 +25,7 @@ public class ServerController{
     private LinkedBlockingQueue<Message> incommingMessages;
 
     private int nextFreePort;
-    private HashMap<String,ServerChannel> incomingConnection;
+    public HashMap<String,ServerChannel> incomingConnection;
 
     public HashMap<ConnectionLabel, ServerChannel> connections;
 
