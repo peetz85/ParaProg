@@ -223,7 +223,7 @@ public class ClientController extends Thread{
     }
     public synchronized void answerNodeGraph(Message msg) {
         if (msg.isNodeGraph_2nd()) {
-            if (returnToSender.containsKey(msg.getREQUEST_CREATOR())) {
+            if (returnToSender.containsKey(msg.getREQUEST_CREATOR())) { //TODO Node und TIMESTAMP Abfragen
                 ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
                 if (deliveryInformations.waitingForAnswer.contains(serverCTR.getServerName())) {
                     deliveryInformations.waitingForAnswer.remove(serverCTR.getServerName());
@@ -236,12 +236,16 @@ public class ClientController extends Thread{
                     GraphPaul returnGraph = new GraphPaul();
                     for (int count = 0; count < deliveryInformations.answers.size(); count++) {
                         if(deliveryInformations.answers.get(count).getSpannBaum().getKnotenNamen() == null){
-                            System.out.println("Lösche Verbindung zum Graphen");
-                            returnGraph.deleteConnection(deliveryInformations.answers.get(count).getMessageFrom(),clientName);
+//                            if(Starter.debugMode)
+//                                System.out.println("Lösche Verbindung zum Graphen");
+//                            returnGraph.deleteConnection(deliveryInformations.answers.get(count).getMessageFrom(),clientName);
                         } else {
                             returnGraph.addGraph(deliveryInformations.answers.get(count).getSpannBaum());
                         }
                     }
+                    returnGraph.addNode(deliveryInformations.getSendBackTo());
+                    returnGraph.addNode(clientName);
+                    returnGraph.addConnection(clientName, deliveryInformations.getSendBackTo());
 
                     if (clientName.equals(msg.getREQUEST_CREATOR())) {
                         if(Starter.debugMode)
@@ -251,8 +255,6 @@ public class ClientController extends Thread{
                     } else {
                         if(Starter.debugMode)
                             System.out.println("<- Nachricht an " + msg.getMessageFrom() + ":" + "Antwort Graph zurückleiten an Request Node");
-                        returnGraph.addNode(deliveryInformations.getSendBackTo());
-                        returnGraph.addConnection(clientName, deliveryInformations.getSendBackTo());
                         msg.setNodeGrapAnswer(clientName, returnGraph);
                         serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
                         returnToSender.remove(msg.getREQUEST_CREATOR());

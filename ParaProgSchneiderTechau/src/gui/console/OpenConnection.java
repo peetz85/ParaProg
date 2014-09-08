@@ -46,6 +46,7 @@ public class OpenConnection extends JDialog{
 			public void keyPressed(KeyEvent arg0) {
 				if(arg0.getKeyCode() == KeyEvent.VK_ENTER){
                     beenden();
+                    //TODO Verbindung löschen wenn Abbrechen
 				}
 			}
 		});
