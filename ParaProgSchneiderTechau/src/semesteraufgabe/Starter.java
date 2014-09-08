@@ -1,8 +1,6 @@
 package semesteraufgabe;
 
-import client.GraphPaul;
 import gui.startup.StartServerOrConnectServer;
-import server.ConnectionLabel;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,7 +20,7 @@ public class Starter {
 
 
 
-//        GraphPaul gra1 = new GraphPaul();
+//        Graph gra1 = new Graph();
 //        gra1.addNode("node1");
 //        gra1.addNode("node2");
 //        gra1.addNode("node3");
@@ -32,28 +30,28 @@ public class Starter {
 //        gra1.addConnection("node1","node4");
 //
 //
-//        GraphPaul gra2 = new GraphPaul();
+//        Graph gra2 = new Graph();
 //        gra2.addNode("node2");
 //        gra2.addNode("node1");
 //        gra2.addConnection("node1","node2");
 //
-//        GraphPaul gra3 = new GraphPaul();
+//        Graph gra3 = new Graph();
 //        gra3.addNode("node3");
 //        gra3.addNode("node1");
 //        gra3.addConnection("node1","node3");
 //
 //
-//        GraphPaul gra4 = new GraphPaul();
+//        Graph gra4 = new Graph();
 //        gra4.addNode("node4");
 //        gra4.addNode("node1");
 //        gra4.addConnection("node1","node4");
 //
-//        GraphPaul gra5 = new GraphPaul();
+//        Graph gra5 = new Graph();
 //        gra5.addNode("node5");
 //        gra5.addNode("node4");
 //        gra5.addConnection("node5","node4");
 //
-//        GraphPaul gra6 = new GraphPaul();
+//        Graph gra6 = new Graph();
 //        gra6.addNode("node6");
 //        gra6.addNode("node2");
 //        gra6.addNode("node4");

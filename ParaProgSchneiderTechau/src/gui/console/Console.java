@@ -100,8 +100,12 @@ public class Console extends JFrame{
         JMenuItem mntmShowConnections = new JMenuItem("Zeige Nachbarn");
         mntmShowConnections.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-
-                serverCTR.printAllNodesFancy();
+                if(!serverCTR.connections.isEmpty()) {
+                    textArea.setText("");
+                    serverCTR.printAllNodesFancy();
+                } else {
+                    noNodesConnected();
+                }
             }
         });
         mnMenu.add(mntmShowConnections);
@@ -112,7 +116,12 @@ public class Console extends JFrame{
 		JMenuItem mntmCountNode = new JMenuItem("Knoten zählen");
 		mntmCountNode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-                serverCTR.clientCTR.initNodeCount();
+                if(!serverCTR.connections.isEmpty()) {
+                    textArea.setText("");
+                    serverCTR.clientCTR.initNodeCount();
+                } else {
+                    noNodesConnected();
+                }
 			}
 		});
 		mnMenu.add(mntmCountNode);
@@ -120,7 +129,12 @@ public class Console extends JFrame{
         JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
         mntmGeneriereGraph.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                serverCTR.clientCTR.initNodeGraph();
+                if(!serverCTR.connections.isEmpty()) {
+                    textArea.setText("");
+                    serverCTR.clientCTR.initNodeGraph();
+                } else {
+                    noNodesConnected();
+                }
             }
         });
         mnMenu.add(mntmGeneriereGraph);
@@ -128,13 +142,7 @@ public class Console extends JFrame{
         JMenuItem mntmNachricht = new JMenuItem("Sende WakeUp");
         mntmNachricht.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                if(!serverCTR.connections.isEmpty()) {
-                    Message tmp = new Message(serverCTR.getServerName());
-                    tmp.setI(11,serverCTR.getServerName());
-                    for (ServerChannel value : serverCTR.connections.values()) {
-                        value.send(tmp);
-                    }
-                }
+                textArea.setText("");
             }
         });
         mnMenu.add(mntmNachricht);
@@ -155,6 +163,12 @@ public class Console extends JFrame{
     public void beenden(){
         serverCTR.terminateConnections();
         System.exit(0);
+    }
+
+    public void noNodesConnected(){
+        textArea.setText("");
+        System.out.println("#S: I feel lonely");
+        System.out.println("#S: Lo-lo-lo-lo-lonely");
     }
 
 }

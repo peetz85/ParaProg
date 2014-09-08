@@ -2,7 +2,8 @@ package server;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import client.GraphPaul;
+
+import client.Graph;
 
 /**
  * Created by Pascal on 09.07.2014.
@@ -120,11 +121,11 @@ public class Message implements Serializable {
     //--------------------------Request NodeGraph "Spannbaum"--------------------------
     private boolean nodeGraph_1st;
     private boolean nodeGraph_2nd;
-    private GraphPaul spannBaum;
+    private Graph spannBaum;
 
     public boolean isNodeGraph_1st(){return nodeGraph_1st;}
     public boolean isNodeGraph_2nd(){return nodeGraph_2nd;}
-    public GraphPaul getSpannBaum() {return spannBaum;}
+    public Graph getSpannBaum() {return spannBaum;}
 
 
     public void setNodeGraphRequest(String messageFrom, HashSet<String> nodeSet){
@@ -133,7 +134,7 @@ public class Message implements Serializable {
         this.messageFrom = messageFrom;
         this.nodeSet = nodeSet;
     }
-    public void setNodeGrapAnswer(String messageFrom, GraphPaul spannBaum){
+    public void setNodeGrapAnswer(String messageFrom, Graph spannBaum){
         nodeGraph_1st = true;
         nodeGraph_2nd = true;
         this.messageFrom = messageFrom;

@@ -187,12 +187,6 @@ public class ServerController{
             System.out.println(key);
         }
     }
-    public void printAllNodes(HashSet<String> arg){
-        Iterator iter = arg.iterator();
-        while (iter.hasNext()) {
-            System.out.println(iter.next());
-        }
-    }
 
     public void removeConnection(Message msg){
         System.out.println("#S: Recieved Terminate Signal From " + msg.getMessageFrom());
@@ -206,6 +200,8 @@ public class ServerController{
         }
         toRemove = connections.remove(toRemoveLabel);
         toRemove.interrupt();
+        if(!connections.isEmpty())
+            printAllNodesFancy();
     }
 
     public void terminateConnections(){
