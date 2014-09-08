@@ -2,6 +2,7 @@ package client;
 
 import gui.console.OpenConnection;
 import semesteraufgabe.Starter;
+import server.ConnectionLabel;
 import server.Message;
 import server.ServerController;
 
@@ -183,6 +184,9 @@ public class ClientController extends Thread{
                 //Falls Anfragen von anderen Nodes kommen um diese abzulehnen
                 returnToSender.put(msg.getREQUEST_CREATOR(), new ReturnType(msg.getREQUEST_TIMESTAMP(), msg));
                 answerElection(msg);
+
+
+
             } else {
                 if (Starter.debugMode)
                     System.out.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Nicht der letzte Node im Baum. Election Anfrage Weiterleiten!");
@@ -230,7 +234,6 @@ public class ClientController extends Thread{
                 if (deliveryInformations.waitingForAnswer.isEmpty()) {
 
                     GraphPaul returnGraph = new GraphPaul();
-                    returnGraph.addNodeSet(serverCTR.generateNodeSet(),clientName);
                     for (int count = 0; count < deliveryInformations.answers.size(); count++) {
                         if(deliveryInformations.answers.get(count).getSpannBaum().getKnotenNamen() == null){
                             System.out.println("Lösche Verbindung zum Graphen");
@@ -239,10 +242,6 @@ public class ClientController extends Thread{
                             returnGraph.addGraph(deliveryInformations.answers.get(count).getSpannBaum());
                         }
                     }
-                    //TODO
-                    //TODO Nodes aus dem Graphen entfernen die wir nicht besuchen sollen
-                    //TODO Wird momentan nur bei Nodes gemacht von denen wir ein Null zurück bekommen
-                    //TODO
 
                     if (clientName.equals(msg.getREQUEST_CREATOR())) {
                         if(Starter.debugMode)
@@ -252,7 +251,9 @@ public class ClientController extends Thread{
                     } else {
                         if(Starter.debugMode)
                             System.out.println("<- Nachricht an " + msg.getMessageFrom() + ":" + "Antwort Graph zurückleiten an Request Node");
-                        msg.setNodeGrapAnswer(serverCTR.getServerName(), returnGraph);
+                        returnGraph.addNode(deliveryInformations.getSendBackTo());
+                        returnGraph.addConnection(clientName, deliveryInformations.getSendBackTo());
+                        msg.setNodeGrapAnswer(clientName, returnGraph);
                         serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
                         returnToSender.remove(msg.getREQUEST_CREATOR());
                     }

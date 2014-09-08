@@ -20,7 +20,7 @@ public class GraphPaul implements Serializable {
 
     public GraphPaul(String[] knotenNamen) {
         nodeConnections = new boolean[knotenNamen.length][knotenNamen.length];
-        for(String node : knotenNamen){
+        for (String node : knotenNamen) {
             addNode(node);
         }
     }
@@ -57,7 +57,7 @@ public class GraphPaul implements Serializable {
         changeConnection(s1, s2, false);
     }
 
-    private void changeConnection(String s1, String s2, boolean arg){
+    private void changeConnection(String s1, String s2, boolean arg) {
         if (nodes != null) {
             int s1Index = -1, s2Index = -1;
             for (int i = 0; i < nodes.length; i++) {
@@ -79,13 +79,13 @@ public class GraphPaul implements Serializable {
         int i = 0;
         if (nodeSet != null) {
             toConnect = new String[nodeSet.size()];
-            for (String s : nodeSet){
-                    addNode(s);
-                    toConnect[i++] = s;
+            for (String s : nodeSet) {
+                addNode(s);
+                toConnect[i++] = s;
             }
             for (int c = 0; c < toConnect.length; c++) {
-                    addConnection(toConnect[c], middelPoint);
-                }
+                addConnection(toConnect[c], middelPoint);
+            }
         }
     }
 
@@ -152,7 +152,7 @@ public class GraphPaul implements Serializable {
                 newKnotenName[i] = nodes[i];
             }
             newKnotenName[newKnotenName.length - 1] = s1;
-            newMatrix[newMatrix.length-1][newMatrix.length-1] = true;
+            newMatrix[newMatrix.length - 1][newMatrix.length - 1] = true;
 
             nodes = newKnotenName;
             nodeConnections = newMatrix;
@@ -223,21 +223,8 @@ public class GraphPaul implements Serializable {
 
         if (graph2 != null && graph2.nodes != null) {
 
-            String[] toConnect = getKnotenNamen();
-            for (int c = 0; c < toConnect.length; c++) {
-                if (!newGraph.isNodeInGraph(toConnect[c])) {
-                    newGraph.addNode(toConnect[c]);
-                }
-            }
-            for (int c = 0; c < toConnect.length; c++) {
-                for (int i = 0; i < toConnect.length; i++) {
-                    if (isNodeConnected(toConnect[c], toConnect[i])) {
-                        newGraph.addConnection(toConnect[c], toConnect[i]);
-                    }
-                }
-            }
 
-            toConnect = graph2.getKnotenNamen();
+            String[] toConnect = graph2.getKnotenNamen();
             for (int c = 0; c < toConnect.length; c++) {
                 if (!newGraph.isNodeInGraph(toConnect[c])) {
                     newGraph.addNode(toConnect[c]);
@@ -250,6 +237,23 @@ public class GraphPaul implements Serializable {
                     }
                 }
             }
+
+            toConnect = getKnotenNamen();
+            if (toConnect != null) {
+                for (int c = 0; c < toConnect.length; c++) {
+                    if (!newGraph.isNodeInGraph(toConnect[c])) {
+                        newGraph.addNode(toConnect[c]);
+                    }
+                }
+                for (int c = 0; c < toConnect.length; c++) {
+                    for (int i = 0; i < toConnect.length; i++) {
+                        if (isNodeConnected(toConnect[c], toConnect[i])) {
+                            newGraph.addConnection(toConnect[c], toConnect[i]);
+                        }
+                    }
+                }
+            }
+
         }
         nodeConnections = newGraph.nodeConnections;
         nodes = newGraph.nodes;

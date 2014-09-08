@@ -196,13 +196,16 @@ public class ServerController{
 
     public void removeConnection(Message msg){
         System.out.println("#S: Recieved Terminate Signal From " + msg.getMessageFrom());
+        ServerChannel toRemove = null;
+        ConnectionLabel toRemoveLabel = null;
         for (Map.Entry<ConnectionLabel, ServerChannel> entry : connections.entrySet()) {
             ConnectionLabel key = entry.getKey();
             if(key.getServerName().equals(msg.getREQUEST_CREATOR())){
-                ServerChannel toRemove = connections.remove(key);
-                toRemove.interrupt();
+                toRemoveLabel = key;
             }
         }
+        toRemove = connections.remove(toRemoveLabel);
+        toRemove.interrupt();
     }
 
     public void terminateConnections(){

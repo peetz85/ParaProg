@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="ParaProgSchneiderTechau:jar">
-    <output-path>$PROJECT_DIR$/../ParaProgSchneiderTechau_jar</output-path>
+    <output-path>$PROJECT_DIR$/..</output-path>
     <root id="archive" name="ParaProgSchneiderTechau.jar">
       <element id="module-output" name="ParaProgSchneiderTechau" />
       <element id="extracted-dir" path="$PROJECT_DIR$/ParaProgSchneiderTechau/libs/jcsp-1.1-rc4/jcsp.jar" path-in-jar="/" />
