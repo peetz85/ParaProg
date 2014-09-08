@@ -121,7 +121,7 @@ public class ServerController{
     }
 
     public int getNextFreePort(){
-        return nextFreePort;
+        return nextFreePort++;
     }
 
     public void setServerName(String arg){
@@ -166,7 +166,7 @@ public class ServerController{
         if(target.contains(serverName)){
             channel = new ServerChannel(target+":"+port, this);
             incomingConnection.put(target+":"+port,channel);
-            ++nextFreePort;
+//            ++nextFreePort;
         } else {
             channel = new ServerChannel(target+":"+port, this);
             ConnectionLabel connection = new ConnectionLabel(target,port);

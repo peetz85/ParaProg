@@ -74,9 +74,10 @@ public class Console extends JFrame{
         mntmAktiviereServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
 
-
                 String port = String.valueOf(serverCTR.getNextFreePort());
+
                 OpenConnection arg = new OpenConnection(serverCTR,port);
+
                 serverCTR.openConnections.put(serverCTR.getServerName()+":"+port,arg);
                 serverCTR.connectToNode(serverCTR.getServerName(),port);
 
