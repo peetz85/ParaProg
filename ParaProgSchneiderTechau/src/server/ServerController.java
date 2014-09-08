@@ -19,18 +19,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ServerController{
 
     private String serverName;
-    private String serverIP;
     public ClientController clientCTR;
-
-    private LinkedBlockingQueue<Message> incommingMessages;
-
     private int nextFreePort;
-    public HashMap<String,ServerChannel> incomingConnection;
 
     public HashMap<ConnectionLabel, ServerChannel> connections;
+    private LinkedBlockingQueue<Message> incommingMessages;
 
+    // für die "Spielerei" um das Fenster bei Verbingungsaufbau zu schließen
+    public HashMap<String,ServerChannel> incomingConnection;
     public HashMap<String,OpenConnection> openConnections;
-
 
     /**
      * Konstruktor
@@ -39,7 +36,6 @@ public class ServerController{
      */
     public ServerController(String name, ClientController clientCTR) {
         setServerName(name);
-        setServerIP();
         this.clientCTR = clientCTR;
         incommingMessages = new LinkedBlockingQueue<Message>();
 
@@ -70,29 +66,6 @@ public class ServerController{
         return nodeSet;
     }
 
-    public ServerChannel getServerChannel(String server){
-        ServerChannel returnValue = null;
-        if(!connections.isEmpty()) {
-            for (ConnectionLabel key : connections.keySet()) {
-                    if(key.getServerName().equals(server)){
-                        returnValue = connections.get(key);
-                    }
-            }
-        }
-        return returnValue;
-    }
-
-//    private void removeServerChannel(String server){
-//        if(!connections.isEmpty()) {
-//            for (ConnectionLabel key : connections.keySet()) {
-//                if(key.getServerName().equals(server)){
-//                    connections.remove(key);
-//                }
-//            }
-//        }
-//    }
-
-
     public void sendAll(HashSet<String> nodeSet, boolean except, Message msg) {
         if (!connections.isEmpty()) {
             if (except) {
@@ -114,7 +87,14 @@ public class ServerController{
     }
 
     public void sendOnly(String arg, Message msg){
-        ServerChannel connection = getServerChannel(arg);
+        ServerChannel connection = null;
+        if(!connections.isEmpty()) {
+            for (ConnectionLabel key : connections.keySet()) {
+                if(key.getServerName().equals(arg)){
+                    connection = connections.get(key);
+                }
+            }
+        }
         if(connection != null) {
             connection.send(msg);
         }
@@ -130,20 +110,6 @@ public class ServerController{
 
     public String getServerName(){
         return serverName;
-    }
-
-    public void setServerIP(){
-        InetAddress ip = null;
-        try {
-            ip = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        serverIP = (String) ip.getHostAddress();
-    }
-
-    public String getServerIP(){
-        return serverIP;
     }
 
     public void setCNSServer(String arg) {
@@ -166,7 +132,6 @@ public class ServerController{
         if(target.contains(serverName)){
             channel = new ServerChannel(target+":"+port, this);
             incomingConnection.put(target+":"+port,channel);
-//            ++nextFreePort;
         } else {
             channel = new ServerChannel(target+":"+port, this);
             ConnectionLabel connection = new ConnectionLabel(target,port);
@@ -175,19 +140,15 @@ public class ServerController{
         channel.start();
     }
 
-
-
     public void printAllNodesFancy(){
         System.out.println("- - - - - - - Connections - - - - - - -");
-        printAllNodes();
-        System.out.println("- - - - - - - - - - - - - - - - - - - -");
-    }
-    public void printAllNodes(){
         for (ConnectionLabel key : connections.keySet()) {
             System.out.println(key);
         }
+        System.out.println("- - - - - - - - - - - - - - - - - - - -");
     }
 
+    //Channel löschen falls sich ein Knoten abmeldet
     public void removeConnection(Message msg){
         System.out.println("#S: Recieved Terminate Signal From " + msg.getMessageFrom());
         ServerChannel toRemove = null;
@@ -204,6 +165,7 @@ public class ServerController{
             printAllNodesFancy();
     }
 
+    //Sende ein Signal an alle Knoten zum löschen dieser Verbindung
     public void terminateConnections(){
         if(!connections.isEmpty()) {
             Message terminateSignal = new Message(serverName);
@@ -212,5 +174,3 @@ public class ServerController{
         }
     }
 }
-
-

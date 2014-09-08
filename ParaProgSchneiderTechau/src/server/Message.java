@@ -156,6 +156,7 @@ public class Message implements Serializable {
     }
 
     public void setElectionAwnser(String messageFrom){
+        this.messageFrom = messageFrom;
         election_1st = true;
         election_2nd = true;
     }

@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
 
@@ -52,8 +54,15 @@ public class Console extends JFrame{
 		
 		JSeparator separator_1 = new JSeparator();
 		panel_1.add(separator_1, BorderLayout.NORTH);
-		
-		lblNewLabel = new JLabel("IP-Adresse: " + serverCTR.getServerIP() + " | Server-Name: " +serverCTR.getServerName());
+
+        InetAddress ip = null;
+        try {
+            ip = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        String serverIP = (String) ip.getHostAddress();
+		lblNewLabel = new JLabel("IP-Adresse: " + serverIP + " | Server-Name: " +serverCTR.getServerName());
 		panel_1.add(lblNewLabel, BorderLayout.CENTER);
 		
 		textArea = new JTextArea();

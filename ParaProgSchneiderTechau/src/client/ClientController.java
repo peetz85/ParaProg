@@ -101,54 +101,52 @@ public class ClientController extends Thread {
         }
     }
 
-    public synchronized void initElection() {
+    public void initElection() {
         Message msg = new Message(clientName);
         HashSet<String> dontVisit = new HashSet<String>(serverCTR.generateNodeSet());
         msg.setElectionRequest(clientName, dontVisit);
 
         ReturnType retType = new ReturnType(msg.getREQUEST_TIMESTAMP(), msg);
         retType.setElection(dontVisit, clientName);
+        retType.waitingForAnswer.remove(clientName);
         returnToSender.put(clientName, retType);
         if (Starter.debugMode)
             System.err.println("#S: " + "Election Request generiert!");
         serverCTR.sendAll(new HashSet<String>(), true, msg);
     }
-
-    public synchronized void answerElection(Message msg) {
-        if (msg.isNodeGraph_2nd()) {
-            if (returnToSender.containsKey(msg.getREQUEST_CREATOR())) {
+    public void answerElection(Message msg) {
+        if (msg.isElection_2nd()) {
+            if (checkIfRequestExist(msg)) {
                 ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
-                if (deliveryInformations.waitingForAnswer.contains(serverCTR.getServerName())) {
-                    deliveryInformations.waitingForAnswer.remove(serverCTR.getServerName());
-                }
                 deliveryInformations.answers.add(msg);
                 deliveryInformations.waitingForAnswer.remove(msg.getMessageFrom());
 
                 if (deliveryInformations.waitingForAnswer.isEmpty()) {
 
-                    Graph returnGraph = new Graph();
-//                    returnGraph.addNodeSet(serverCTR.generateNodeSet(), clientName);
                     for (int count = 0; count < deliveryInformations.answers.size(); count++) {
-                        if (deliveryInformations.answers.get(count).getSpannBaum().getNodes() == null) {
-                            returnGraph.deleteConnection(deliveryInformations.answers.get(count).getMessageFrom(), clientName);
-                        } else {
-                            returnGraph.addGraph(deliveryInformations.answers.get(count).getSpannBaum());
-                        }
+                        deliveryInformations.answers.get(count);
+
+                        //TODO
+                        //TODO Auswertung aller gesammelten Nachrichten hier einfügen
                     }
-                    //TODO
-                    //TODO Nodes aus dem Graphen entfernen die wir nicht besuchen sollen
-                    //TODO Wird momentan nur bei Nodes gemacht von denen wir ein Null zurück bekommen
-                    //TODO
 
                     if (clientName.equals(msg.getREQUEST_CREATOR())) {
                         if (Starter.debugMode)
-                            System.err.println("#S: " + "Ich bin der Node der gefragt hat. Spannbaum ausgeben!");
-                        System.out.println(returnGraph);
+                            System.err.println("#S: " + "ELECTION DEBUG MESSAGE FEHLT HIER !!!!!!!!!!!!!!!!!!!!!!!!!");
+
+                        //TODO
+                        //TODO Aufgabe für den Request Ersteller hier einfügen
+
                         returnToSender.remove(msg.getREQUEST_CREATOR());
                     } else {
                         if (Starter.debugMode)
-                            System.err.println("<- Nachricht an " + msg.getMessageFrom() + ":" + "Antwort Graph zurückleiten an Request Node");
-                        msg.setNodeGrapAnswer(serverCTR.getServerName(), returnGraph);
+                            System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "ELECTION DEBUG MESSAGE FEHLT HIER !!!!!!!!!!!!!!!!!!!!!!!!!");
+
+                        //TODO
+                        //TODO Aufgabe für einen Knoten in der Mitte hier einfügen
+                        //TODO Nicht der letzte Knoten und nicht der Request ersteller
+
+
                         serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
                         returnToSender.remove(msg.getREQUEST_CREATOR());
                     }
@@ -156,18 +154,16 @@ public class ClientController extends Thread {
             }
         } else {
             if (Starter.debugMode)
-                System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "Spannbaum genriert. Sende Spannbaum zurück!");
+                System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "ELECTION DEBUG MESSAGE FEHLT HIER !!!!!!!!!!!!!!!!!!!!!!!!!");
             String sendBackTo = msg.getMessageFrom();
-            Graph returnGraph = new Graph();
-            returnGraph.addNode(sendBackTo);
-            returnGraph.addNode(clientName);
-            returnGraph.addConnection(sendBackTo, clientName);
-            msg.setNodeGrapAnswer(serverCTR.getServerName(), returnGraph);
+
+            //TODO
+            //TODO Aufgabe für den letzten Knoten im Baum hier enfügen
+
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
-
-    public synchronized void forwardElection(Message msg) {
+    public void forwardElection(Message msg) {
         if (checkIfRequestExist(msg)) {
             if (Starter.debugMode)
                 System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Election Request bereits von einem anderen Node erhalten, Sende leere Nachricht!");
@@ -205,26 +201,23 @@ public class ClientController extends Thread {
     }
 
 
-    public synchronized void initNodeGraph() {
+    public void initNodeGraph() {
         Message msg = new Message(clientName);
         HashSet<String> dontVisit = new HashSet<String>(serverCTR.generateNodeSet());
         msg.setNodeGraphRequest(clientName, dontVisit);
 
         ReturnType retType = new ReturnType(msg.getREQUEST_TIMESTAMP(), msg);
         retType.setEchoRequest(dontVisit, clientName);
+        retType.waitingForAnswer.remove(clientName);
         returnToSender.put(clientName, retType);
         if (Starter.debugMode)
             System.err.println("#S: " + "Spannbaum Request generiert!");
         serverCTR.sendAll(new HashSet<String>(), true, msg);
     }
-
-    public synchronized void answerNodeGraph(Message msg) {
+    public void answerNodeGraph(Message msg) {
         if (msg.isNodeGraph_2nd()) {
-            if (returnToSender.containsKey(msg.getREQUEST_CREATOR())) { //TODO Node und TIMESTAMP Abfragen
+            if (checkIfRequestExist(msg)) {
                 ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
-                if (deliveryInformations.waitingForAnswer.contains(serverCTR.getServerName())) {
-                    deliveryInformations.waitingForAnswer.remove(serverCTR.getServerName());
-                }
                 deliveryInformations.answers.add(msg);
                 deliveryInformations.waitingForAnswer.remove(msg.getMessageFrom());
 
@@ -257,7 +250,7 @@ public class ClientController extends Thread {
             }
         } else {
             if (Starter.debugMode)
-                System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "Spannbaum genriert. Sende Spannbaum zurück!");
+                System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "Sende Spannbaum zurück!");
             String sendBackTo = msg.getMessageFrom();
             Graph returnGraph = new Graph();
             returnGraph.addNode(sendBackTo);
@@ -267,8 +260,7 @@ public class ClientController extends Thread {
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
-
-    public synchronized void forwardNodeGraph(Message msg) {
+    public void forwardNodeGraph(Message msg) {
         if (checkIfRequestExist(msg)) {
             if (Starter.debugMode)
                 System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Request bereits von einem anderen Node erhalten, Sende leere Nachricht!");
@@ -304,7 +296,7 @@ public class ClientController extends Thread {
     }
 
 
-    public synchronized void initNodeCount() {
+    public void initNodeCount() {
         Message msg = new Message(clientName);
         HashSet<String> dontVisit = new HashSet<String>(serverCTR.generateNodeSet());
         msg.setNodeCountRequest(dontVisit, clientName);
@@ -313,27 +305,23 @@ public class ClientController extends Thread {
 
         ReturnType retType = new ReturnType(msg.getREQUEST_TIMESTAMP(), msg);
         retType.setEchoRequest(dontVisit, clientName);
+        retType.waitingForAnswer.remove(clientName);
         returnToSender.put(clientName, retType);
 
         serverCTR.sendAll(empty, true, msg);
     }
-
-    public synchronized void answerNodeCount(Message msg) {
+    public void answerNodeCount(Message msg) {
         if (msg.isNodeCount_2nd()) {
-            if (Starter.debugMode)
-                System.err.println("Nachricht von " + msg.getMessageFrom() + ":" + "answerNodeCount - Message ist eine Antwort");
             ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
-            if (deliveryInformations.waitingForAnswer.contains(serverCTR.getServerName()))
-                deliveryInformations.waitingForAnswer.remove(serverCTR.getServerName());
             if (deliveryInformations != null) {
                 if (Starter.debugMode)
-                    System.err.println("Nachricht von " + msg.getMessageFrom() + ":" + "answerNodeCount - Für die Message gibt es einen Eintrag");
+                    System.err.println("#S: Für die Antwort von " + msg.getMessageFrom() + " gibt es einen Eintrag");
                 deliveryInformations.answers.add(msg);
                 deliveryInformations.waitingForAnswer.remove(msg.getMessageFrom());
             }
             if (deliveryInformations.waitingForAnswer.isEmpty()) {
                 if (Starter.debugMode)
-                    System.err.println("Nachricht von " + msg.getMessageFrom() + ":" + "answerNodeCount - Keine ausstehenden Antworten");
+                    System.err.println("#S: Keine ausstehenden Antworten. Nachrichten werden ausgewertet!");
                 int retInt = 1;
                 for (int count = 0; count < deliveryInformations.answers.size(); count++) {
                     if (deliveryInformations.answers.get(count) != null) {
@@ -342,12 +330,12 @@ public class ClientController extends Thread {
                 }
                 if (serverCTR.getServerName().equals(msg.getREQUEST_CREATOR())) {
                     if (Starter.debugMode)
-                        System.err.println("Nachricht von " + msg.getMessageFrom() + ":" + "answerNodeCount - Ich bin der Knoten der gefragt hat");
-                    System.out.println("Knoten die geantwortet haben: " + retInt);
+                        System.err.println("#S: Ich bin der Knoten der die Anfrage erstellt hat");
+                    System.out.println("#S: Knoten die geantwortet haben-> " + retInt + " (inkl. diesem Knoten)");
                     returnToSender.remove(msg.getREQUEST_CREATOR());
                 } else {
                     if (Starter.debugMode)
-                        System.err.println("Nachricht von " + msg.getMessageFrom() + ":" + "answerNodeCount - Ich bin nicht der Knoten der gefragt hat");
+                        System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "Antwort zurück senden!");
                     msg.setNodeCountAnswer(retInt, serverCTR.getServerName());
                     serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
                     returnToSender.remove(msg.getREQUEST_CREATOR());
@@ -355,25 +343,22 @@ public class ClientController extends Thread {
             }
         } else {
             if (Starter.debugMode)
-                System.err.println("Nachricht von " + msg.getMessageFrom() + ":" + "Antwort_6");
+                System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "Keine weiteren Knoten vorhanden!");
             String sendBackTo = msg.getMessageFrom();
             msg.setNodeCountAnswer(1, serverCTR.getServerName());
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
-
-    public synchronized void forwardNodeCount(Message msg) {
+    public void forwardNodeCount(Message msg) {
         if (!returnToSender.containsKey(msg.getREQUEST_CREATOR()) ||
                 returnToSender.get(msg.getREQUEST_CREATOR()).REQUEST_TIMESTAMP != msg.getREQUEST_TIMESTAMP()) {
             if (isLastNode(msg.getNodeSet())) {
-                if (Starter.debugMode)
-                    System.err.println("Nachricht von " + msg.getMessageFrom() + ":" + "Zurück damit. Bin der Letzte Node");
-                answerNodeCount(msg);
                 ReturnType sendBack = new ReturnType(msg.getREQUEST_TIMESTAMP(), msg);
                 returnToSender.put(msg.getREQUEST_CREATOR(), sendBack);
+                answerNodeCount(msg);
             } else {
                 if (Starter.debugMode)
-                    System.err.println("Nachricht von " + msg.getMessageFrom() + ":" + "Nicht der letzte Node. Nachricht Weiterleiten!");
+                    System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Nicht der letzte Knoten im Baum. Anfrage Weiterleiten!");
                 //ReturnType erstellen mit Sender der Generator der alten Nachricht
                 //und Liste(HashSet) der abzuwartenden Sender
                 ReturnType sendBack = new ReturnType(msg.getREQUEST_TIMESTAMP(), msg);
@@ -392,7 +377,7 @@ public class ClientController extends Thread {
             }
         } else {
             if (Starter.debugMode)
-                System.err.println("Nachricht von " + msg.getMessageFrom() + ":" + "Der bekommt nur Müll zurück");
+                System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Anfrage bereits von einem anderen Knoten erhalten, Sende leere Nachricht!");
             String sendBackTo = msg.getMessageFrom();
             msg.setNodeCountAnswer(0, serverCTR.getServerName());
             serverCTR.sendOnly(sendBackTo, msg);
