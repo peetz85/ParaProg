@@ -3,7 +3,10 @@ package client;
 import semesteraufgabe.Starter;
 import server.Message;
 import server.ServerController;
+
+import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -18,9 +21,11 @@ public class ClientController extends Thread {
     private long nextElectionTimeStamp;
 
     private HashMap<String, ReturnType> returnToSender;
+    public boolean uDrawGrphPrintJob;
 
 
     public ClientController(String name) {
+        uDrawGrphPrintJob = false;
         clientName = name;
         returnToSender = new HashMap<String, ReturnType>();
         nextElectionTimeInSeconds = generateElectionTime();
@@ -108,7 +113,6 @@ public class ClientController extends Thread {
 
         ReturnType retType = new ReturnType(msg.getREQUEST_TIMESTAMP(), msg);
         retType.setElection(dontVisit, clientName);
-        retType.waitingForAnswer.remove(clientName);
         returnToSender.put(clientName, retType);
         if (Starter.debugMode)
             System.err.println("#S: " + "Election Request generiert!");
@@ -118,6 +122,9 @@ public class ClientController extends Thread {
         if (msg.isElection_2nd()) {
             if (checkIfRequestExist(msg)) {
                 ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
+                if(deliveryInformations.waitingForAnswer.contains(clientName)){
+                    deliveryInformations.waitingForAnswer.remove(clientName);
+                }
                 deliveryInformations.answers.add(msg);
                 deliveryInformations.waitingForAnswer.remove(msg.getMessageFrom());
 
@@ -208,7 +215,6 @@ public class ClientController extends Thread {
 
         ReturnType retType = new ReturnType(msg.getREQUEST_TIMESTAMP(), msg);
         retType.setEchoRequest(dontVisit, clientName);
-        retType.waitingForAnswer.remove(clientName);
         returnToSender.put(clientName, retType);
         if (Starter.debugMode)
             System.err.println("#S: " + "Spannbaum Request generiert!");
@@ -218,6 +224,9 @@ public class ClientController extends Thread {
         if (msg.isNodeGraph_2nd()) {
             if (checkIfRequestExist(msg)) {
                 ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
+                if(deliveryInformations.waitingForAnswer.contains(clientName)){
+                    deliveryInformations.waitingForAnswer.remove(clientName);
+                }
                 deliveryInformations.answers.add(msg);
                 deliveryInformations.waitingForAnswer.remove(msg.getMessageFrom());
 
@@ -236,7 +245,10 @@ public class ClientController extends Thread {
                     if (clientName.equals(msg.getREQUEST_CREATOR())) {
                         if (Starter.debugMode)
                             System.err.println("#S: " + "Ich bin der Node der gefragt hat. Spannbaum ausgeben!");
-                        exportGraphToUDG(returnGraph);
+                        if(uDrawGrphPrintJob) {
+                            exportGraphToUDG(returnGraph);
+                            startUDG();
+                        }
                         System.out.println(returnGraph);
                         returnToSender.remove(msg.getREQUEST_CREATOR());
                     } else {
@@ -305,7 +317,6 @@ public class ClientController extends Thread {
 
         ReturnType retType = new ReturnType(msg.getREQUEST_TIMESTAMP(), msg);
         retType.setEchoRequest(dontVisit, clientName);
-        retType.waitingForAnswer.remove(clientName);
         returnToSender.put(clientName, retType);
 
         serverCTR.sendAll(empty, true, msg);
@@ -313,6 +324,9 @@ public class ClientController extends Thread {
     public void answerNodeCount(Message msg) {
         if (msg.isNodeCount_2nd()) {
             ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
+            if(deliveryInformations.waitingForAnswer.contains(clientName)){
+                deliveryInformations.waitingForAnswer.remove(clientName);
+            }
             if (deliveryInformations != null) {
                 if (Starter.debugMode)
                     System.err.println("#S: Für die Antwort von " + msg.getMessageFrom() + " gibt es einen Eintrag");
@@ -419,6 +433,19 @@ public class ClientController extends Thread {
             System.err.println("Fehler beim Schreiben der Graphen: ");
             if (Starter.debugMode)
                 e.printStackTrace();
+        }
+    }
+
+    private void startUDG(){
+        if(uDrawGrphPrintJob) {
+            File uDrawGraph = new File("Spannbaum_" + clientName + ".udg");
+            File program = new File("src\\uDrawGraph.exe");
+            if (uDrawGraph.exists() && program.exists()) {
+                try {
+                    Runtime.getRuntime().exec("cmd /c start " + program.toString() + " " + uDrawGraph.toString());
+                } catch (IOException e) {
+                }
+            }
         }
     }
 }

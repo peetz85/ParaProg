@@ -155,6 +155,12 @@ public class Console extends JFrame{
         mntmNachricht.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 textArea.setText("");
+                if(clientCTR.uDrawGrphPrintJob) {
+                    clientCTR.uDrawGrphPrintJob = false;
+                } else {
+                    clientCTR.uDrawGrphPrintJob = true;
+                }
+                System.out.println(clientCTR.uDrawGrphPrintJob);
             }
         });
         mnMenu.add(mntmNachricht);

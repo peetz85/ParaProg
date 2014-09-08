@@ -1,9 +1,11 @@
 package client;
 
+import java.io.Serializable;
+
 /**
  * Created by Pascal on 08.07.2014.
  */
-public class Graph {
+public class Graph implements Serializable{
 
     private boolean[][] nodeConnections;
     private String[] nodes;
