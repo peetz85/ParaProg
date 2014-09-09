@@ -82,7 +82,7 @@ public class ServerChannel extends Thread /*implements CSProcess*/ {
             msg = null;
 
             try {
-                Thread.sleep(250);
+                Thread.sleep(50);
             }catch (Exception e){}
         }
     }

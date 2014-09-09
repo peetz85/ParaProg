@@ -85,7 +85,7 @@ public class ClientController extends Thread {
         Message msg = null;
         while (true) {
             try {
-                Thread.sleep(50);
+                Thread.sleep(5);
             } catch (Exception e) { }
 
             if (System.currentTimeMillis() >= nextElectionTimeStamp) {
@@ -141,6 +141,7 @@ public class ClientController extends Thread {
         returnToSender.put(clientName, retType);
         if (Starter.debugMode)
             System.err.println("#S: " + "Election Request generiert!");
+        System.out.println(returnToSender);
         serverCTR.sendAll(new HashSet<String>(), true, msg);
     }
 
@@ -490,9 +491,9 @@ public class ClientController extends Thread {
                         startNode + "\"),a(\"_GO\",\"ellipse\")],[";
                 // Connections
                 for (String targetNode : graph.getNodes()) {
-                    if (graph.isNodeConnected(startNode, targetNode) && !hashsetKanten.contains(startNode + ":" + targetNode)) {
+                    if (graph.isNodeConnected(startNode, targetNode) && !hashsetKanten.contains(startNode + ":" + targetNode) && !startNode.equals(targetNode)) {
                         hashsetKanten.add(startNode + ":" + targetNode);
-//                        hashsetKanten.add(targetNode + ":" + startNode);
+                        hashsetKanten.add(targetNode + ":" + startNode);
                         uDrawGraph += "l(\"" + startNode + "-" +
                                 targetNode + "\",e(\"\",[a(\"_DIR\",\"none\"),a(\"EDGECOLOR\",\"" + "#000000" +
                                 "\"),a(\"EDGEPATTERN\",\"normal\")],r(\"" + targetNode + "\"))),";
