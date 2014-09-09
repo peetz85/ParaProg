@@ -176,7 +176,7 @@ public class Message implements Serializable {
         }
     }
     public void setElectionWinner(String winner, Long timeStamp, HashSet<String> dontVisit){
-        election_1st = false;
+        election_1st = true;
         election_2nd = false;
         election_3rd = true;
         electionWinner = winner;

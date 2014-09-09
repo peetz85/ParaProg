@@ -14,17 +14,14 @@ import java.util.*;
  */
 public class ClientController extends Thread {
 
+    public boolean uDrawGrphPrintJob;
     private String clientName;
     private ServerController serverCTR;
-
     private int nextElectionInSeconds;
     private long nextElectionTimeStamp;
-
     private String graphLeader;
     private long graphLeaderTimeStamp;
-
     private HashMap<String, ReturnType> returnToSender;
-    public boolean uDrawGrphPrintJob;
 
 
     public ClientController(String name) {
@@ -59,6 +56,22 @@ public class ClientController extends Thread {
             }
         }
         return returnArgument;
+    }
+
+    private void removeReturnType(Message msg) {
+        if (returnToSender.containsKey(msg.getREQUEST_CREATOR())) {
+            for (Map.Entry<String, ReturnType> entry : returnToSender.entrySet()) {
+                String server = entry.getKey();
+                ReturnType retTyp = entry.getValue();
+                if (msg.getREQUEST_CREATOR().equals(server) && msg.getREQUEST_TIMESTAMP() == retTyp.ORIGINAL_MESSAGE.getREQUEST_TIMESTAMP()) {
+                    if(msg.isElection_1st() && retTyp.ORIGINAL_MESSAGE.isElection_1st() ||
+                       msg.isNodeGraph_1st() && retTyp.ORIGINAL_MESSAGE.isNodeGraph_1st() ||
+                       msg.isNodeCount_1st() && retTyp.ORIGINAL_MESSAGE.isNodeCount_1st()){
+                        returnToSender.remove(server);
+                    }
+                }
+            }
+        }
     }
 
     public void run() {
@@ -102,13 +115,12 @@ public class ClientController extends Thread {
                 if (msg.isElection_1st()) {
                     if (msg.isElection_2nd()) {
                         answerElection(msg);
-                    } else {
+                    } else if (!msg.isElection_2nd()) {
                         forwardElection(msg);
+                    } else if (msg.isElection_3rd()) {
+                        System.out.println("Winner income!");
+                        setAndSendElectionWinner(msg);
                     }
-                }
-                if(msg.isElection_3rd()){
-                    System.out.println("Winner income!");
-                    setElectionWinner(msg);
                 }
                 msg = null;
             }
@@ -127,13 +139,14 @@ public class ClientController extends Thread {
             System.err.println("#S: " + "Election Request generiert!");
         serverCTR.sendAll(new HashSet<String>(), true, msg);
     }
-    private HashMap<String,Long> setForElection(HashMap<String,Long> candidats){
-        if(candidats == null){
+
+    private HashMap<String, Long> setForElection(HashMap<String, Long> candidats) {
+        if (candidats == null) {
             candidats = new HashMap<String, Long>();
         }
         Long identifier = nextElectionTimeStamp - System.currentTimeMillis();
         double arg = Math.random();
-        if(arg > 0.25){
+        if (arg > 0.25) {
             candidats.put(clientName, identifier);
         }
         System.out.println(arg);
@@ -141,39 +154,40 @@ public class ClientController extends Thread {
 
         return candidats;
     }
-    private void setElectionWinner(Message msg){
-        if(msg.getElectionTimeStamp() > graphLeaderTimeStamp){
+
+    private void setAndSendElectionWinner(Message msg) {
+        if (msg.getElectionTimeStamp() > graphLeaderTimeStamp) {
 
             graphLeaderTimeStamp = msg.getElectionTimeStamp();
             graphLeader = msg.getElectionWinner();
             generateElectionTime();
 
             //TODO
-            if(checkIfRequestExist(msg)) {
-                returnToSender.remove(msg.getREQUEST_CREATOR());
+            if (checkIfRequestExist(msg)) {
+                removeReturnType(msg);
             }
 
-            HashSet<String> dontVisistOld = msg.getNodeSet();
+            HashSet<String> dontVisistOld = (HashSet) msg.getNodeSet().clone();
 
             HashSet<String> dontVisist = msg.getNodeSet();
             dontVisist.addAll(serverCTR.generateNodeSet());
 
             msg.setElectionWinner(graphLeader, graphLeaderTimeStamp, dontVisist);
-            if(Starter.debugMode)
-                System.out.println("#S: " + graphLeader + " ist der neue Leader!" );
+            if (Starter.debugMode)
+                System.out.println("#S: " + graphLeader + " ist der neue Leader!");
             serverCTR.sendAll(dontVisistOld, true, msg);
 
             System.out.println(dontVisist);
+            System.out.println(dontVisistOld);
         }
     }
-
 
 
     private void answerElection(Message msg) {
         if (msg.isElection_2nd()) {
             if (checkIfRequestExist(msg)) {
                 ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
-                if(deliveryInformations.waitingForAnswer.contains(clientName)){
+                if (deliveryInformations.waitingForAnswer.contains(clientName)) {
                     deliveryInformations.waitingForAnswer.remove(clientName);
                 }
                 deliveryInformations.answers.add(msg);
@@ -181,9 +195,9 @@ public class ClientController extends Thread {
 
                 if (deliveryInformations.waitingForAnswer.isEmpty()) {
 
-                    msg.setElectionAwnser(clientName,setForElection(null));
+                    msg.setElectionAwnser(clientName, setForElection(null));
                     for (int count = 0; count < deliveryInformations.answers.size(); count++) {
-                        msg.setElectionAwnser(clientName,deliveryInformations.answers.get(count).getCandidats());
+                        msg.setElectionAwnser(clientName, deliveryInformations.answers.get(count).getCandidats());
                     }
                     System.out.println(msg.getCandidats());
 
@@ -191,20 +205,20 @@ public class ClientController extends Thread {
                         if (Starter.debugMode)
                             System.err.println("#S: " + "Alle Ergebnisse ausgewertet. Sende neuen Leader an alle Knoten!");
 
-                        HashMap<String,Long> candidats = msg.getCandidats();
+                        HashMap<String, Long> candidats = msg.getCandidats();
                         String bestCandidatStr = "";
                         Long bestCandidatLon = System.currentTimeMillis();
 
                         for (Map.Entry<String, Long> entry : candidats.entrySet()) {
                             Long ret = entry.getValue();
-                            if(bestCandidatStr.equals("") || bestCandidatLon > ret){
+                            if (bestCandidatStr.equals("") || bestCandidatLon > ret) {
                                 bestCandidatStr = entry.getKey();
                                 bestCandidatLon = ret;
                             }
                         }
                         HashSet<String> dontVisit = new HashSet<String>();
-                        msg.setElectionWinner(bestCandidatStr,System.currentTimeMillis(),dontVisit);
-                        setElectionWinner(msg);
+                        msg.setElectionWinner(bestCandidatStr, System.currentTimeMillis(), dontVisit);
+                        setAndSendElectionWinner(msg);
                     } else {
                         if (Starter.debugMode)
                             System.err.println("<- Nachricht an " + deliveryInformations.getSendBackTo() + ": " + "Election Ausgewertet. Ergebnisse zurück senden!");
@@ -217,17 +231,18 @@ public class ClientController extends Thread {
                 System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "Election Antwort erstellt. Nachricht zurück senden!");
             String sendBackTo = msg.getMessageFrom();
 
-            msg.setElectionAwnser(clientName,setForElection(null));
+            msg.setElectionAwnser(clientName, setForElection(null));
 
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
+
     private void forwardElection(Message msg) {
         if (checkIfRequestExist(msg)) {
             if (Starter.debugMode)
                 System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Election Request bereits von einem anderen Node erhalten, Sende leere Nachricht!");
             String sendBackTo = msg.getMessageFrom();
-            msg.setElectionAwnser(clientName,null);
+            msg.setElectionAwnser(clientName, null);
             serverCTR.sendOnly(sendBackTo, msg);
         } else {
             if (isLastNode(msg.getNodeSet())) {
@@ -238,19 +253,17 @@ public class ClientController extends Thread {
                 answerElection(msg);
             } else {
                 ReturnType oldElectionRet = null;
-                String oldElectionStr = null;
                 for (Map.Entry<String, ReturnType> entry : returnToSender.entrySet()) {
                     ReturnType ret = entry.getValue();
-                    if(ret.ORIGINAL_MESSAGE.isElection_1st()){
+                    if (ret.ORIGINAL_MESSAGE.isElection_1st()) {
                         oldElectionRet = entry.getValue();
-                        oldElectionStr = entry.getKey();
                     }
                 }
-                if( oldElectionRet == null || msg.getREQUEST_TIMESTAMP() < oldElectionRet.ORIGINAL_MESSAGE.getREQUEST_TIMESTAMP()){
-                    if(oldElectionRet != null){
-                        returnToSender.remove(oldElectionStr);
+                if (oldElectionRet == null || msg.getREQUEST_TIMESTAMP() < oldElectionRet.ORIGINAL_MESSAGE.getREQUEST_TIMESTAMP()) {
+                    if (oldElectionRet != null) {
+                        removeReturnType(oldElectionRet.ORIGINAL_MESSAGE);
                         if (Starter.debugMode)
-                            System.err.println("#S: Election Request von "+ oldElectionRet.ORIGINAL_MESSAGE.getMessageFrom()+ " ungültig! Nachricht von " +msg.getMessageFrom()+" wird weiter geleitet");
+                            System.err.println("#S: Election Request von " + oldElectionRet.ORIGINAL_MESSAGE.getMessageFrom() + " ungültig! Nachricht von " + msg.getMessageFrom() + " wird weiter geleitet");
                     } else {
                         if (Starter.debugMode)
                             System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Nicht der letzte Node im Baum. Election Anfrage Weiterleiten!");
@@ -287,11 +300,12 @@ public class ClientController extends Thread {
             System.err.println("#S: " + "Spannbaum Request generiert!");
         serverCTR.sendAll(new HashSet<String>(), true, msg);
     }
+
     private void answerNodeGraph(Message msg) {
         if (msg.isNodeGraph_2nd()) {
             if (checkIfRequestExist(msg)) {
                 ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
-                if(deliveryInformations.waitingForAnswer.contains(clientName)){
+                if (deliveryInformations.waitingForAnswer.contains(clientName)) {
                     deliveryInformations.waitingForAnswer.remove(clientName);
                 }
                 deliveryInformations.answers.add(msg);
@@ -312,18 +326,18 @@ public class ClientController extends Thread {
                     if (clientName.equals(msg.getREQUEST_CREATOR())) {
                         if (Starter.debugMode)
                             System.err.println("#S: " + "Ich bin der Node der gefragt hat. Spannbaum ausgeben!");
-                        if(uDrawGrphPrintJob) {
+                        if (uDrawGrphPrintJob) {
                             exportGraphToUDG(returnGraph);
                             startUDG();
                         }
                         System.out.println(returnGraph);
-                        returnToSender.remove(msg.getREQUEST_CREATOR());
+                        removeReturnType(msg);
                     } else {
                         if (Starter.debugMode)
                             System.err.println("<- Nachricht an " + msg.getMessageFrom() + ":" + "Antwort Graph zurückleiten an Request Node");
                         msg.setNodeGrapAnswer(clientName, returnGraph);
                         serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
-                        returnToSender.remove(msg.getREQUEST_CREATOR());
+                        removeReturnType(msg);
                     }
                 }
             }
@@ -339,6 +353,7 @@ public class ClientController extends Thread {
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
+
     private void forwardNodeGraph(Message msg) {
         if (checkIfRequestExist(msg)) {
             if (Starter.debugMode)
@@ -388,10 +403,11 @@ public class ClientController extends Thread {
 
         serverCTR.sendAll(empty, true, msg);
     }
+
     private void answerNodeCount(Message msg) {
         if (msg.isNodeCount_2nd()) {
             ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
-            if(deliveryInformations.waitingForAnswer.contains(clientName)){
+            if (deliveryInformations.waitingForAnswer.contains(clientName)) {
                 deliveryInformations.waitingForAnswer.remove(clientName);
             }
             if (deliveryInformations != null) {
@@ -413,13 +429,13 @@ public class ClientController extends Thread {
                     if (Starter.debugMode)
                         System.err.println("#S: Ich bin der Knoten der die Anfrage erstellt hat");
                     System.out.println("#S: Knoten die geantwortet haben-> " + retInt + " (inkl. diesem Knoten)");
-                    returnToSender.remove(msg.getREQUEST_CREATOR());
+                    removeReturnType(msg);
                 } else {
                     if (Starter.debugMode)
                         System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "Antwort zurück senden!");
                     msg.setNodeCountAnswer(retInt, serverCTR.getServerName());
                     serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
-                    returnToSender.remove(msg.getREQUEST_CREATOR());
+                    removeReturnType(msg);
                 }
             }
         } else {
@@ -430,6 +446,7 @@ public class ClientController extends Thread {
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
+
     private void forwardNodeCount(Message msg) {
         if (!returnToSender.containsKey(msg.getREQUEST_CREATOR()) ||
                 returnToSender.get(msg.getREQUEST_CREATOR()).REQUEST_TIMESTAMP != msg.getREQUEST_TIMESTAMP()) {
@@ -503,8 +520,8 @@ public class ClientController extends Thread {
         }
     }
 
-    private void startUDG(){
-        if(uDrawGrphPrintJob) {
+    private void startUDG() {
+        if (uDrawGrphPrintJob) {
             File uDrawGraph = new File("Spannbaum_" + clientName + ".udg");
             File program = new File("src\\uDrawGraph.exe");
             if (uDrawGraph.exists() && program.exists()) {
