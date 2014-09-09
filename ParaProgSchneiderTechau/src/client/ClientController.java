@@ -163,14 +163,13 @@ public class ClientController extends Thread {
             graphLeaderTimeStamp = msg.getElectionTimeStamp();
             graphLeader = msg.getElectionWinner();
             generateElectionTime();
-            if (Starter.debugMode)
+            if (Starter.debugMode) {
                 System.out.println("#S: " + graphLeader + " ist der neue Leader!");
-        }
+                System.out.println("#S: " + nextElectionInSeconds +" Sekunden bis zur nächsten Automatischen Wahl");
+            }
 
-
-        if (checkIfRequestExist(msg)) {
-            removeReturnType(msg);
         }
+        removeReturnType(msg);
         HashSet<String> dontVisistOld = (HashSet) msg.getNodeSet().clone();
         HashSet<String> dontVisist = msg.getNodeSet();
         dontVisist.addAll(serverCTR.generateNodeSet());
@@ -213,7 +212,7 @@ public class ClientController extends Thread {
                             }
                         }
                         HashSet<String> dontVisit = new HashSet<String>();
-                        msg.setElectionWinner(bestCandidatStr, System.currentTimeMillis() , dontVisit);
+                        msg.setElectionWinner(bestCandidatStr, System.currentTimeMillis(), dontVisit);
                         setAndSendElectionWinner(msg);
                     } else {
                         if (Starter.debugMode)

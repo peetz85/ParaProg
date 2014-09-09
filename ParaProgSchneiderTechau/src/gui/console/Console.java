@@ -183,7 +183,7 @@ public class Console extends JFrame implements Runnable{
     public void run(){
         while(true){
             try {
-                Thread.sleep(250);
+                Thread.sleep(1000);
             } catch (Exception e) {}
             lblNewLabel.setText(defaultStatusBar +" | Graph-Leader: " + clientCTR.getGraphLeader());
         }
