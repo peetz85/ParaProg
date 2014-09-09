@@ -17,7 +17,7 @@ public class ClientController extends Thread {
     private String clientName;
     private ServerController serverCTR;
 
-    private int nextElectionTimeInSeconds;
+    private int nextElectionInSeconds;
     private long nextElectionTimeStamp;
 
     private HashMap<String, ReturnType> returnToSender;
@@ -28,8 +28,8 @@ public class ClientController extends Thread {
         uDrawGrphPrintJob = false;
         clientName = name;
         returnToSender = new HashMap<String, ReturnType>();
-        nextElectionTimeInSeconds = generateElectionTime();
-        nextElectionTimeStamp = System.currentTimeMillis() + (nextElectionTimeInSeconds * 1000);
+        nextElectionInSeconds = generateElectionTime();
+        nextElectionTimeStamp = System.currentTimeMillis() + (nextElectionInSeconds * 1000);
     }
 
     private int generateElectionTime() {
@@ -65,9 +65,7 @@ public class ClientController extends Thread {
             }
 
             if (System.currentTimeMillis() >= nextElectionTimeStamp) {
-                System.out.println(nextElectionTimeInSeconds);
-                nextElectionTimeInSeconds = generateElectionTime();
-                nextElectionTimeStamp = System.currentTimeMillis() + (nextElectionTimeInSeconds * 1000);
+
             }
 
             if (msg == null) {
@@ -118,7 +116,23 @@ public class ClientController extends Thread {
             System.err.println("#S: " + "Election Request generiert!");
         serverCTR.sendAll(new HashSet<String>(), true, msg);
     }
-    public void answerElection(Message msg) {
+
+    private HashMap<String,Long> setForElection(HashMap<String,Long> candidats){
+        if(candidats == null){
+            candidats = new HashMap<String, Long>();
+        }
+        Long identifier = nextElectionTimeStamp - System.currentTimeMillis();
+        if(Math.random() > 0.5){
+            candidats.put(clientName, identifier);
+        }
+        nextElectionInSeconds = generateElectionTime();
+        nextElectionTimeStamp = System.currentTimeMillis() + (nextElectionInSeconds * 1000);
+
+        return candidats;
+    }
+
+
+    private void answerElection(Message msg) {
         if (msg.isElection_2nd()) {
             if (checkIfRequestExist(msg)) {
                 ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
@@ -130,11 +144,9 @@ public class ClientController extends Thread {
 
                 if (deliveryInformations.waitingForAnswer.isEmpty()) {
 
+                    msg.setElectionAwnser(clientName,setForElection(null));
                     for (int count = 0; count < deliveryInformations.answers.size(); count++) {
-                        deliveryInformations.answers.get(count);
-
-                        //TODO
-                        //TODO Auswertung aller gesammelten Nachrichten hier einfügen
+                        msg.setElectionAwnser(clientName,deliveryInformations.answers.get(count).getCandidats());
                     }
 
                     if (clientName.equals(msg.getREQUEST_CREATOR())) {
@@ -161,21 +173,20 @@ public class ClientController extends Thread {
             }
         } else {
             if (Starter.debugMode)
-                System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "ELECTION DEBUG MESSAGE FEHLT HIER !!!!!!!!!!!!!!!!!!!!!!!!!");
+                System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "Election Antwort erstellt. Nachricht zurück senden!");
             String sendBackTo = msg.getMessageFrom();
 
-            //TODO
-            //TODO Aufgabe für den letzten Knoten im Baum hier enfügen
+            msg.setElectionAwnser(clientName,setForElection(null));
 
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
-    public void forwardElection(Message msg) {
+    private void forwardElection(Message msg) {
         if (checkIfRequestExist(msg)) {
             if (Starter.debugMode)
                 System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Election Request bereits von einem anderen Node erhalten, Sende leere Nachricht!");
             String sendBackTo = msg.getMessageFrom();
-            msg.setElectionAwnser(clientName);
+            msg.setElectionAwnser(clientName,null);
             serverCTR.sendOnly(sendBackTo, msg);
         } else {
             if (isLastNode(msg.getNodeSet())) {
@@ -184,25 +195,40 @@ public class ClientController extends Thread {
                 //Falls Anfragen von anderen Nodes kommen um diese abzulehnen
                 returnToSender.put(msg.getREQUEST_CREATOR(), new ReturnType(msg.getREQUEST_TIMESTAMP(), msg));
                 answerElection(msg);
-
-
             } else {
-                if (Starter.debugMode)
-                    System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Nicht der letzte Node im Baum. Election Anfrage Weiterleiten!");
-                //ReturnType erstellen mit Sender der Generator der alten Nachricht
-                //und Liste(HashSet) der abzuwartenden Sender
-                ReturnType sendBack = new ReturnType(msg.getREQUEST_TIMESTAMP(), msg);
-                HashSet<String> waitingFor = serverCTR.generateNodeSet();
-                waitingFor.removeAll(msg.getNodeSet());
-                sendBack.setElection(waitingFor, msg.getMessageFrom());
-                returnToSender.put(msg.getREQUEST_CREATOR(), sendBack);
+                ReturnType oldElectionRet = null;
+                String oldElectionStr = null;
+                for (Map.Entry<String, ReturnType> entry : returnToSender.entrySet()) {
+                    ReturnType ret = entry.getValue();
+                    if(ret.ORIGINAL_MESSAGE.isElection_1st()){
+                        oldElectionRet = entry.getValue();
+                        oldElectionStr = entry.getKey();
+                    }
+                }
+                if( oldElectionRet == null || msg.getREQUEST_TIMESTAMP() < oldElectionRet.ORIGINAL_MESSAGE.getREQUEST_TIMESTAMP()){
+                    if(oldElectionRet != null){
+                        returnToSender.remove(oldElectionStr);
+                        if (Starter.debugMode)
+                            System.err.println("#S: Election Request von "+ oldElectionRet.ORIGINAL_MESSAGE.getMessageFrom()+ " ungültig! Nachricht von " +msg.getMessageFrom()+" wird weiter geleitet");
+                    } else {
+                        if (Starter.debugMode)
+                            System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Nicht der letzte Node im Baum. Election Anfrage Weiterleiten!");
+                    }
+                    //ReturnType erstellen mit Sender der Generator der alten Nachricht
+                    //und Liste(HashSet) der abzuwartenden Sender
+                    ReturnType sendBack = new ReturnType(msg.getREQUEST_TIMESTAMP(), msg);
+                    HashSet<String> waitingFor = serverCTR.generateNodeSet();
+                    waitingFor.removeAll(msg.getNodeSet());
+                    sendBack.setElection(waitingFor, msg.getMessageFrom());
+                    returnToSender.put(msg.getREQUEST_CREATOR(), sendBack);
 
-                //Neue Liste für nächsten Node mit aktualisierter Liste
-                //der nicht zu besuchenden Nodes
-                HashSet<String> dontVisist = msg.getNodeSet();
-                dontVisist.addAll(waitingFor);
-                msg.setElectionRequest(serverCTR.getServerName(), dontVisist);
-                serverCTR.sendAll(waitingFor, false, msg);
+                    //Neue Liste für nächsten Node mit aktualisierter Liste
+                    //der nicht zu besuchenden Nodes
+                    HashSet<String> dontVisist = msg.getNodeSet();
+                    dontVisist.addAll(waitingFor);
+                    msg.setElectionRequest(serverCTR.getServerName(), dontVisist);
+                    serverCTR.sendAll(waitingFor, false, msg);
+                }
             }
         }
     }
@@ -220,7 +246,7 @@ public class ClientController extends Thread {
             System.err.println("#S: " + "Spannbaum Request generiert!");
         serverCTR.sendAll(new HashSet<String>(), true, msg);
     }
-    public void answerNodeGraph(Message msg) {
+    private void answerNodeGraph(Message msg) {
         if (msg.isNodeGraph_2nd()) {
             if (checkIfRequestExist(msg)) {
                 ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
@@ -272,7 +298,7 @@ public class ClientController extends Thread {
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
-    public void forwardNodeGraph(Message msg) {
+    private void forwardNodeGraph(Message msg) {
         if (checkIfRequestExist(msg)) {
             if (Starter.debugMode)
                 System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Request bereits von einem anderen Node erhalten, Sende leere Nachricht!");
@@ -321,7 +347,7 @@ public class ClientController extends Thread {
 
         serverCTR.sendAll(empty, true, msg);
     }
-    public void answerNodeCount(Message msg) {
+    private void answerNodeCount(Message msg) {
         if (msg.isNodeCount_2nd()) {
             ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
             if(deliveryInformations.waitingForAnswer.contains(clientName)){
@@ -363,7 +389,7 @@ public class ClientController extends Thread {
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
-    public void forwardNodeCount(Message msg) {
+    private void forwardNodeCount(Message msg) {
         if (!returnToSender.containsKey(msg.getREQUEST_CREATOR()) ||
                 returnToSender.get(msg.getREQUEST_CREATOR()).REQUEST_TIMESTAMP != msg.getREQUEST_TIMESTAMP()) {
             if (isLastNode(msg.getNodeSet())) {

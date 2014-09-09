@@ -1,6 +1,7 @@
 package server;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import client.Graph;
@@ -144,9 +145,11 @@ public class Message implements Serializable {
     //--------------------------Election--------------------------
     private boolean election_1st;
     private boolean election_2nd;
+    private HashMap<String,Long> candidats;
 
     public boolean isElection_1st() { return election_1st; }
     public boolean isElection_2nd() { return election_2nd; }
+    public HashMap<String,Long> getCandidats(){return candidats;}
 
     public void setElectionRequest(String messageFrom, HashSet<String> nodeSet){
         election_1st = true;
@@ -155,11 +158,14 @@ public class Message implements Serializable {
         this.nodeSet = nodeSet;
     }
 
-    public void setElectionAwnser(String messageFrom){
+    public void setElectionAwnser(String messageFrom, HashMap<String,Long> candidats){
         this.messageFrom = messageFrom;
         election_1st = true;
         election_2nd = true;
+        if(this.candidats == null){
+            this.candidats = candidats;
+        } else {
+            this.candidats.putAll(candidats);
+        }
     }
-
-
 }
