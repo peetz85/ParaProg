@@ -7,7 +7,10 @@ import server.ServerController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -72,14 +75,11 @@ public class Console extends JFrame{
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-
 		
 		JMenu mnMenu = new JMenu("Menu");
 		menuBar.add(mnMenu);
-        mnMenu.setMnemonic(KeyEvent.VK_ENTER);
 
         JMenuItem mntmAktiviereServer = new JMenuItem("Verbindung bereitstellen");
-        mntmAktiviereServer.setAccelerator(KeyStroke.getKeyStroke('B', KeyEvent.CTRL_DOWN_MASK));
         mntmAktiviereServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
 
@@ -97,7 +97,6 @@ public class Console extends JFrame{
         mnMenu.add(mntmAktiviereServer);
 
         JMenuItem mntmNeueVerbindung = new JMenuItem("Neue Verbindung");
-        mntmNeueVerbindung.setAccelerator(KeyStroke.getKeyStroke('N', KeyEvent.CTRL_DOWN_MASK));
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 ConnectConnection arg = new ConnectConnection(serverCTR);
@@ -124,7 +123,6 @@ public class Console extends JFrame{
         mnMenu.add(separator_);
 		
 		JMenuItem mntmCountNode = new JMenuItem("Knoten zählen");
-        mntmCountNode.setAccelerator(KeyStroke.getKeyStroke('K', KeyEvent.CTRL_DOWN_MASK));
 		mntmCountNode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 if(!serverCTR.connections.isEmpty()) {
@@ -138,7 +136,6 @@ public class Console extends JFrame{
 		mnMenu.add(mntmCountNode);
 
         JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
-        mntmGeneriereGraph.setAccelerator(KeyStroke.getKeyStroke('G', KeyEvent.CTRL_DOWN_MASK));
         mntmGeneriereGraph.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(!serverCTR.connections.isEmpty()) {
@@ -169,7 +166,6 @@ public class Console extends JFrame{
 		mnMenu.add(separator);
 		
 		JMenuItem mntmBeenden = new JMenuItem("Beenden");
-        mntmBeenden.setAccelerator(KeyStroke.getKeyStroke('X', KeyEvent.CTRL_DOWN_MASK));
 		mntmBeenden.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 beenden();
