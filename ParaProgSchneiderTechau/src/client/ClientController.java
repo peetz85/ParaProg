@@ -38,7 +38,7 @@ public class ClientController extends Thread {
 
     private void generateElectionTime() {
         int min = 120;
-        int max = 600;
+        int max = 180;
         nextElectionInSeconds = (min + (int) (Math.random() * ((max - min) + 1)));
         nextElectionTimeStamp = System.currentTimeMillis() + (nextElectionInSeconds * 1000);
     }
@@ -107,6 +107,7 @@ public class ClientController extends Thread {
                     }
                 }
                 if(msg.isElection_3rd()){
+                    System.out.println("Winner income!");
                     setElectionWinner(msg);
                 }
                 msg = null;
@@ -152,15 +153,21 @@ public class ClientController extends Thread {
                 returnToSender.remove(msg.getREQUEST_CREATOR());
             }
 
+            HashSet<String> dontVisistOld = msg.getNodeSet();
+
             HashSet<String> dontVisist = msg.getNodeSet();
             dontVisist.addAll(serverCTR.generateNodeSet());
 
             msg.setElectionWinner(graphLeader, graphLeaderTimeStamp, dontVisist);
             if(Starter.debugMode)
                 System.out.println("#S: " + graphLeader + " ist der neue Leader!" );
-            serverCTR.sendAll(dontVisist, true, msg);
+            serverCTR.sendAll(dontVisistOld, true, msg);
+
+            System.out.println(dontVisist);
         }
     }
+
+
 
     private void answerElection(Message msg) {
         if (msg.isElection_2nd()) {
@@ -195,7 +202,7 @@ public class ClientController extends Thread {
                                 bestCandidatLon = ret;
                             }
                         }
-                        HashSet<String> dontVisit = new HashSet<String>(serverCTR.generateNodeSet());
+                        HashSet<String> dontVisit = new HashSet<String>();
                         msg.setElectionWinner(bestCandidatStr,System.currentTimeMillis(),dontVisit);
                         setElectionWinner(msg);
                     } else {
