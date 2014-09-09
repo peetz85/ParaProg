@@ -154,6 +154,7 @@ public class ClientController extends Thread {
 
         }
     }
+    //
     private void answerElection(Message msg) {
         if (msg.isElection_2nd()) {
             if (checkIfRequestExist(msg)) {
