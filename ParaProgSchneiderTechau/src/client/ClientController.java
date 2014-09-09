@@ -60,6 +60,7 @@ public class ClientController extends Thread {
 
     private void removeReturnType(Message msg) {
         if (returnToSender.containsKey(msg.getREQUEST_CREATOR())) {
+            String toRemove ="";
             for (Map.Entry<String, ReturnType> entry : returnToSender.entrySet()) {
                 String server = entry.getKey();
                 ReturnType retTyp = entry.getValue();
@@ -67,10 +68,11 @@ public class ClientController extends Thread {
                     if(msg.isElection_1st() && retTyp.ORIGINAL_MESSAGE.isElection_1st() ||
                        msg.isNodeGraph_1st() && retTyp.ORIGINAL_MESSAGE.isNodeGraph_1st() ||
                        msg.isNodeCount_1st() && retTyp.ORIGINAL_MESSAGE.isNodeCount_1st()){
-                        returnToSender.remove(server);
+                        toRemove = server;
                     }
                 }
             }
+            returnToSender.remove(toRemove);
         }
     }
 
@@ -255,7 +257,7 @@ public class ClientController extends Thread {
                     if (oldElectionRet != null) {
                         removeReturnType(oldElectionRet.ORIGINAL_MESSAGE);
                         if (Starter.debugMode)
-                            System.err.println("#S: Election Request von " + oldElectionRet.ORIGINAL_MESSAGE.getMessageFrom() + " ungültig! Nachricht von " + msg.getMessageFrom() + " wird weiter geleitet");
+                            System.err.println("#S: Election Request von " + oldElectionRet.ORIGINAL_MESSAGE.getREQUEST_CREATOR() + " ungültig! Nachricht von " + msg.getMessageFrom() + " wird weiter geleitet");
                     } else {
                         if (Starter.debugMode)
                             System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Nicht der letzte Node im Baum. Election Anfrage Weiterleiten!");
