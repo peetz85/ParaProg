@@ -162,8 +162,7 @@ public class Message implements Serializable {
         election_2nd = false;
         this.messageFrom = messageFrom;
         this.nodeSet = nodeSet;
-    }
-
+    }//
     public void setElectionAwnser(String messageFrom, HashMap<String,Long> candidats){
         this.messageFrom = messageFrom;
         election_1st = true;

@@ -151,10 +151,11 @@ public class ClientController extends Thread {
             dontVisist.addAll(waitingFor);
             msg.setElectionRequest(serverCTR.getServerName(), dontVisist);
             serverCTR.sendAll(waitingFor, false, msg);
-
+            if(Starter.debugMode)
+                System.out.println("#S: " + graphLeader + " ist der neue Leader!" );
         }
     }
-    //
+
     private void answerElection(Message msg) {
         if (msg.isElection_2nd()) {
             if (checkIfRequestExist(msg)) {
