@@ -20,6 +20,9 @@ public class ClientController extends Thread {
     private int nextElectionInSeconds;
     private long nextElectionTimeStamp;
 
+    private String graphLeader;
+    private long graphLeaderTimeStamp;
+
     private HashMap<String, ReturnType> returnToSender;
     public boolean uDrawGrphPrintJob;
 
@@ -28,14 +31,16 @@ public class ClientController extends Thread {
         uDrawGrphPrintJob = false;
         clientName = name;
         returnToSender = new HashMap<String, ReturnType>();
-        nextElectionInSeconds = generateElectionTime();
-        nextElectionTimeStamp = System.currentTimeMillis() + (nextElectionInSeconds * 1000);
+        generateElectionTime();
+        graphLeader = null;
+        graphLeaderTimeStamp = 0L;
     }
 
-    private int generateElectionTime() {
+    private void generateElectionTime() {
         int min = 120;
         int max = 600;
-        return (min + (int) (Math.random() * ((max - min) + 1)));
+        nextElectionInSeconds = (min + (int) (Math.random() * ((max - min) + 1)));
+        nextElectionTimeStamp = System.currentTimeMillis() + (nextElectionInSeconds * 1000);
     }
 
     public void setServerCTR(ServerController serverCTR) {
@@ -107,8 +112,6 @@ public class ClientController extends Thread {
         }
     }
 
-    //
-
     public void initElection() {
         Message msg = new Message(clientName);
         HashSet<String> dontVisit = new HashSet<String>(serverCTR.generateNodeSet());
@@ -121,7 +124,6 @@ public class ClientController extends Thread {
             System.err.println("#S: " + "Election Request generiert!");
         serverCTR.sendAll(new HashSet<String>(), true, msg);
     }
-
     private HashMap<String,Long> setForElection(HashMap<String,Long> candidats){
         if(candidats == null){
             candidats = new HashMap<String, Long>();
@@ -130,18 +132,18 @@ public class ClientController extends Thread {
         if(Math.random() > 0.5){
             candidats.put(clientName, identifier);
         }
-        nextElectionInSeconds = generateElectionTime();
-        nextElectionTimeStamp = System.currentTimeMillis() + (nextElectionInSeconds * 1000);
+        generateElectionTime();
 
         return candidats;
     }
-
     private void setElectionWinner(Message msg){
+        if(msg.getElectionTimeStamp() > graphLeaderTimeStamp){
+            graphLeaderTimeStamp = msg.getElectionTimeStamp();
+            graphLeader = msg.getElectionWinner();
+            generateElectionTime();
 
-
+        }
     }
-
-
     private void answerElection(Message msg) {
         if (msg.isElection_2nd()) {
             if (checkIfRequestExist(msg)) {
