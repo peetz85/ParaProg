@@ -145,7 +145,9 @@ public class Message implements Serializable {
     //--------------------------Election--------------------------
     private boolean election_1st;
     private boolean election_2nd;
+    private boolean election_3rd;
     private HashMap<String,Long> candidats;
+    private String electionWinner;
 
     public boolean isElection_1st() { return election_1st; }
     public boolean isElection_2nd() { return election_2nd; }
@@ -167,5 +169,9 @@ public class Message implements Serializable {
         } else {
             this.candidats.putAll(candidats);
         }
+    }
+
+    public void setElectionWinnger(String winner, Long timeStamp){
+
     }
 }

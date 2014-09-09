@@ -156,18 +156,25 @@ public class ClientController extends Thread {
                         //TODO
                         //TODO Aufgabe für den Request Ersteller hier einfügen
 
+                        HashMap<String,Long> candidats = msg.getCandidats();
+
+                        String bestCandidatStr = null;
+                        Long bestCandidatLon = null;
+                        for (Map.Entry<String, Long> entry : candidats.entrySet()) {
+                            Long ret = entry.getValue();
+                            if(bestCandidatLon==null || bestCandidatLon > ret){
+                                bestCandidatStr = entry.getKey();
+                                bestCandidatLon = ret;
+                            }
+                        }
+
+
+
                         returnToSender.remove(msg.getREQUEST_CREATOR());
                     } else {
                         if (Starter.debugMode)
-                            System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "ELECTION DEBUG MESSAGE FEHLT HIER !!!!!!!!!!!!!!!!!!!!!!!!!");
-
-                        //TODO
-                        //TODO Aufgabe für einen Knoten in der Mitte hier einfügen
-                        //TODO Nicht der letzte Knoten und nicht der Request ersteller
-
-
+                            System.err.println("<- Nachricht an " + deliveryInformations.getSendBackTo() + ": " + "Election Ausgewertet. Ergebnisse zurück senden!");
                         serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
-                        returnToSender.remove(msg.getREQUEST_CREATOR());
                     }
                 }
             }
