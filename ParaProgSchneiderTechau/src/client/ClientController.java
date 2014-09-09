@@ -142,6 +142,16 @@ public class ClientController extends Thread {
             graphLeader = msg.getElectionWinner();
             generateElectionTime();
             returnToSender.remove(msg.getREQUEST_CREATOR());
+
+
+            HashSet<String> waitingFor = serverCTR.generateNodeSet();
+            waitingFor.removeAll(msg.getNodeSet());
+            HashSet<String> dontVisist = msg.getNodeSet();
+
+            dontVisist.addAll(waitingFor);
+            msg.setElectionRequest(serverCTR.getServerName(), dontVisist);
+            serverCTR.sendAll(waitingFor, false, msg);
+
         }
     }
     private void answerElection(Message msg) {
