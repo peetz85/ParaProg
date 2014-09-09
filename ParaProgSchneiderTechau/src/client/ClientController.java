@@ -138,21 +138,22 @@ public class ClientController extends Thread {
     }
     private void setElectionWinner(Message msg){
         if(msg.getElectionTimeStamp() > graphLeaderTimeStamp){
+            if(Starter.debugMode)
+                System.out.println("#S: " + graphLeader + " ist der neue Leader!" );
             graphLeaderTimeStamp = msg.getElectionTimeStamp();
             graphLeader = msg.getElectionWinner();
             generateElectionTime();
-            returnToSender.remove(msg.getREQUEST_CREATOR());
 
+            //TODO
+            if(checkIfRequestExist(msg)) {
+                returnToSender.remove(msg.getREQUEST_CREATOR());
+            }
 
-            HashSet<String> waitingFor = serverCTR.generateNodeSet();
-            waitingFor.removeAll(msg.getNodeSet());
             HashSet<String> dontVisist = msg.getNodeSet();
+            dontVisist.addAll(serverCTR.generateNodeSet());
 
-            dontVisist.addAll(waitingFor);
-            msg.setElectionRequest(serverCTR.getServerName(), dontVisist);
-            serverCTR.sendAll(waitingFor, false, msg);
-            if(Starter.debugMode)
-                System.out.println("#S: " + graphLeader + " ist der neue Leader!" );
+            msg.setElectionWinner(graphLeader, graphLeaderTimeStamp, dontVisist);
+            serverCTR.sendAll(dontVisist, true, msg);
         }
     }
 
@@ -175,13 +176,9 @@ public class ClientController extends Thread {
 
                     if (clientName.equals(msg.getREQUEST_CREATOR())) {
                         if (Starter.debugMode)
-                            System.err.println("#S: " + "ELECTION DEBUG MESSAGE FEHLT HIER !!!!!!!!!!!!!!!!!!!!!!!!!");
-
-                        //TODO
-                        //TODO Aufgabe für den Request Ersteller hier einfügen
+                            System.err.println("#S: " + "Alle Ergebnisse ausgewertet. Sende neuen Leader an alle Knoten!");
 
                         HashMap<String,Long> candidats = msg.getCandidats();
-
                         String bestCandidatStr = null;
                         Long bestCandidatLon = null;
                         for (Map.Entry<String, Long> entry : candidats.entrySet()) {
@@ -191,10 +188,9 @@ public class ClientController extends Thread {
                                 bestCandidatLon = ret;
                             }
                         }
-
-
-
-                        returnToSender.remove(msg.getREQUEST_CREATOR());
+                        HashSet<String> dontVisit = new HashSet<String>(serverCTR.generateNodeSet());
+                        msg.setElectionWinner(bestCandidatStr,System.currentTimeMillis(),dontVisit);
+                        setElectionWinner(msg);
                     } else {
                         if (Starter.debugMode)
                             System.err.println("<- Nachricht an " + deliveryInformations.getSendBackTo() + ": " + "Election Ausgewertet. Ergebnisse zurück senden!");

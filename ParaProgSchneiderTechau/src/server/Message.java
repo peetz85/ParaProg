@@ -160,22 +160,27 @@ public class Message implements Serializable {
     public void setElectionRequest(String messageFrom, HashSet<String> nodeSet){
         election_1st = true;
         election_2nd = false;
+        election_3rd = false;
         this.messageFrom = messageFrom;
         this.nodeSet = nodeSet;
-    }//
+    }
     public void setElectionAwnser(String messageFrom, HashMap<String,Long> candidats){
         this.messageFrom = messageFrom;
         election_1st = true;
         election_2nd = true;
+        election_3rd = false;
         if(this.candidats == null){
             this.candidats = candidats;
         } else {
             this.candidats.putAll(candidats);
         }
     }
-    public void setElectionWinner(String winner, Long timeStamp){
+    public void setElectionWinner(String winner, Long timeStamp, HashSet<String> dontVisit){
+        election_1st = false;
+        election_2nd = false;
         election_3rd = true;
         electionWinner = winner;
         electionTimeStamp = timeStamp;
+        nodeSet = dontVisit;
     }
 }
