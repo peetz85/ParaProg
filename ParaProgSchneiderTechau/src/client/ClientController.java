@@ -141,7 +141,7 @@ public class ClientController extends Thread {
             graphLeaderTimeStamp = msg.getElectionTimeStamp();
             graphLeader = msg.getElectionWinner();
             generateElectionTime();
-
+            returnToSender.remove(msg.getREQUEST_CREATOR());
         }
     }
     private void answerElection(Message msg) {
