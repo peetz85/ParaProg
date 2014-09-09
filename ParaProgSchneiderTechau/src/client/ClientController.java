@@ -35,7 +35,7 @@ public class ClientController extends Thread {
 
     private void generateElectionTime() {
         int min = 120;
-        int max = 180;
+        int max = 600;
         nextElectionInSeconds = (min + (int) (Math.random() * ((max - min) + 1)));
         nextElectionTimeStamp = System.currentTimeMillis() + (nextElectionInSeconds * 1000);
     }
@@ -79,13 +79,11 @@ public class ClientController extends Thread {
         while (true) {
             try {
                 Thread.sleep(50);
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { }
 
             if (System.currentTimeMillis() >= nextElectionTimeStamp) {
                 initElection();
                 generateElectionTime();
-                System.out.println("Election Time");
             }
 
             if (msg == null) {
@@ -113,12 +111,11 @@ public class ClientController extends Thread {
                     }
                 }
                 if (msg.isElection_1st()) {
-                    if (msg.isElection_2nd()) {
+                    if (msg.isElection_2nd() && !msg.isElection_3rd()) {
                         answerElection(msg);
-                    } else if (!msg.isElection_2nd()) {
+                    } else if (!msg.isElection_2nd() && !msg.isElection_3rd()) {
                         forwardElection(msg);
                     } else if (msg.isElection_3rd()) {
-                        System.out.println("Winner income!");
                         setAndSendElectionWinner(msg);
                     }
                 }
@@ -146,10 +143,9 @@ public class ClientController extends Thread {
         }
         Long identifier = nextElectionTimeStamp - System.currentTimeMillis();
         double arg = Math.random();
-        if (arg > 0.25) {
+        if (arg > 0.333) {
             candidats.put(clientName, identifier);
         }
-        System.out.println(arg);
         generateElectionTime();
 
         return candidats;
@@ -176,9 +172,6 @@ public class ClientController extends Thread {
             if (Starter.debugMode)
                 System.out.println("#S: " + graphLeader + " ist der neue Leader!");
             serverCTR.sendAll(dontVisistOld, true, msg);
-
-            System.out.println(dontVisist);
-            System.out.println(dontVisistOld);
         }
     }
 
@@ -199,7 +192,6 @@ public class ClientController extends Thread {
                     for (int count = 0; count < deliveryInformations.answers.size(); count++) {
                         msg.setElectionAwnser(clientName, deliveryInformations.answers.get(count).getCandidats());
                     }
-                    System.out.println(msg.getCandidats());
 
                     if (clientName.equals(msg.getREQUEST_CREATOR())) {
                         if (Starter.debugMode)
@@ -242,7 +234,7 @@ public class ClientController extends Thread {
             if (Starter.debugMode)
                 System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Election Request bereits von einem anderen Node erhalten, Sende leere Nachricht!");
             String sendBackTo = msg.getMessageFrom();
-            msg.setElectionAwnser(clientName, null);
+            msg.setElectionAwnser(clientName, new HashMap<String, Long>());
             serverCTR.sendOnly(sendBackTo, msg);
         } else {
             if (isLastNode(msg.getNodeSet())) {
@@ -326,10 +318,8 @@ public class ClientController extends Thread {
                     if (clientName.equals(msg.getREQUEST_CREATOR())) {
                         if (Starter.debugMode)
                             System.err.println("#S: " + "Ich bin der Node der gefragt hat. Spannbaum ausgeben!");
-                        if (uDrawGrphPrintJob) {
-                            exportGraphToUDG(returnGraph);
-                            startUDG();
-                        }
+                        exportGraphToUDG(returnGraph);
+                        startUDG();
                         System.out.println(returnGraph);
                         removeReturnType(msg);
                     } else {
@@ -521,7 +511,6 @@ public class ClientController extends Thread {
     }
 
     private void startUDG() {
-        if (uDrawGrphPrintJob) {
             File uDrawGraph = new File("Spannbaum_" + clientName + ".udg");
             File program = new File("src\\uDrawGraph.exe");
             if (uDrawGraph.exists() && program.exists()) {
@@ -530,6 +519,5 @@ public class ClientController extends Thread {
                 } catch (IOException e) {
                 }
             }
-        }
     }
 }
