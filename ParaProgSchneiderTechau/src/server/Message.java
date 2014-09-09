@@ -148,10 +148,14 @@ public class Message implements Serializable {
     private boolean election_3rd;
     private HashMap<String,Long> candidats;
     private String electionWinner;
+    private Long electionTimeStamp;
 
-    public boolean isElection_1st() { return election_1st; }
-    public boolean isElection_2nd() { return election_2nd; }
-    public HashMap<String,Long> getCandidats(){return candidats;}
+    public boolean isElection_1st() {return election_1st;}
+    public boolean isElection_2nd() {return election_2nd;}
+    public boolean isElection_3rd() {return election_3rd;}
+    public HashMap<String,Long> getCandidats() {return candidats;}
+    public String getElectionWinner() {return electionWinner;}
+    public Long getElectionTimeStamp() {return electionTimeStamp;}
 
     public void setElectionRequest(String messageFrom, HashSet<String> nodeSet){
         election_1st = true;
@@ -170,8 +174,9 @@ public class Message implements Serializable {
             this.candidats.putAll(candidats);
         }
     }
-
-    public void setElectionWinnger(String winner, Long timeStamp){
-
+    public void setElectionWinner(String winner, Long timeStamp){
+        election_3rd = true;
+        electionWinner = winner;
+        electionTimeStamp = timeStamp;
     }
 }

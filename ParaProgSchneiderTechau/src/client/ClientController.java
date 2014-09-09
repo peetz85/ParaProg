@@ -99,10 +99,15 @@ public class ClientController extends Thread {
                         forwardElection(msg);
                     }
                 }
+                if(msg.isElection_3rd()){
+                    setElectionWinner(msg);
+                }
                 msg = null;
             }
         }
     }
+
+    //
 
     public void initElection() {
         Message msg = new Message(clientName);
@@ -129,6 +134,11 @@ public class ClientController extends Thread {
         nextElectionTimeStamp = System.currentTimeMillis() + (nextElectionInSeconds * 1000);
 
         return candidats;
+    }
+
+    private void setElectionWinner(Message msg){
+
+
     }
 
 
