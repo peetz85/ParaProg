@@ -470,7 +470,7 @@ public class ClientController extends Thread {
                 for (String targetNode : graph.getNodes()) {
                     if (graph.isNodeConnected(startNode, targetNode) && !hashsetKanten.contains(startNode + ":" + targetNode)) {
                         hashsetKanten.add(startNode + ":" + targetNode);
-                        hashsetKanten.add(targetNode + ":" + startNode);
+//                        hashsetKanten.add(targetNode + ":" + startNode);
                         uDrawGraph += "l(\"" + startNode + "-" +
                                 targetNode + "\",e(\"\",[a(\"_DIR\",\"none\"),a(\"EDGECOLOR\",\"" + "#000000" +
                                 "\"),a(\"EDGEPATTERN\",\"normal\")],r(\"" + targetNode + "\"))),";
