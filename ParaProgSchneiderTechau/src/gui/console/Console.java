@@ -1,8 +1,6 @@
 package gui.console;
 
 import client.ClientController;
-import server.Message;
-import server.ServerChannel;
 import server.ServerController;
 
 import javax.swing.*;
@@ -13,15 +11,16 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashMap;
 
 
-public class Console extends JFrame{
+public class Console extends JFrame implements Runnable{
 	
 	public JLabel lblNewLabel;
 	public JTextArea textArea;
     public static ServerController serverCTR;
     public static ClientController clientCTR;
+    public String defaultStatusBar;
+
 
 
 	public Console() {
@@ -62,7 +61,8 @@ public class Console extends JFrame{
             e.printStackTrace();
         }
         String serverIP = (String) ip.getHostAddress();
-		lblNewLabel = new JLabel("IP-Adresse: " + serverIP + " | Server-Name: " +serverCTR.getServerName());
+        defaultStatusBar = "IP-Adresse: " + serverIP + " | Server-Name: " +serverCTR.getServerName();
+		lblNewLabel = new JLabel(defaultStatusBar);
 		panel_1.add(lblNewLabel, BorderLayout.CENTER);
 		
 		textArea = new JTextArea();
@@ -100,7 +100,7 @@ public class Console extends JFrame{
 		mntmNeueVerbindung.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 ConnectConnection arg = new ConnectConnection(serverCTR);
-                arg.setLocation(getLocationOnScreen().x+100,getLocationOnScreen().y+90);
+                arg.setLocation(getLocationOnScreen().x + 100, getLocationOnScreen().y + 90);
                 arg.setVisible(true);
             }
         });
@@ -138,7 +138,7 @@ public class Console extends JFrame{
         JMenuItem mntmGeneriereGraph = new JMenuItem("Generiere Graph");
         mntmGeneriereGraph.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(!serverCTR.connections.isEmpty()) {
+                if (!serverCTR.connections.isEmpty()) {
                     textArea.setText("");
                     serverCTR.clientCTR.initNodeGraph();
                 } else {
@@ -148,7 +148,7 @@ public class Console extends JFrame{
         });
         mnMenu.add(mntmGeneriereGraph);
 
-        JMenuItem mntmNachricht = new JMenuItem("Sende WakeUp");
+        JMenuItem mntmNachricht = new JMenuItem("Initialisiere Leader-Vote");
         mntmNachricht.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 clientCTR.initElection();
@@ -180,4 +180,12 @@ public class Console extends JFrame{
         System.out.println("#S: Lo-lo-lo-lo-lonely");
     }
 
+    public void run(){
+        while(true){
+            try {
+                Thread.sleep(250);
+            } catch (Exception e) {}
+            lblNewLabel.setText(defaultStatusBar +" | Graph-Leader: " + clientCTR.getGraphLeader());
+        }
+    }
 }

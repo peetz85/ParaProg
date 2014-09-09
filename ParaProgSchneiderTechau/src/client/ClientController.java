@@ -19,6 +19,11 @@ public class ClientController extends Thread {
     private ServerController serverCTR;
     private int nextElectionInSeconds;
     private long nextElectionTimeStamp;
+
+    public String getGraphLeader() {
+        return graphLeader;
+    }
+
     private String graphLeader;
     private long graphLeaderTimeStamp;
     private HashMap<String, ReturnType> returnToSender;
@@ -257,7 +262,7 @@ public class ClientController extends Thread {
                     if (oldElectionRet != null) {
                         removeReturnType(oldElectionRet.ORIGINAL_MESSAGE);
                         if (Starter.debugMode)
-                            System.err.println("#S: Election Request von " + oldElectionRet.ORIGINAL_MESSAGE.getREQUEST_CREATOR() + " ungültig! Nachricht von " + msg.getMessageFrom() + " wird weiter geleitet");
+                            System.err.println("#S: Election Request von " + oldElectionRet.ORIGINAL_MESSAGE.getREQUEST_CREATOR() + " ungültig! Nachricht von " + msg.getREQUEST_CREATOR() + " wird weiter geleitet");
                     } else {
                         if (Starter.debugMode)
                             System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Nicht der letzte Node im Baum. Election Anfrage Weiterleiten!");

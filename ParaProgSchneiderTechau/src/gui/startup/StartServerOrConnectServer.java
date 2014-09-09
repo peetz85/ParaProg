@@ -45,6 +45,9 @@ public class StartServerOrConnectServer extends JDialog{
 //
     void init(){
         dispose();
-        new Console().setVisible(true);
+        Console arg = new Console();
+        Thread tmp = new Thread(arg);
+        tmp.start();
+        arg.setVisible(true);
     }
 }
