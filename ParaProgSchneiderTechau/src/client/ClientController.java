@@ -70,7 +70,9 @@ public class ClientController extends Thread {
             }
 
             if (System.currentTimeMillis() >= nextElectionTimeStamp) {
-
+                initElection();
+                generateElectionTime();
+                System.out.println("Election Time");
             }
 
             if (msg == null) {
@@ -129,17 +131,18 @@ public class ClientController extends Thread {
             candidats = new HashMap<String, Long>();
         }
         Long identifier = nextElectionTimeStamp - System.currentTimeMillis();
-        if(Math.random() > 0.5){
+        double arg = Math.random();
+        if(arg > 0.25){
             candidats.put(clientName, identifier);
         }
+        System.out.println(arg);
         generateElectionTime();
 
         return candidats;
     }
     private void setElectionWinner(Message msg){
         if(msg.getElectionTimeStamp() > graphLeaderTimeStamp){
-            if(Starter.debugMode)
-                System.out.println("#S: " + graphLeader + " ist der neue Leader!" );
+
             graphLeaderTimeStamp = msg.getElectionTimeStamp();
             graphLeader = msg.getElectionWinner();
             generateElectionTime();
@@ -153,6 +156,8 @@ public class ClientController extends Thread {
             dontVisist.addAll(serverCTR.generateNodeSet());
 
             msg.setElectionWinner(graphLeader, graphLeaderTimeStamp, dontVisist);
+            if(Starter.debugMode)
+                System.out.println("#S: " + graphLeader + " ist der neue Leader!" );
             serverCTR.sendAll(dontVisist, true, msg);
         }
     }
@@ -173,17 +178,19 @@ public class ClientController extends Thread {
                     for (int count = 0; count < deliveryInformations.answers.size(); count++) {
                         msg.setElectionAwnser(clientName,deliveryInformations.answers.get(count).getCandidats());
                     }
+                    System.out.println(msg.getCandidats());
 
                     if (clientName.equals(msg.getREQUEST_CREATOR())) {
                         if (Starter.debugMode)
                             System.err.println("#S: " + "Alle Ergebnisse ausgewertet. Sende neuen Leader an alle Knoten!");
 
                         HashMap<String,Long> candidats = msg.getCandidats();
-                        String bestCandidatStr = null;
-                        Long bestCandidatLon = null;
+                        String bestCandidatStr = "";
+                        Long bestCandidatLon = System.currentTimeMillis();
+
                         for (Map.Entry<String, Long> entry : candidats.entrySet()) {
                             Long ret = entry.getValue();
-                            if(bestCandidatLon==null || bestCandidatLon > ret){
+                            if(bestCandidatStr.equals("") || bestCandidatLon > ret){
                                 bestCandidatStr = entry.getKey();
                                 bestCandidatLon = ret;
                             }
