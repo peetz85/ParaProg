@@ -161,8 +161,6 @@ public class ServerController{
         }
         toRemove = connections.remove(toRemoveLabel);
         toRemove.interrupt();
-        if(!connections.isEmpty())
-            printAllNodesFancy();
     }
 
     //Sende ein Signal an alle Knoten zum löschen dieser Verbindung

@@ -143,8 +143,15 @@ public class ClientController extends Thread {
             System.err.println("#S: " + "Election Request generiert!");
         System.out.println(returnToSender);
         serverCTR.sendAll(new HashSet<String>(), true, msg);
-    }
 
+        if(Starter.debugMode) {
+            System.out.println("#S: Nachricht weiterleiten an:");
+            Iterator iter = serverCTR.generateNodeSet().iterator();
+            while (iter.hasNext()) {
+                System.out.println(iter.next());
+            }
+        }
+    }
     private HashMap<String, Long> setForElection(HashMap<String, Long> candidats) {
         if (candidats == null) {
             candidats = new HashMap<String, Long>();
@@ -158,7 +165,6 @@ public class ClientController extends Thread {
 
         return candidats;
     }
-
     private void setAndSendElectionWinner(Message msg) {
         if (msg.getElectionTimeStamp() > graphLeaderTimeStamp) {
             graphLeaderTimeStamp = msg.getElectionTimeStamp();
@@ -178,8 +184,6 @@ public class ClientController extends Thread {
 
         serverCTR.sendAll(dontVisistOld, true, msg);
     }
-
-
     private void answerElection(Message msg) {
         if (msg.isElection_2nd()) {
             if (checkIfRequestExist(msg)) {
@@ -232,7 +236,6 @@ public class ClientController extends Thread {
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
-
     private void forwardElection(Message msg) {
         if (checkIfRequestExist(msg)) {
             if (Starter.debugMode)
@@ -278,11 +281,18 @@ public class ClientController extends Thread {
                     dontVisist.addAll(waitingFor);
                     msg.setElectionRequest(serverCTR.getServerName(), dontVisist);
                     serverCTR.sendAll(waitingFor, false, msg);
+
+                    if(Starter.debugMode) {
+                        System.out.println("#S: Nachricht weiterleiten an:");
+                        Iterator iter = waitingFor.iterator();
+                        while (iter.hasNext()) {
+                            System.out.println(iter.next());
+                        }
+                    }
                 }
             }
         }
     }
-
 
     public void initNodeGraph() {
         Message msg = new Message(clientName);
@@ -295,8 +305,15 @@ public class ClientController extends Thread {
         if (Starter.debugMode)
             System.err.println("#S: " + "Spannbaum Request generiert!");
         serverCTR.sendAll(new HashSet<String>(), true, msg);
-    }
 
+        if(Starter.debugMode) {
+            System.out.println("#S: Nachricht weiterleiten an:");
+            Iterator iter = serverCTR.generateNodeSet().iterator();
+            while (iter.hasNext()) {
+                System.out.println(iter.next());
+            }
+        }
+    }
     private void answerNodeGraph(Message msg) {
         if (msg.isNodeGraph_2nd()) {
             if (checkIfRequestExist(msg)) {
@@ -328,10 +345,9 @@ public class ClientController extends Thread {
                         removeReturnType(msg);
                     } else {
                         if (Starter.debugMode)
-                            System.err.println("<- Nachricht an " + msg.getMessageFrom() + ":" + "Antwort Graph zurückleiten an Request Node");
+                            System.err.println("<- Nachricht an " + deliveryInformations.getSendBackTo() + ":" + " Antwort Graph zurückleiten an Request Node");
                         msg.setNodeGrapAnswer(clientName, returnGraph);
                         serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
-                        removeReturnType(msg);
                     }
                 }
             }
@@ -347,13 +363,12 @@ public class ClientController extends Thread {
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
-
     private void forwardNodeGraph(Message msg) {
         if (checkIfRequestExist(msg)) {
             if (Starter.debugMode)
                 System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Request bereits von einem anderen Node erhalten, Sende leere Nachricht!");
             String sendBackTo = msg.getMessageFrom();
-            msg.setNodeGrapAnswer(serverCTR.getServerName(), new Graph());
+            msg.setNodeGrapAnswer(clientName, new Graph());
             serverCTR.sendOnly(sendBackTo, msg);
         } else {
             if (isLastNode(msg.getNodeSet())) {
@@ -365,12 +380,16 @@ public class ClientController extends Thread {
             } else {
                 if (Starter.debugMode)
                     System.err.println("-> Nachricht von " + msg.getMessageFrom() + ": " + "Nicht der letzte Node im Baum. Anfrage Weiterleiten!");
+
                 //ReturnType erstellen mit Sender der Generator der alten Nachricht
                 //und Liste(HashSet) der abzuwartenden Sender
+
                 ReturnType sendBack = new ReturnType(msg.getREQUEST_TIMESTAMP(), msg);
+
                 HashSet<String> waitingFor = serverCTR.generateNodeSet();
                 waitingFor.removeAll(msg.getNodeSet());
                 sendBack.setEchoRequest(waitingFor, msg.getMessageFrom());
+
                 returnToSender.put(msg.getREQUEST_CREATOR(), sendBack);
 
                 //Neue Liste für nächsten Node mit aktualisierter Liste
@@ -379,6 +398,14 @@ public class ClientController extends Thread {
                 dontVisist.addAll(waitingFor);
                 msg.setNodeGraphRequest(serverCTR.getServerName(), dontVisist);
                 serverCTR.sendAll(waitingFor, false, msg);
+
+                if(Starter.debugMode) {
+                    System.out.println("#S: Nachricht weiterleiten an:");
+                    Iterator iter = waitingFor.iterator();
+                    while (iter.hasNext()) {
+                        System.out.println(iter.next());
+                    }
+                }
             }
         }
     }
@@ -396,8 +423,14 @@ public class ClientController extends Thread {
         returnToSender.put(clientName, retType);
 
         serverCTR.sendAll(empty, true, msg);
+        if(Starter.debugMode) {
+            System.out.println("#S: Nachricht weiterleiten an:");
+            Iterator iter = serverCTR.generateNodeSet().iterator();
+            while (iter.hasNext()) {
+                System.out.println(iter.next());
+            }
+        }
     }
-
     private void answerNodeCount(Message msg) {
         if (msg.isNodeCount_2nd()) {
             ReturnType deliveryInformations = returnToSender.get(msg.getREQUEST_CREATOR());
@@ -429,7 +462,6 @@ public class ClientController extends Thread {
                         System.err.println("<- Nachricht an " + msg.getMessageFrom() + ": " + "Antwort zurück senden!");
                     msg.setNodeCountAnswer(retInt, serverCTR.getServerName());
                     serverCTR.sendOnly(deliveryInformations.getSendBackTo(), msg);
-                    removeReturnType(msg);
                 }
             }
         } else {
@@ -440,7 +472,6 @@ public class ClientController extends Thread {
             serverCTR.sendOnly(sendBackTo, msg);
         }
     }
-
     private void forwardNodeCount(Message msg) {
         if (!returnToSender.containsKey(msg.getREQUEST_CREATOR()) ||
                 returnToSender.get(msg.getREQUEST_CREATOR()).REQUEST_TIMESTAMP != msg.getREQUEST_TIMESTAMP()) {
@@ -479,7 +510,6 @@ public class ClientController extends Thread {
     public boolean isLastNode(HashSet<String> visited) {
         return visited.containsAll(serverCTR.generateNodeSet());
     }
-
     private void exportGraphToUDG(Graph graph) {
         String uDrawGraph = "[";
         HashSet<String> hashsetKanten = new HashSet<String>();
@@ -513,7 +543,6 @@ public class ClientController extends Thread {
                 e.printStackTrace();
         }
     }
-
     private void startUDG() {
             File uDrawGraph = new File("Spannbaum_" + clientName + ".udg");
             File program = new File("src\\uDrawGraph.exe");
