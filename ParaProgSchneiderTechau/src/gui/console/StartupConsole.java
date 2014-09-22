@@ -1,9 +1,7 @@
 package gui.console;
 
 import client.ClientController;
-import semesteraufgabe.Starter;
 import server.ServerController;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

@@ -3,9 +3,6 @@ package server;
 import org.jcsp.net.*;
 import org.jcsp.net.cns.CNS;
 
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 /**
  * Created by Pascal on 09.07.2014.
  */

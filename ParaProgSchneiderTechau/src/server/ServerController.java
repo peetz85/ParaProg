@@ -4,12 +4,8 @@ package server;
 import client.ClientController;
 import gui.console.OpenConnection;
 import org.jcsp.net.*;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 

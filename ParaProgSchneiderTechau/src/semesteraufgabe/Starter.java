@@ -1,9 +1,14 @@
 package semesteraufgabe;
 
-import client.ClientController;
 import gui.startup.StartServerOrConnectServer;
 import java.util.HashSet;
 import java.util.Iterator;
+
+/**
+ * Semesterarbeit Parallele Programmierung
+ * von Nils Techau (29248)
+ * und Pascal Schneider (30036)
+ */
 
 public class Starter {
 

@@ -1,20 +1,14 @@
 package gui.startup;
 
 import javax.swing.JDialog;
-
 import java.awt.Toolkit;
-
 import javax.swing.JButton;
-
 import cnsserver.CNSServer;
 import gui.cnsserver.CNSServerStatus;
 import gui.console.Console;
-
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class StartServerOrConnectServer extends JDialog{
 	public StartServerOrConnectServer() {
