@@ -70,7 +70,7 @@ public class Console extends JFrame implements Runnable{
         panel.add(new JScrollPane(textArea), BorderLayout.CENTER);
         MessageConsole mc = new MessageConsole(textArea);
         mc.redirectOut();
-        mc.redirectErr(Color.RED, null);
+//        mc.redirectErr(Color.RED, null);
         mc.setMessageLines(100);
 
 		JMenuBar menuBar = new JMenuBar();
